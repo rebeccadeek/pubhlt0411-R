@@ -1,0 +1,20 @@
+# --- Ignore everything by default ---
+/*
+
+# --- ...except the specific files/folders this course site needs ---
+!/.gitignore
+!/_extensions
+!/_quarto.yml
+!/data
+!/lectures
+!/index.qmd
+!/index.html
+!/index_files
+
+# --- Explicitly exclude these too (already covered by the root rule above,
+# --- but listed here in case they ever show up nested inside an allowed folder) ---
+.quarto/
+.Rproj.user/
+.Rhistory
+.RData
+.DS_Store

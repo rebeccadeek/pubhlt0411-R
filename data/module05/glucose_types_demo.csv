@@ -1,0 +1,4 @@
+diabetic,glucose,visit_date,notes
+TRUE,102,2024-01-15,fasting
+false,88,2024-02-15,fasting
+T,215,2024-02-16,post-meal

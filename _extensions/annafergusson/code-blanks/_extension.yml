@@ -1,0 +1,13 @@
+title: Code blanks
+author: Anna Fergusson
+version: 0.1.0
+
+contributes:
+  filters:
+    - code-blanks.lua
+  resources:
+    - code-blanks.css
+    - code-blanks.js
+    - progressive-reveal.js
+    - runner-webr.js
+    - code-blanks-storage.js

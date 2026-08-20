@@ -1,0 +1,51 @@
+---
+title: "PUBHLT0411 -- R for Public Health Data Analysis"
+subtitle: "University of Pittsburgh · School of Public Health · Fall 2026"
+author: Rebecca Deek, PhD
+format:
+  html:
+    toc: false
+    page-layout: full
+---
+
+## Lecture slides
+
+Below are interactive lectures slides so that you may follow along with the in-class exercises.
+
+```{=html}
+<style>
+.striped-table table tr.odd { background-color: #ffffff; }
+.striped-table table tr.even { background-color: #f2f2f2; }
+</style>
+```
+
+::: {.striped-table}
+| Module | Date | Reading | Slides |
+|---|---|---|---|
+| **Module 0:** Hello World! Syllabus and basics | Lecture Tue Aug 25 | R4DS 2 Workflow: basics<br>R4DS 4 Workflow: code style<br>R4DS 6 Workflow: scripts and projects | [Slides](lectures/module00/module00_HelloWorld.html) |
+| **Module 1:** Data types and structures | Lecture + Lab Thu Aug 27 | Advanced R: Data Structures<br>Advanced R: Subsetting | [Slides](lectures/module01/module01_data-types.html) |
+| **Module 2:** Data visualization I | Lecture Tue Sep 1<br>Lab Thu Sep 3 | R4DS 1 Data Visualization<br>R4DS 9.1-9.2 Layers | [Slides](lectures/module02/module02_visualization-1.html) |
+| **Module 3:** Data visualization II | Lecture Tue Sep 8<br>Lab Thu Sep 10 | R4DS 9.3-9.9 Layers<br>R4DS 11 Communication | [Slides](lectures/module03/module03-visualization-2.html) |
+| **Module 4:** Data Wrangling I | Lecture Tue Sep 15<br>Lab Thu Sep 17 | R4DS 3 Data Transformation | [Slides](lectures/module04/module02-wrangling-1.html) |
+| **Module 5:** Data Wrangling II | Lecture Tue Sep 22<br>Lab Thu Sep 24 | R4DS 5 Data Tidying<br>R4DS 7 Data Import<br>R4DS 19 Joins | [Slides](lectures/module05/module05-data-wrangling-2.html) |
+| **Module 6:** Functions and iteration | Lecture Tue Sep 29<br>Lab Thu Oct 1 | R4DS 26.1-26.3<br>R4DS (1e) 21.1-21.5 | [Slides](lectures/module06/module06-functions-iteration.html) |
+:::
+
+Module 0's lab is a take home with no submission component. Module 1 is one combined session rather than a lecture and lab pair.
+
+**Readings.** [R4DS] *R 4 Data Science (2e)* -- <https://r4ds.hadley.nz/> · [R4DS (1e)] *R 4 Data Science (1e)* -- <https://r4ds.had.co.nz/> · 
+[AdvR] *Advanced R 1e* -- <http://adv-r.had.co.nz/>
+
+## About the data
+
+All data for the course will be available as preloaded object in R or through Canvas in the appropriate file format.
+
+## Labs and homework
+
+**Labs** are worked on during each week's lab session and submitted to Canvas by 11:59pm that same day. There are six labs across the R half, and the lowest grade is dropped.
+
+**Homework** is completed on [DataCamp](https://www.datacamp.com), not on this site or Canvs. Each homework is an assigned set of DataCamp chapters covering the module just finished, due by 9am the day of the next lecture. Homework is graded on completion, recorded automatically through DataCamp, there is nothing to upload to Canvas. See Canvas and the syllabus for the assigned chapters and exact due dates.
+
+## Software
+
+All coursework will require the use or R and RStudio.

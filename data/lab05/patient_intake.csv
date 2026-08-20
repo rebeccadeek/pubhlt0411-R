@@ -1,0 +1,7 @@
+Patient ID,Enrollment Date,tumor.stage,treatmentArm,AGE
+1,2024-01-10,II,Control,45
+2,2024-01-12,III,Drug,52
+3,2024-01-15,Unknown,Unknown,61
+4,2024-01-18,I,Radiation,
+5,2024-01-20,II,Control,forty
+6,2024-01-22,III,Drug,58

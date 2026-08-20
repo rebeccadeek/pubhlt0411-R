@@ -1,0 +1,1107 @@
+---
+title: "Module 6: Functions and iteration"
+subtitle: "PUBHLT0411: Statistical Packages for Public Health Data Analysis"
+author: Rebecca Deek, PhD
+institute: University of Pittsburgh, Biostatistics and Health Data Science
+format: 
+  revealjs:
+    slide-number: true
+    code-line-numbers: true
+    linestretch: 1
+    center: false
+    auto-stretch: false
+    axe: true
+filters:
+  - code-blanks
+code-blanks:
+  packages:
+    - MASS
+    - dplyr
+    - purrr
+  setup:
+    - library(MASS)
+    - library(dplyr)
+    - library(purrr)
+  plot-width: 100
+  plot-height: 100
+execute:
+  echo: true # show code by default
+  warning: false
+  message: false
+---
+
+```{r setup}
+#| echo: FALSE
+
+set.seed(1)
+
+# the code below will load the necessary packages for this assignment
+# packages are normally loaded using library(packageName) after installing them.
+# the `pacman` package has a function called `p_load` that checks if a package is installed.
+# if it isn't installed, it will install it, otherwise it will load it.
+
+# this line installs the pacman package, if you need it
+if(!require(pacman)){
+  install.packages(pacman)
+  library(pacman)
+}
+
+pacman::p_load(countdown)
+pacman::p_load(MASS)
+pacman::p_load(tidyverse)
+
+# data setup
+birthwt = tibble::as_tibble(birthwt) |>
+  dplyr::mutate(
+    race  = factor(race,  labels = c("white", "black", "other")),
+    smoke = factor(smoke, labels = c("no", "yes")),
+    low   = factor(low,   labels = c("normal", "low"))
+  )
+
+```
+
+## Why write functions?
+> If you copy and paste the same code more than twice, write a function. - Dr. Deek (and basically everyone else)
+
+. . .
+
+1. Automate repeated tasks more reliably than copying-and-pasting (i.e., avoid copy-paste mistakes).
+2. Named functions make your code easier to understand.
+3. Update code in one place instead of many.
+4. Reuse work across scripts and projects.
+
+## Three (main) kinds of functions
+- **Vector functions**: take one or more vectors as input and return a vector as output.
+- **Data frame functions**: take a data frame as input and return a data frame as output.
+- **Plot functions**: take a data frame as input and return a plot as output.
+
+We will focus on the first two types of functions today.
+
+- There are other more advanced functions with varied input and output types.
+
+## What is a function?
+- In coding, like in math, a function takes input(s), performs a processes, and produces a result (output[s]).
+  - $3 = \sqrt{9}$ is a calculation.
+  - $y = \sqrt{x}$ is a function.
+  - `sum_var = x[1] + x[2] + x[3]` is a calculation.
+  - `sum_var = sum(x)` is a function.
+
+For repeated tasks we would like to write a function with arbitrary inputs that produce corresponding outputs.
+
+## Back to the `birthwt` data
+
+```{r bwt-data}
+birthwt
+```
+
+- Already done some data cleaning (converting strings to factors, etc.)
+
+## A repetitive task {.smaller}
+Suppose we want to **z-score standardize** several numeric columns, meaning each column has mean 0 and standard deviation 1.
+
+. . .
+
+```{r standardize}
+#| code-line-numbers: "3-8"
+
+birthwt_subset = birthwt |> dplyr::select(age, lwt, ptl, bwt)
+
+birthwt_subset |> 
+  dplyr::mutate(
+    age = (age - mean(age)) / sd(age),
+    lwt = (lwt - mean(age)) / sd(lwt),
+    ptl = (ptl - mean(ptl)) / sd(ptl),
+    bwt = (bwt - mean(bwt)) / sd(bwt) 
+  )
+
+```
+
+```{r}
+#| echo: FALSE
+
+countdown::countdown(minutes = 1, seconds = 30, bottom = 0)
+
+```
+
+Discuss with a partner what each line of code is doing, and why. Can you spot the mistake?
+
+::: notes
+Let's write a function to avoid copying-and-pasting in the first place.
+:::
+
+## Writing a function: Identify a pattern
+Let's take a look at the repeated line out of the prior `dplyr::mutate()` statements:
+
+```r
+(age - mean(age)) / sd(age)
+(lwt - mean(lwt)) / sd(lwt)
+(ptl - mean(ptl)) / sd(ptl)
+(bwt - mean(bwt)) / sd(bwt)
+```
+
+Let's put a placeholder where the variable changes.
+
+```r
+(█ - mean(█)) / sd(█)
+```
+This will be our skeleton code for writing our `z_score` function.
+
+## The parts of a function
+Every function consists of three parts:
+
+1. A **name**: e.g., `z_score` (it computes a z-score).
+2. The **arguments**: the thing that varies (e.g., `x`).
+3. The **body**: the code that is repeated across calls.
+
+```r
+name = function(arguments) {
+  body
+}
+```
+
+## Arguments
+- These are the inputs of your function.
+- They are used within the body of your function.
+- They can have default values.
+
+```r
+name = function(df = data, na = FALSE) {
+  body_do_something(df, na)
+}
+```
+
+- The names should be short but intuitive.
+  - `x`, `y`, `z` for vectors.
+  - `df` for data frames.
+  - `n` for sample size, `p` for number of variables.
+
+
+## Body
+- What you want performed within your function.
+- A common flow is:
+  - Input checks with warnings and/or error messages.
+  - Perform operations.
+  - Format output.
+
+## Return
+- What is output by your function.
+- Returns can be implicit using the last value produced (but not stored to an object).
+
+```r
+name = function(df = data, na = FALSE) {
+  body_do_something(df, na)
+}
+```
+
+- Or explicit with the `return` function.
+
+```r
+name = function(df = data, na = FALSE) {
+  out = body_do_something(df, na)
+  return(out)
+}
+```
+
+- Returns can be single values (p-value) or a collection of values (test statistic and p-value), as well as named or unnamed.
+
+## Building `z_score()` {.smaller}
+Remeber out template...
+```r
+(█ - mean(█)) / sd(█)
+```
+Now let's convert it into a proper function.
+```{r zscore-function1}
+
+z_score = function(x) {
+  z = (x - mean(x)) / sd(x)
+  
+  return(z)
+}
+
+```
+
+. . .
+
+- Let's try out the function on a few small examples before applying it to `birthwt`.
+
+```{r zscore1}
+
+z_score(x = c(-10, 0, 10))
+z_score(x = c(1, 2, 3, NA, 5))
+
+```
+
+```{r}
+#| echo: FALSE
+
+countdown::countdown(minutes = 2, bottom = 0)
+
+```
+
+What's causing the issue and how would you fix it?
+
+## Adjusting `z_score()`
+There are two ways to adjust our function to handle `NA` values.
+
+```{r zscore-function2}
+
+z_score = function(x) {
+  (x - mean(x, na.rm = TRUE)) / sd(x, na.rm = TRUE)
+}
+
+z_score_na = function(x, na_logic = T) {
+  (x - mean(x, na.rm = na_logic)) / sd(x, na.rm = na_logic)
+}
+
+```
+
+. . .
+
+Now let's retry these functions on our small example data.
+
+```{r zscore2}
+
+z_score(x = c(1, 2, 3, NA, 5))
+z_score_na(x = c(1, 2, 3, NA, 5))
+
+```
+
+
+## Using `z_score()` {.smaller}
+
+```{r zscore3}
+
+birthwt_subset |> 
+  dplyr::mutate(age = z_score(age),
+                lwt = z_score(lwt),
+                ptl = z_score(ptl),
+                bwt = z_score(bwt)
+                )
+
+```
+
+No copying-and-pasting our long `mean` and `sd` syntax! Minimizing potential human error. 
+
+. . .
+
+- Notice we did copy the `z_score` function multiple times.
+- Further reduction with iteration (coming up).
+
+## Building another function {.smaller}
+Our `z_score` function worked well with `dplyr`'s `mutate`.
+
+- `z_score` took an $n \times 1$ vector as input and returned an $n \times 1$ vector as output.
+
+. . .
+
+We will build a function that calculates the coefficient of variation: the ratio of the sample standard deviation to the sample mean. 
+
+- Useful for comparing variability across variables measured on different scales.
+
+$$cv = \frac{s}{\bar{x}}$$
+
+. . .
+
+- Notice that by definition $cv$ takes an $n \times 1$ vector as input and returns a scalar ($1 \times 1$) as output.
+  - Making it pair well with `summarise()`.
+
+## Building `cv()` {.smaller}
+
+```{r cv-function}
+
+cv = function(x, na.rm = FALSE) {
+  sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm)
+}
+
+```
+
+1. Name: `cv`.
+2. Arguments: `x` and `na.rm = FALSE`.
+3. Body: `sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm)`.
+
+How about return? Implicit or explicit?
+
+. . .
+
+```{r cv}
+
+cv(x = birthwt$bwt)
+cv(x = birthwt$age)
+
+```
+
+- `bwt` and `age` are on totally different scales (grams vs. years).
+  - `cv()` lets us compare their relative spread directly minimizes copying-and-pasting.
+
+## Exercise: `cv()` by group
+
+```{code-blanks-instructions}
+Is birth weight (`bwt`) more variable among smokers or non-smokers (`smoke`)?
+```
+
+```{code-blanks}
+#| blank:
+#|   target: group_by
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: smoke
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: cv_bwt
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: cv(bwt)
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+
+cv = function(x, na.rm = FALSE) {
+  sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm)
+}
+
+birthwt |>
+  group_by(smoke) |>
+  summarise(cv_bwt = cv(x = bwt), .groups = "drop")
+
+```
+
+```{r}
+#| echo: FALSE
+
+countdown::countdown(minutes = 3, bottom = 0)
+
+```
+
+## Data frame functions
+- So far we have focused on functions that take vectors as input and return vectors (or scalars) as output.
+  - These pair well with some `dplyr` verbs.
+- But you’ll often also repeat the verbs themselves, particularly within a large pipeline or across analyses.
+  - If you are copying-and-pasting multiple verbs multiple times, you may want to write a data frame function.
+    - Data frame in, data frame (or vector) out.
+
+## A first attempt {.smaller}
+::: notes
+- First attempt throws error that "Column `group_var` is not found."
+- Looking for variable named `group_var` i.e., not recognizing it as an argument input
+- In toy example want to use `group` and `x` but function uses `group_var` and `mean_var` variables
+:::
+
+Let's write a function that groups by one variable and averages another:
+
+```{r}
+#| error: true
+
+grouped_mean = function(df, group_var, mean_var) {
+  df |>
+    dplyr::group_by(group_var) |> # group by variable
+    dplyr::summarise(mean = mean(mean_var), .groups = "drop") # calculate mean per group, drop groups
+}
+
+birthwt |> grouped_mean(group_var = race, mean_var = bwt) # piping with function
+
+```
+
+. . .
+
+- Inside the function, `group_by()` looks for a column literally named `group_var`
+
+```{r toy-df}
+
+df_toy = tibble::tibble(
+  mean_var = 1,
+  group_var = "g",
+  group = 1,
+  x = 10
+)
+
+df_toy |> grouped_mean(group_var = group, mean_var = x)
+
+```
+
+- Even though we passed `group` and `x` are arguments, `group_var` and `mean_var` were used.
+
+## Embracing `{{` `}}` {.smaller}
+`dplyr` uses **tidy evaluation**, which allows you to refer to the names of variables without any special treatment (`""` or `$`).
+
+- Tidy evaluation includes a solution to this problem called **embracing** `{{` `}}`
+
+. . .
+
+Wrapping an argument in `{{` `}}` tells dplyr to use the value stored inside the argument, not the argument as the literal variable name.
+
+. . .
+
+```{r embracing}
+
+grouped_mean = function(df, group_var, mean_var) {
+  df |>
+    dplyr::group_by({{ group_var }}) |> # group by variable
+    dplyr::summarise(mean = mean({{ mean_var }}), .groups = "drop") # calculate mean per group, drop groups
+}
+
+df_toy |> grouped_mean(group, x) # toy data, lazy eval
+
+birthwt |> grouped_mean(race, bwt) # birthwt date mean(bwt) by race, lazy eval
+
+```
+
+## When to embrace?
+::: notes
+- Too many possible functions to enumerate, it is likely your first attempt at a function will have some errors.
+- Always check documentation
+:::
+Check a function's documentation for two terms:
+
+- **Data-masking**: functions that *compute* with variables.
+  - E.g., `arrange()`, `mutate()`, `filter()`, `summarise()`.
+- **Tidy-selection**: functions that *select* variables.
+  - E.g., `select()`, `relocate()`, `rename()`.
+
+## A summary helper {.smaller}
+
+```{r summary6-function}
+summary6 = function(data, var) {
+  data |> 
+    dplyr::summarise(
+      min    = min({{ var }}, na.rm = TRUE),
+      mean   = mean({{ var }}, na.rm = TRUE),
+      median = median({{ var }}, na.rm = TRUE),
+      max    = max({{ var }}, na.rm = TRUE),
+      n      = n(),
+      n_miss = sum(is.na({{ var }})),
+      .groups = "drop" # good practice
+    )
+}
+
+```
+
+. . .
+
+```{r summary6-ex}
+
+birthwt |> summary6(bwt)
+
+birthwt |>
+  dplyr::group_by(race) |>
+  summary6(bwt)
+
+```
+
+`summary6` includes `summarise()`, so it automatically works on grouped data.
+
+## Exercise: Counting and proportions
+
+```{code-blanks-instructions}
+Create a function that tallies the number of observations per race and converts these counts into proportions. Ensure that the function defaults to removing missing data.
+```
+
+```{code-blanks}
+#| blank:
+#|   target: function
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: FALSE
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: count
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: {{ var }}
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: count_prop(race)
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+
+count_prop = function(df, var, sort = FALSE) {
+  df |>
+    count({{ var }}, sort = sort) |>
+    mutate(prop = n / sum(n))
+}
+
+birthwt |> count_prop(race)
+
+```
+
+```{code-blanks-instructions}
+Why is `n` not embraced?
+```
+
+```{r}
+#| echo: FALSE
+
+countdown::countdown(minutes = 4, seconds = 30, bottom = 0)
+
+```
+
+## Conditions as arguments
+- Just as vectors, data frames, and variable names can be arguments so can conditions.
+  - This is because conditions are turned into logicals.
+    - No different from passing `na.rm = T` as an argument.
+
+```{r}
+
+unique_where = function(df, condition, var) {
+  df |>
+    dplyr::filter({{ condition }}) |>
+    dplyr::distinct({{ var }})
+}
+
+```
+
+. . .
+
+Which races are represented among mothers older than 35?
+
+```{r}
+
+birthwt |> unique_where(age > 35, race)
+
+```
+
+## `pick()` multiple variables {.smaller}
+- Remember there are two forms of **tidy evaluation**: (1) tidy-selection and (2) data-masking.
+  - Both require embracing `{{` `}}`, but data-masking requires an additional step when working with more than one variable.
+
+. . .
+
+- Suppose we would like to group by both `race` and `smoke` before calculating the median.
+
+```{r data-masking}
+
+count_missing = function(df, group_vars, med_var) {
+  df |>
+    dplyr::group_by(pick({{ group_vars }})) |> # group_by = data-masking function
+    dplyr::summarise(median = median({{ med_var }}),
+                     .groups = "drop"
+    )
+}
+
+birthwt |> count_missing(group_vars = c(race, smoke), med_var = ftv)
+```
+
+- `pick()` allows you to select/reference multiple columns.
+
+## Naming functions well
+- It is common that function names are verbs.
+  - Well-known nouns are exceptions (e.g., `mean()` vs. `compute_mean()`).
+- Arguments should be nouns.
+- Trade-off between clear and short.
+
+```r
+# too short
+f()
+
+# not a verb, or descriptive
+my_awesome_function()
+
+# long, but clear
+impute_missing()
+```
+
+## Style and aesthetics
+R doesn't care about spacing and the readability of your code, but your future self and I do.
+
+```r
+z_summary = function(df, var) {
+out = df |>
+dplyr::summarise(mean=mean({{var}},na.rm=TRUE))
+return(out)
+}
+```
+
+. . . 
+
+Better styling would be:
+
+```r
+z_summary = function(df, var) {
+  
+  out = df |>
+    dplyr::summarise(mean = mean({{ var }}, na.rm = TRUE))
+    
+  return(out)
+  
+}
+```
+
+## Functions and iteration
+- We use functions because they help us reduce duplication by minimizing copying-and-pasting code for a repeated task.
+- **Iteration** is another tool for reducing duplication when you need to do the same thing to multiple inputs. 
+  - Repeating the same operation on different columns, rows, or data frame.
+    - Calculating the mean per column (variable).
+    - Fitting a regression per dataset (data frame).
+
+## Two approaches to iteration
+
+- **Imperative programming**: Such as loops (for and while loops).
+  - Make programming very explicit, so it is clear exactly what is happening. The downside is they can be verbose.
+- **Functional programming (FP)**: Functions like `base::lapply` and `purrr::map()`. 
+  - Functions that take other functions as inputs.
+  - Can be abstract but solves common iteration problems with less code and fewer bugs.
+
+## Recall: Reduce copying-and-pasting {.smaller}
+Imagine a simple dataset with four numeric variables (age, bmi, sbp, and ldl cholesterol).
+
+```{r df-rnorm-data}
+
+df_rnorm = tibble(
+  age = rnorm(n = 10, mean = 50, sd = 7.3),
+  bmi = rnorm(n = 10, mean = 22, sd = 3.1),
+  sbp = rnorm(n = 10, mean = 100, sd = 5.7),
+  ldl = rnorm(n = 10, mean = 95, sd = 6.1)
+)
+```
+
+We would like to calculate the median of each one.
+
+```{r median-rnorm}
+
+median(df_rnorm$age)
+median(df_rnorm$bmi)
+median(df_rnorm$sbp)
+median(df_rnorm$ldl)
+
+```
+
+. . .
+
+- This breaks our rule of thumb to avoid copying-and-pasting more than twice.
+  - Can create a loop or FP to handle this without copying-and-pasting.
+
+## For loops {.smaller}
+
+```{r for-loop1}
+
+output = vector(mode = "double", length = ncol(df_rnorm))  # 1. output
+for (i in seq_along(df_rnorm)) {                           # 2. sequence
+  output[[i]] = median(df_rnorm[[i]])                      # 3. body
+}
+output
+
+```
+
+1. **Output**: `output = vector(mode = "double", length = ncol(df_rnorm))`
+   - Always allocate space for the output *before* the loop starts. Growing a vector for each iteration (e.g., with `c()`) is computationally expensive.
+   - Vector types: logical, integer, double, character, etc.
+
+. . .
+
+2. **Sequence**: `i in seq_along(df_rnorm)`
+   - Determines what to loop over.
+   - Each run of the for loop will assign `i` to a different value from `seq_along()`, which enumerate the number of column for a data frame (length for vectors).
+
+```{r for-loop2}
+seq_along(df_rnorm)
+```
+
+. . .
+
+3. **Body**: `output[[i]] = median(df_rnorm[[i]])`
+   - The code that actually performs an action. It run once per value of `i`.
+
+## `birthwt`: Standardizing variables {.smaller}
+
+Recall when we learned about functions, we standardized all the continuous variables in the `birthwt` dataset with our `z_score()` function.
+
+```{r recall-bwt-subset1}
+
+dplyr::glimpse(birthwt_subset)
+
+```
+
+. . .
+
+```{r recall-bwt-subset2}
+
+birthwt_subset |> 
+  dplyr::mutate(age = z_score(age),
+                lwt = z_score(lwt),
+                ptl = z_score(ptl),
+                bwt = z_score(bwt)
+                )
+
+```
+
+We've copied-and-pasted the same function four times...
+
+## `birthwt` z-scores + for-loop {.smaller}
+
+```{r forloop-bwt-zscore}
+
+for (i in seq_along(birthwt_subset)) {               # 2. sequence
+  birthwt_subset[[i]] = z_score(birthwt_subset[[i]]) # 3. body
+}
+
+birthwt_subset
+
+```
+
+2. Sequence? `seq_along(birthwt_subset)`
+3. Body? `birthwt_subset[[i]] = z_score(birthwt_subset[[i]])`
+
+. . .
+
+1. Output? `birthwt_subset`
+   - Notice the output is the same object we are looping over. This is different from the prior example.
+   - We're column-wise modifying `birthwt_subset` in place.
+   - Still predefined, so speed is ok.
+
+## Exercise: For loops {.smaller .scrollable}
+
+```{code-blanks-instructions}
+Using a for loop, compute the mean of every column in `birthwt_subset`. Be able to define the output, sequence, and body of the loop. 
+```
+
+```{code-blanks}
+#| blank:
+#|   target: vector
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: mode = "double"
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: length = ncol(birthwt_subset)
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: i in seq_along(birthwt_subset)
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: mean_birthwt_subset[[i]] = mean(birthwt_subset[[i]])
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+
+birthwt_subset = birthwt |> dplyr::select(age, lwt, ptl, bwt)
+
+mean_birthwt_subset = vector(mode = "double", length = ncol(birthwt_subset))
+mean_birthwt_subset
+
+for(i in seq_along(birthwt_subset)) { 
+  mean_birthwt_subset[[i]] = mean(birthwt_subset[[i]])
+  }
+mean_birthwt_subset
+
+```
+
+```{r}
+#| echo: FALSE
+
+countdown::countdown(minutes = 4, seconds = 30, bottom = 0)
+
+```
+
+## `purrr` and `map_*()` functions {.smaller}
+For loops make iteration explicit, but come with a repeated setup: allocate output, loop over the sequence, perform operation in the body.
+
+. . .
+
+::: {#corner-img style="position: absolute; top: 275px; right: 10px; width: 150px;"}
+![](_figs/01_purrr.png)
+:::
+
+- The `purrr` package provides the `map_*()` family of functions, which reduce this overhead.
+- When provided with an input (vector, data frame, list, etc.) and a function, `map_*()` applies that function to each element of the input.
+  - `map()` returns a list.
+    - Equivalent to `base::lapply()`. 
+  - `map_dbl()` returns a double vector.
+  - `map_chr()` returns a character vector.
+  - `map_lgl()` returns a logical vector.
+  - `map_int()` returns an integer vector.
+
+## `map` versus `lapply` {.smaller}
+Let's turn our for loop for calculating the median into a functional program.
+
+1. `map()`: iterates over columns and returns a list.
+
+```{r map1}
+
+purrr::map(.x = birthwt_subset, .f = median)
+
+```
+
+. . .
+
+2. `lapply()`: iterates over columns and returns a list.
+
+```{r lapply1}
+
+lapply(X = birthwt_subset, FUN = median)
+
+```
+
+`lapply` depends only on the `base` package that is preloaded into R.
+
+## `birthwt`: Functional programming {.smaller}
+`map` and `lapply` focus on performing the operation (`median`) and take care of the bookkeeping required to loop over every element and store the output under the hood.
+
+. . .
+
+Can combine `purrr` and `lapply` with pipes:
+
+```r
+birthwt_subset |> purrr::map(.f = median)
+
+birthwt_subset |> lapply(FUN = median)
+```
+
+. . .
+
+3. Since we know our output should be doubles, we can also use `map_dbl()`, which returns a vector.
+
+```{r map_dbl}
+
+birthwt_subset |> purrr::map_dbl(median) # pipe and lazy eval
+
+```
+
+Equivalent to:
+
+```{r}
+
+birthwt_subset |> purrr::map(median) |> base::unlist()
+birthwt_subset |> lapply(median) |> base::unlist()
+
+```
+
+
+## `across()`: FP within `dplyr` {.smaller}
+`across()` is a *special case* of a `dplyr` FP that makes it easy to apply the same transformation to multiple columns of a data frame and can be combined with other verbs (e.g., `mutate` or `summarise`).
+
+```{r across1}
+
+birthwt |> 
+  dplyr:: mutate(dplyr::across(.cols = c(age, lwt, ptl, bwt), .fns = z_score) )
+
+```
+
+Takes the columns to operate on (`.cols`) and the function(s) to apply (`.fns`) wrapped by a dplyr verb.
+
+. . .
+
+```{r}
+
+birthwt |> 
+  dplyr::summarize(dplyr::across(.cols = c(lwt, bwt), 
+                                 .fns = list(median = mean, cv = cv) ) )
+
+```
+
+The output columns are automatically named `{column}_{function}`, e.g. `lwt_median`.
+
+## Iterating across files {.smaller}
+So far, everything we've done has iterated across columns of a single data frame. But there is no reason we can't iterate over other objects, such as files.
+
+. . .
+
+We'll use [gapminder](Gapminder.org) data on 142 countries which contain information on life expectancy, GDP per capita, and population to demonstrate how.
+
+. . .
+
+- We have data from 12 years between 1952 to 2007. Each year's data is stored in a different Excel spreadsheet.
+
+. . .
+
+- `base::list.files()` lists the files in a directory. We almost always use three arguments: `path`, `pattern`, and `full.names`.
+
+```{r gapminder-path}
+
+gapminder.paths = list.files(path = here::here("data/gapminder"), 
+                             pattern = "[.]xlsx$", 
+                             full.names = TRUE)
+gapminder.paths |> head()
+
+```
+
+## Reading multiple files with `map()` {.smaller}
+
+We could read each file by hand and store the results in a list: `list(read_excel(gapminder.paths[[1]]), read_excel(gapminder.paths[[2]]), ...)`.
+
+-  This would require *at least* 12 lines of code (one per file + list)
+- `map()` does exactly that for us in one line!!
+
+. . .
+
+```{r map-files1}
+
+gapminder.ls = purrr::map(.x = gapminder.paths, .f = readxl::read_excel)
+length(gapminder.ls)
+gapminder.ls[[1]]
+
+```
+
+## Adding names from filenames {.smaller}
+Notice that there is no information on the year the data is from. It's not a column in our data frame, but it is the file name.
+
+```{r map-files2}
+
+gapminder.paths |> purrr::set_names(basename) |> head(2) # name each element filename
+
+```
+
+`set_names(basename)` names each path with just its file name (e.g. `"1952.xlsx"`).
+
+. . .
+
+```{r map-files3}
+
+gapminder.ls.year = gapminder.paths |> 
+  purrr::set_names(basename) |>  # name each element filename
+  purrr::map(readxl::read_excel) # read file
+names(gapminder.ls.year)
+
+```
+
+The names are carried forward to the list
+
+. . .
+
+```{r map-files4}
+
+names(gapminder.ls.year) = readr::parse_number(names(gapminder.ls.year)) # rename to just year
+names(gapminder.ls.year)
+
+```
+
+And we parse to the year only (removing .xlsx).
+
+## Combining elements of a list {.smaller}
+
+Right now we have each data frame as an element of a list. Sometimes we may want to combine all elements into one data frame. We can use `bind_rows` for this.
+
+```{r map-files5}
+
+gapminder.year = gapminder.paths |> 
+  purrr::set_names(basename) |>     # name each element filename
+  purrr::map(readxl::read_excel) |> # read file
+  dplyr::bind_rows(.id = "year") 
+gapminder.year |> print(n = 5)
+```
+
+. . .
+
+Once again we can parse the year, but it remains a character.
+
+```{r map-files6}
+gapminder.year = gapminder.year |> # bind rows of list, colname = id
+  mutate(year = parse_number(year)) # parse year
+gapminder.year |> print(n = 5)
+
+```
+
+## List-columns {.smaller}
+Alternatively, instead of stacking the data frames, we can keep the separate data frames and turn it into a *list-column* (!!!) in a tibble.
+
+```{r list-cols1}
+
+gapminder.df = tibble::tibble(path = gapminder.paths) |> # column for paths
+  dplyr::mutate(year = readr::parse_number(basename(gapminder.paths)), # column for year
+                data = purrr::map(path, readxl::read_excel) # column for data!!!
+                )
+
+gapminder.df
+
+```
+
+Now each **row** is one file/year, and the `data` column holds a whole tibble in every cell.
+
+## List-columns {.smaller}
+
+```r
+gapminder.df = tibble::tibble(path = gapminder.paths) |> # column for paths
+  dplyr::mutate(year = readr::parse_number(basename(gapminder.paths)), # column for year
+                data = purrr::map(path, readxl::read_excel) # column for data!!!
+                )
+
+gapminder.df
+```
+
+`data = purrr::map(path, readxl::read_excel)` used the variable (vector) `path` as input and iterated over each element to read in the 12 data files.
+
+- Being wrapped inside `mutate` added the list as a column in `gapminder.df` with each element of the list being a data frame.
+
+```{r}
+
+gapminder.df$data[[1]]
+
+```
+
+## Iterating over list-columns {.smaller}
+- `map` and `lapply` can also be applied to list-columns.
+- We will loop the `data` column, which is technically a list with each element corresponding to a row in `gapminder.df`, to calculate the average life expectancy, across all countries, per year.
+
+```{r list-col2}
+
+gapminder.df = gapminder.df |> 
+  dplyr::mutate(avgLifeExp = map_dbl(.x = data, 
+                                     .f = function(x) {mean(x$lifeExp)}
+                                     )
+                )
+gapminder.df |> print(n = 5)
+
+gapminder.df |> select(year, avgLifeExp) |> print(n = 5)
+```
+
+## Things to remember {.smaller}
+- Functions and iteration automate repeated tasks more reliably than copying-and-pasting
+- Three major functions are **vector**, **data frame**, and **plot** functions.
+- A for loop has three parts: **output**, **sequence**, **body** and are explicit about each.
+- Functional programs handle some of the overhead associated with for loops.
+  - `across` works on columns with `dplyr` verbs.
+  - `map_*` and `lapply` are more flexible and can loop over columns, rows, files, or more.
+    - `lapply` does not rely on other packges.
+    - `map_*` is more flexible.
+
+## Exercise: Functional programming {.smaller .scrollable}
+
+```{code-blanks-instructions}
+Write three different functional programs that will produce the mean of each variable in `birthwt_subset`.
+```
+
+```{code-blanks}
+#| blank:
+#|   target: birthwt_subset |> map(mean)
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: birthwt_subset |> lapply(mean)
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: birthwt_subset |> map_dbl(mean)
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+
+birthwt_subset = birthwt |> dplyr::select(age, lwt, ptl, bwt)
+
+birthwt_subset |> map(mean)
+birthwt_subset |> lapply(mean)
+birthwt_subset |> map_dbl(mean)
+
+```

@@ -1,0 +1,7 @@
+Patient ID,First Name,diagnosis.code,treatmentGroup,AGE
+1,Alicia,Asthma,Inhaled corticosteroid,4
+2,Ben,Eczema,Topical steroid,5
+3,Carla,N/A,N/A,7
+4,Diego,Allergic rhinitis,Antihistamine,
+5,Priya,Asthma,Inhaled corticosteroid,five
+6,Owen,Eczema,Topical steroid,6

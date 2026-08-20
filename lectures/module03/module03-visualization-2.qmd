@@ -1,0 +1,1545 @@
+---
+title: "Module 3: Data visualization II"
+subtitle: "PUBHLT0411: Statistical Packages for Public Health Data Analysis"
+author: Rebecca Deek, PhD
+institute: University of Pittsburgh, Biostatistics and Health Data Science
+format: 
+  revealjs:
+    slide-number: true
+    code-line-numbers: true
+    linestretch: 1
+    center: false
+    auto-stretch: false
+    axe: true
+filters:
+  - code-blanks
+code-blanks:
+  packages:
+    - MASS
+    - nlme
+    - ggplot2
+    - dplyr
+  setup:
+    - library(MASS)
+    - library(nlme)
+    - library(ggplot2)
+    - library(dplyr)
+  plot-width: 100
+  plot-height: 100
+execute:
+  echo: true # show code by default
+  warning: false
+  message: false
+---
+
+```{r setup}
+#| echo: FALSE
+
+# the code below will load the necessary packages for this assignment
+# packages are normally loaded using library(packageName) after installing them.
+# the `pacman` package has a function called `p_load` that checks if a package is installed.
+# if it isn't installed, it will install it, otherwise it will load it.
+
+# this line installs the pacman package, if you need it
+if(!require(pacman)){
+  install.packages(pacman)
+  library(pacman)
+}
+
+pacman::p_load(countdown)
+pacman::p_load(MASS)
+pacman::p_load(nlme)
+pacman::p_load(tidyverse)
+pacman::p_load(datasauRus)
+pacman::p_load(ggpubr)
+pacman::p_load(wesanderson)
+pacman::p_load(patchwork)
+
+# data setup
+data(birthwt)
+data(Oxboys)
+
+birthwt$smoke = factor(birthwt$smoke, 
+                       levels = 0:1, 
+                       labels = c("Nonsmoker", "Smoker"))
+
+birthwt$race = factor(x = birthwt$race, 
+                      levels = 1:3, 
+                      labels = c("White", "Black", "Other"))
+
+birthwt$low = factor(x = birthwt$low, 
+                     levels = 0:1, 
+                     labels = c("No", "Yes"))
+
+```
+
+## Why visualize?
+- Summarizing data is fundamental to statistics.
+- Numeric summaries (mean, variance, correlation, etc.) are common and informative.
+- Pairing numeric summaries with data visualizations provides deeper insights, some that may be missed by numerical analysis alone.
+
+## Why visualize: 13 data sets {.smaller}
+::: notes
+- 13 data sets, each with x, y coordinate pairs --> scatter plot each
+- Same summary statistics
+:::
+
+```{r datasaurus-head}
+
+head(datasauRus::datasaurus_dozen, n = 3)
+
+```
+
+. . .
+
+```{r datasaurus-12plots-stats}
+
+datasauRus::datasaurus_dozen |> 
+  dplyr::summarise(.by = dataset, 
+                   mean.x = mean(x), 
+                   mean.y = mean(y), 
+                   sd.x = sd(x), 
+                   sd.y = sd(y), 
+                   corr = round(cor(x,y), 2)
+                   )
+
+```
+
+## Why visualize: 13 data sets
+::: notes
+- Clearly very different scatter plots (viz) but the same summary statistics
+:::
+
+```{r datasaurus-12plots}
+#| echo: FALSE
+#| fig-height: 5.5
+#| fig-width: 8
+#| fig-align: center
+#| fig-alt: "Grid of 13 scatterplots from the Datasaurus Dozen dataset: a scattered cloud (away), concentric rings (bullseye), a ring (circle), a dinosaur outline (dino), grouped dot clusters (dots), horizontal bands (h_lines, high_lines), diagonal bands (slant_down, slant_up), a star outline (star), vertical bands (v_lines, wide_lines), and an X shape (x_shape)."
+
+datasauRus::datasaurus_dozen |> 
+  ggplot2::ggplot(aes(x = x, y = y, color = dataset)) +  
+  ggplot2::geom_point() + 
+  ggplot2::facet_wrap(.~dataset) + 
+  ggplot2::theme_classic() + # change plot background
+  ggplot2::theme(legend.position = "none") # remove legend
+
+```
+
+::: aside
+From: [Same Stats, Different Graphs](https://dl.acm.org/doi/10.1145/3025453.3025912)
+:::
+
+## Visualize in multiple ways {.smaller}
+::: notes
+- 5 continuous (numeric) variables want to visualize the distribution each 
+- Boxplots indicates similar distributions (5 number summary is the same)
+:::
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r datasaurus-bp1}
+
+datasauRus::box_plots
+
+datasauRus::box_plots_long |> 
+  dplyr::summarise(
+    .by = Plot, 
+    Q1 = quantile(Values, 
+                  probs = 0.25), 
+    median = round(median(Values), 
+                   digits = 2), 
+    Q3 = quantile(Values, 
+                  probs = 0.75)
+    )
+
+```
+:::
+
+:::{.column width="50%"}
+```{r datasaurus-bp2}
+#| echo: FALSE
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+#| fig-alt: "Five boxplots (left, lines, normal, right, split) from the Datasaurus Dozen boxplot dataset, all with identical summary statistics: median near 0, IQR from about -2.5 to 2.5, and whiskers from about -10 to 10."
+
+datasauRus::box_plots_long |> 
+  ggplot2::ggplot(aes(y = Values, x= Plot, color = Plot)) + 
+  ggplot2::geom_boxplot() + 
+  ggplot2::theme_classic() + 
+  ggplot2::theme(legend.position = "none")
+
+```
+:::
+
+::::
+
+## Visualize in multiple ways
+::: notes
+- Histogram shows differences in distributions
+:::
+
+```{r datasaurus-bp3}
+#| echo: FALSE
+#| fig-height: 6
+#| fig-width: 8
+#| fig-align: center
+#| fig-alt: "Grid comparing the same five groups (left, lines, normal, right, split): boxplots on top look nearly identical, but histograms below reveal very different shapes - from a smooth bell curve ('normal') to spiky, skewed, or multimodal patterns for the rest."
+
+bpData.bp.datasaurus = datasauRus::box_plots_long |> 
+  ggplot2::ggplot(aes(y = Values, color = Plot)) + 
+  ggplot2::geom_boxplot() + 
+  ggplot2::facet_wrap(.~Plot, nrow = 1) + 
+  ggplot2::theme_classic() + 
+  ggplot2::theme(legend.position = "none")
+
+bpData.hist.datasaurus = datasauRus::box_plots_long |> 
+  ggplot2::ggplot(aes(x = Values, fill = Plot)) + 
+  ggplot2::geom_histogram() +  
+  ggplot2::facet_wrap(.~Plot, nrow = 1) + 
+  ggplot2::theme_classic() + 
+  ggplot2::theme(legend.position = "none")
+
+ggpubr::ggarrange(bpData.bp.datasaurus, bpData.hist.datasaurus, nrow = 2)
+
+
+```
+
+## `geom_violin` {.smaller}
+::: notes
+- Violin plots look "similar" to boxplots but identify differences in the distributions
+:::
+
+```{r datasaurus-violin}
+#| code-line-numbers: "6-11"
+#| output-location: column
+#| fig-height: 6
+#| fig-width: 8
+#| fig-align: center
+#| fig-alt: "Violin plots with overlaid boxplots for the same five groups (left, lines, normal, right, split). Boxplots look identical, but violin shapes differ: 'normal' is smoothly tapered, while the others show bumpy, uneven widths reflecting their non-normal underlying distributions."
+
+datasauRus::box_plots_long |> 
+  ggplot2::ggplot(aes(y = Values, 
+                      x= Plot, 
+                      color = Plot) 
+                  ) + 
+  ggplot2::geom_violin(
+    aes(fill = Plot), 
+    alpha = 0.4
+    ) + 
+  ggplot2::geom_boxplot(width = 0.2
+                        ) + 
+  ggplot2::theme_classic() + 
+  ggplot2::theme(
+    legend.position = "none"
+    )
+
+```
+
+## Violin plots
+- Hybrid between a boxplot and density plot.
+  - Displays the distribution and probability density of the data.
+  - Mirrored and rotated density plot.
+- "Width" of the violin represents fequency of the data points in a given area.
+  - Wider sections indicate higher density.
+
+## Violin vs. density plots
+::: notes
+- Showing the similarity between violin and density plots
+:::
+
+```{r}
+#| echo: FALSE
+#| fig-height: 6
+#| fig-width: 8
+#| fig-align: center
+#| fig-alt: "Two-row grid comparing violin plots (top) to one-sided density curves (bottom) for the same five groups (left, lines, normal, right, split). Each violin is just two mirrored copies of the density curve below it, so their shapes match exactly. 'Normal' is smooth and symmetric, while the others show bumpy, multimodal shapes: 'right' and 'split' skew toward positive values, 'left' skews toward negative, and 'lines' is jagged throughout."
+
+bpData.violin.datasaurus= datasauRus::box_plots_long |> 
+  ggplot2::ggplot(aes(y = Values, x = Plot, color = Plot)) + 
+  ggplot2::geom_violin(aes(fill = Plot), alpha = 0.4) + 
+  ggplot2::facet_wrap(.~Plot, nrow = 1, scales = "free") + 
+  ggplot2::theme_classic() + 
+  ggplot2::labs(x = "") + # remove x-axis label
+  ggplot2::theme(legend.position = "none", # remove legend
+                 axis.text.x = element_blank() # remove x-axis tick labels
+                 )
+
+bpData.density.datasaurus = datasauRus::box_plots_long |> 
+  ggplot2::ggplot(aes(y = Values, color = Plot)) + 
+  ggplot2::geom_density(aes(fill = Plot), alpha = 0.4) + 
+  ggplot2::facet_wrap(.~Plot, nrow = 1) + 
+  ggplot2::theme_classic() + 
+  ggplot2::theme(legend.position = "none")
+
+ggpubr::ggarrange(bpData.violin.datasaurus, bpData.density.datasaurus, ncol = 1)
+
+```
+
+## Visualize with mappings
+::: notes
+- Overall trend line is positive, but can see clusters that have negative trend lines (Simpson's Paradox)
+- Color and shape show that there is a group variable explains these differences
+:::
+
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r simpson1}
+#| echo: FALSE
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+#| fig-alt: "Scatterplot with a fitted blue linear regression line, but the underlying data actually forms several distinct parallel diagonal stripes rather than one linear trend. The regression line passes through the overall cloud."
+
+# centers for k-means clustering
+ctrs = matrix(
+  c(
+    25,15,
+    38,29,
+    48,58,
+    60,75,
+    75,83
+  ),
+  byrow=TRUE,
+  ncol=2
+)
+
+# filter data
+simpsons = datasauRus::simpsons_paradox |> 
+  dplyr::filter(dataset == "simpson_2", 30 < x, x < 75) |> 
+  dplyr::select(-dataset)
+
+simpsons |> 
+  ggplot2::ggplot(aes(x = x, y = y)) +
+  ggplot2::geom_point() + 
+  ggplot2::geom_smooth(method = "lm", se = F) + 
+  ggplot2::theme(legend.position = "none")
+
+```
+:::
+
+:::{.column width="50%"}
+::: {.fragment .fade-in}
+```{r simpson2}
+#| echo: FALSE
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+#| fig-alt: "Scatterplot with data split into 5 groups by color/shape, each with its own fitted regression line. Once separated, each group shows a clear negative (downward) trend, revealing that the overall positive trend seen when all points were combined was an illusion caused by mixing distinct groups."
+
+simpsons |> 
+  dplyr::mutate(group = kmeans(simpsons, ctrs)$cluster |> as.character()) |> 
+  ggplot2::ggplot(aes(x = x, y = y, colour = group, shape = group)) +
+  ggplot2::geom_point() + 
+  ggplot2::geom_smooth(method = "lm", se = F) + 
+  ggplot2::theme(legend.position = "top")
+
+```
+:::
+:::
+
+::::
+
+:::{.fragment .fade-in}
+- The overall trend line is positive, but when a third variable is added to the plot via `aes()` it is clear that within each group the trend line is negative.
+:::
+
+## Layering geoms
+::: notes
+- For example our boxplot and violin plot example.
+:::
+
+- Geoms can show similar or complementary information about the data.
+  - Can combine some `geoms_*()` into a single plot.
+
+```{r layers1}
+#| echo: FALSE
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+#| fig-alt: "Two-row grid comparing boxplots (top) to unfilled violin outlines (bottom) for the same five groups (left, lines, normal, right, split). Boxplots look nearly identical across groups, but the violin outlines reveal distinct shapes: 'normal' is smooth and diamond-like, while the others show wavy, multimodal contours skewed left, right, or bimodal."
+
+# combination plot
+ggpubr::ggarrange(
+  # boxplot
+  datasauRus::box_plots_long |> 
+  ggplot2::ggplot(aes(y = Values, x= Plot, color = Plot)) + 
+  ggplot2::geom_boxplot() + 
+  ggplot2::theme_classic() + 
+  ggplot2::theme(legend.position = "none"), 
+  # violin plot
+  datasauRus::box_plots_long |> 
+  ggplot2::ggplot(aes(y = Values, x= Plot, color = Plot)) + 
+  ggplot2::geom_violin() + 
+  ggplot2::theme_classic() + 
+  ggplot2::theme(legend.position = "none"), 
+  ncol = 1
+  )
+
+```
+
+## Layering geoms: Scatterplot example
+::: notes
+- Scatterplot shows generally positive trend. Blue and red lines mixed
+- Loess line similarly shows positive trend but with leveling off and slight increases at the end (small sample)
+- Red line slightly above blue for lwt > 100
+:::
+
+```{r layers2}
+#| code-line-numbers: "5-7"
+#| output-location: column
+#| fig-align: center
+#| fig-alt: "Scatterplot of birth weight vs. mother's pre-pregnancy weight, colored by smoking status (red=Nonsmoker, teal=Smoker). Both groups are scattered broadly across the plot with no clear trend visible for either."
+
+birthwt |> 
+  ggplot2::ggplot(
+    aes(x = lwt, y = bwt) 
+    ) + 
+  ggplot2::geom_point(
+    aes(color = smoke)
+    )
+
+```
+
+```{r layers3}
+#| code-line-numbers: "5-7"
+#| output-location: column
+#| fig-align: center
+#| fig-alt: "Smoothed trend lines of birth weight vs. mother's pre-pregnancy weight by smoking status, with shaded confidence bands. Both groups rise steeply at low weights, then curve gently; nonsmokers (red) stay slightly above smokers (teal) through most of the range, with wide overlapping confidence bands at both ends indicating uncertainty."
+
+birthwt |> 
+  ggplot2::ggplot(
+    aes(x = lwt, y = bwt) 
+    ) + 
+  ggplot2::geom_smooth(
+    aes(color = smoke)
+    )
+
+```
+
+## Layering geoms: Scatterplot example
+::: notes
+Make trends clearer by overlaying the lines on top of the raw data
+:::
+
+```{r layers4}
+#| fig-height: 4.5
+#| fig-width: 8
+#| fig-align: center
+#| fig-alt: "Scatterplot of birth weight vs. mother's pre-pregnancy weight, colored by smoking status, with smoothed trend lines and confidence bands overlaid. Raw points are scattered broadly with no clear individual trend, but the smoothed lines show nonsmokers (red) staying slightly above smokers (teal) through most of the range, converging at high weights."
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = lwt, 
+                      y = bwt) ) + 
+  ggplot2::geom_point(aes(color = smoke)) + 
+  ggplot2::geom_smooth(aes(color = smoke))
+
+```
+
+## Layering geoms: Order matters
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r layers5}
+#| code-line-numbers: "5-7"
+#| fig-height: 3
+#| fig-width: 4
+#| fig-align: center
+#| fig-alt: "Violin plots for five groups (left, lines, normal, right, split), with the violins drawn first and boxplots layered on top, so the boxplots are fully visible over the violins."
+
+datasauRus::box_plots_long |> 
+  ggplot(aes(y = Values, 
+             x= Plot, 
+             color = Plot) ) + 
+  geom_violin(aes(fill = Plot), 
+              alpha = 0.4 ) + 
+  geom_boxplot(width = 0.2) + 
+  theme_classic() + 
+  theme(legend.position = "none")
+
+```
+:::
+
+:::{.column width="50%"}
+```{r layers6}
+#| code-line-numbers: "5-7"
+#| fig-height: 3
+#| fig-width: 4
+#| fig-align: center
+#| fig-alt: "Same five violin/boxplot pairs, but with the boxplots drawn first and violins layered on top, so the violin shapes partially cover the boxplots (most visible in 'split', where the violin outline overlaps the box edges)."
+
+datasauRus::box_plots_long |> 
+  ggplot(aes(y = Values, 
+             x= Plot, 
+             color = Plot) ) + 
+  geom_boxplot(width = 0.2) + 
+  geom_violin(aes(fill = Plot), 
+              alpha = 0.4 ) + 
+  theme_classic() + 
+  theme(legend.position = "none")
+
+```
+:::
+
+::::
+
+## Group {.smaller}
+::: notes
+- An individual geom draws a distinct graphical object for each observation (row). E.g., point geom draws one point per row.
+- A collective geom displays multiple observations with one geometric object.
+:::
+- In the birthweight scatterplot, `geom_smooth()` plotted a geometric object (lowess line) per smoking group.
+  - This is a collective geom (versus `geom_point()` which is an individual geom).
+  - Automatically defined groups based off of the `color` mapping.
+- Alternatively, when no other discrete variable is mapped to an aesthetic, groups can be created with `group`.
+  - Does not create a legend or distinguishing aesthetics.
+
+. . .
+
+```{r group1}
+#| output-location: column
+#| fig-height: 4.25
+#| fig-width: 6
+#| fig-align: center
+#| fig-alt: "Scatterplot of birth weight vs. mother's pre-pregnancy weight, with two overlapping blue smoothed trend lines and shaded confidence bands. Points are scattered broadly with no clear individual trend; both smoothed curves rise then fluctuate gently, roughly overlapping through most of the range."
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = lwt, 
+                      y = bwt, 
+                      group = smoke) ) + 
+  ggplot2::geom_point() + 
+  ggplot2::geom_smooth()
+
+```
+
+## Groups: Longitudinal data and lines {.smaller}
+-  Goldstein (1987) investigated growth patterns of a set of boys in Oxford, England. Information on standardized age and height were collected repeatedly for each boy.
+    - This study design is known as *longitudinal* or *repeated measures* data.
+- We are interested in visualizing the trend (growth trajectory) between age and height for each boy.
+  - These types of plots are called spaghetti plots.
+
+. . .
+
+```{r oxboy1}
+
+head(Oxboys)
+
+```
+
+## Groups: Longitudinal data and lines {.smaller}
+
+```{r oxboy2}
+#| output-location: column
+#| fig-height: 3
+#| fig-width: 6
+#| fig-align: center
+
+ggplot2::ggplot(Oxboys, 
+                aes(x = age, 
+                    y = height)) + 
+  ggplot2::geom_point() + 
+  ggplot2::geom_line()
+
+```
+
+Not quite what we are looking for. `ggplot` is trying to connect all points with a single line, but we would like one line per boy.
+
+. . .
+
+```{r oxboy3}
+#| code-line-numbers: "4"
+#| output-location: column
+#| fig-height: 3
+#| fig-width: 6
+#| fig-align: center
+
+ggplot2::ggplot(Oxboys, 
+                aes(x = age, 
+                    y = height, 
+                    group = Subject)) + 
+  ggplot2::geom_point() + 
+  ggplot2::geom_line()
+
+```
+
+## Exercise: Groups {.scrollable}
+```{code-blanks-instructions}
+
+Suppose we would like to keep the trajectory lines per boy but add an overall trend line using data from all boys in red. Modify the code below to do so. How you would change this code to produce a trend line per boy?
+
+```
+
+```{code-blanks}
+#| blank:
+#|   target: x = age, y = height
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: group = Subject
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: color="red"
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+
+ggplot2::ggplot(Oxboys, aes(x = age, y = height)) + 
+  ggplot2::geom_line(aes(group = Subject)) + 
+  ggplot2::geom_smooth(color="red", se = F)
+
+```
+
+```{r}
+#| echo: FALSE
+
+countdown::countdown(minutes = 4, top = 0)
+
+```
+
+## Statistical transformations {.smaller}
+::: notes
+- geom_boxplot(stat = "boxplot") is the default
+:::
+Some geoms apply statistical transformations to the supplied data prior to plotting. E.g.,
+
+  - `geom_boxplot` calculates a five-number summary.
+  - `geom_bar` counts the number of observations per group.
+  - `geom_smooth` fits a regression model and plots its predictions.
+
+Every geom has a default (implicit) stat. Even those that don't perform transformations (`stat = identity`).
+
+. . .
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r transformation1}
+#| code-line-numbers: "3"
+#| fig-height: 3
+#| fig-width: 5
+#| fig-align: center
+#| fig-alt: "Boxplot comparing birth weight by smoking status. Nonsmokers have a higher median (~3100 g) and wider range (1000-5000 g) than smokers, whose median is lower (~2800 g) with one low outlier near 700 g."
+
+birthwt |> 
+  ggplot2::ggplot(aes(y = bwt, x = smoke)) + 
+  ggplot2::geom_boxplot()
+
+```
+:::
+
+:::{.column width="50%"}
+```{r transformation2}
+#| code-line-numbers: "3"
+#| fig-height: 3
+#| fig-width: 5
+#| fig-align: center
+#| fig-alt: "Boxplot comparing birth weight by smoking status. Nonsmokers have a higher median (~3100 g) and wider range (1000-5000 g) than smokers, whose median is lower (~2800 g) with one low outlier near 700 g."
+
+birthwt |> 
+  ggplot2::ggplot(aes(y = bwt, x = smoke)) + 
+  ggplot2::geom_boxplot(stat = "boxplot")
+
+```
+:::
+
+::::
+
+## Implicit statistical transformations {.smaller}
+::: notes
+- Top: count n obs per smoke x race group 
+- LHS: geom_bar(stat = count) -> default
+- RHS: using precalculated counts w geom_bar(stat = "identity")
+- Both plots are the same
+:::
+- `stat = "count"` is the deafult for `geom_bar`.
+
+```{r transformations3}
+#| output-location: "column"
+
+bw.smoke.race.count = birthwt |> 
+  dplyr::group_by(smoke, race) |> 
+  dplyr::count() 
+bw.smoke.race.count
+
+```
+
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r transformation4}
+#| fig-height: 3
+#| fig-width: 5
+#| fig-align: center
+#| fig-alt: "Stacked bar chart of counts by smoking status, colored by race (White, Black, Other). Nonsmokers (~115 total) are mostly Other, with smaller White and Black segments. Smokers (~74 total) are mostly White, with smaller Black and Other segments."
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = smoke, 
+                      fill = race) ) + 
+  ggplot2::geom_bar()
+
+```
+:::
+
+:::{.column width="50%"}
+```{r transformation5}
+#| fig-height: 3
+#| fig-width: 5
+#| fig-align: center
+#| fig-alt: "Stacked bar chart of counts by smoking status, colored by race (White, Black, Other). Nonsmokers (~115 total) are mostly Other, with smaller White and Black segments. Smokers (~74 total) are mostly White, with smaller Black and Other segments."
+
+bw.smoke.race.count |> 
+  ggplot2::ggplot(aes(x = smoke, y = n, 
+                      fill = race)) + 
+  ggplot2::geom_bar(stat = "identity")
+
+```
+:::
+
+::::
+
+## Aesthetics of stat transformations {.smaller}
+::: notes
+- LHS: color is inherited into both geoms
+- RHS: color is only in the point geom so group line plotted
+:::
+
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r transformation6}
+#| fig-height: 6
+#| fig-width: 8
+#| fig-align: center
+#| fig-alt: "Scatterplot of birth weight vs. mother's pre-pregnancy weight, colored by smoking status, with separate smoothed trend lines and confidence bands for each group. Nonsmokers (red) trend slightly above smokers (teal) through most of the range, converging at high weights."
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = lwt, 
+                      y = bwt, 
+                      color = smoke) ) + 
+  ggplot2::geom_point() + 
+  ggplot2::geom_smooth()
+
+```
+:::
+
+:::{.column width="50%"}
+```{r transformation7}
+#| fig-height: 6
+#| fig-width: 8
+#| fig-align: center
+#| fig-alt: "Same scatterplot and point coloring by smoking status, but with a single smoothed trend line (blue) and confidence band fit to all points combined, ignoring the group distinction — showing an overall rising trend that flattens in the middle range."
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = lwt, 
+                      y = bwt) ) + 
+  ggplot2::geom_point(aes(color = smoke) ) + 
+  ggplot2::geom_smooth()
+
+```
+:::
+
+::::
+
+## Facets
+- Generates multiple small plots each showing different subsets of the data.
+- Helps compare variables based on a conditioning variable. 
+  - E.g., the relationship between age and birthweight *given* smoking status and/or race.
+- Conditioning variable must be categorical.
+  - Discretize continuous variables.
+- Useful for large data sets as well.
+
+## Types of facets {.smaller}
+There are three types of facets:
+
+- `facet_null()`: generates a single plot (the default). 
+- `facet_wrap()`: "wraps" a 1d set of panels into 2d.
+- `facet_grid()`: produces a 2d grid of panels defined by two variables.
+  - One variable for rows and one for columns.
+
+![](_figs/01_position-facets.png){fig-alt="Comparison of facet_grid and facet_wrap layouts. Left (facet_grid): a 3×3 grid with columns A, B, C and rows 1, 2, 3, cells labeled by combination (A1, B1, C1, etc.). Right (facet_wrap): the same 3×3 grid with panels simply numbered 1–9 in reading order." height=250 fig-align=center}
+
+We will primary concern ourselves with `facet_grid()` as it can work for one or two faceting variables.
+
+## `facet_grid()` {.smaller}
+- Formula syntax: `facet_grid(rowVar~columnVar)`
+
+```{r facet1}
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+#| fig-alt: "Grid of scatterplots (birth weight vs. mother's pre-pregnancy weight) faceted by race (White, Black, Other) and smoking status (Nonsmoker, Smoker). Points are scattered broadly in all panels with no clear trend; the White/Nonsmoker panel has the most points, while Black panels have the fewest."
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = lwt, y = bwt) ) + 
+  ggplot2::geom_point() + 
+  ggplot2::facet_grid(smoke~race) # facet: smoke (row) by race (column)
+
+```
+
+## Facets vs aesthetics {.smaller}
+- Compare the prior faceted plot to this one using only aesthetic combinations
+
+```{r facet-compare}
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+#| fig-alt: "Scatterplot of birth weight vs. mother's pre-pregnancy weight, with point shape indicating race (circle=White, triangle=Black, square=Other) and color indicating smoking status (red=Nonsmoker, teal=Smoker). Points are broadly scattered across all combinations with no clear trend visible by race or smoking status."
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = lwt, y = bwt) ) + 
+  ggplot2::geom_point(aes(color = smoke, shape = race))
+
+```
+
+## Facets with aesthetics 
+
+```{r facet2}
+#| fig-height: 4.5
+#| fig-width: 8
+#| fig-align: center
+#| fig-alt: "Grid of scatterplots (birth weight vs. mother's pre-pregnancy weight) faceted by race (White, Black, Other) and smoking status (Nonsmoker in red, Smoker in teal), with point shape also indicating race. Points are broadly scattered in all panels with no clear trend; White/Nonsmoker has the most points, Black panels have the fewest."
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = lwt, y = bwt) ) + 
+  ggplot2::geom_point(aes(color = smoke, shape = race)) + 
+  ggplot2::facet_grid(smoke~race)
+
+```
+
+## Facets with fixed layout {.smaller}
+
+```{r facet3}
+#| fig-height: 4.5
+#| fig-width: 8
+#| fig-align: center
+#| fig-alt: "Grid of scatterplots (birth weight vs. mother's pre-pregnancy weight) faceted by race (White, Black, Other) and smoking status (Nonsmoker, Smoker), with faded gray points showing the full dataset in every panel and colored points (red=Nonsmoker, teal=Smoker) highlighting each panel's specific subgroup. Highlighted points are broadly scattered with no clear trend."
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = lwt, y = bwt) ) + 
+  # plot all points in grey and fix them across facets
+  ggplot2::geom_point(color = "grey", alpha = 0.5, layout = "fixed") + 
+  # plot all points and color by smoke no fixed layout -> will be faceted
+  ggplot2::geom_point(aes(color = smoke)) + 
+  ggplot2::facet_grid(smoke~race)
+
+```
+
+## Column only facets {.smaller}
+`. ~ var` produces facets down the columns. Facilitates comparison of y-axis because the vertical scales are aligned.
+
+```{r facet-columns}
+#| fig-height: 4.5
+#| fig-width: 8
+#| fig-align: center
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = lwt, y = bwt) ) + 
+  ggplot2::geom_point() + 
+  ggplot2::facet_grid(.~smoke)
+
+```
+
+## Row only facets {.smaller}
+
+`var ~ .` produces facets down the rows. Facilitates comparison of x-axis because the horizontal scales are aligned.
+
+```{r facet-rows}
+#| fig-height: 4.5
+#| fig-width: 8
+#| fig-align: center
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = lwt, y = bwt) ) + 
+  ggplot2::geom_point() + 
+  ggplot2::facet_grid(smoke~.)
+
+```
+
+## Facet axes {.smaller}
+::: notes
+- Changes placement of axis ticks and text
+- Scale is the same across facets
+:::
+
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r facet-axes1}
+#| fig-height: 2.2
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) + 
+  geom_point() + 
+  facet_grid(smoke~race, axes = "margins" ) # default
+
+```
+
+```{r facet-axes2}
+#| fig-height: 2.2
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) + 
+  geom_point() + 
+  facet_grid(smoke~race, axes = "all_x")
+
+```
+:::
+
+:::{.column width="50%"}
+```{r facet-axes3}
+#| fig-height: 2.2
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) + 
+  geom_point() + 
+  facet_grid(smoke~race, axes = "all")
+```
+
+```{r facet-axes4}
+#| fig-height: 2.2
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) + 
+  geom_point() + 
+  facet_grid(smoke~race, axes = "all_y")
+
+```
+:::
+
+::::
+
+::::
+
+## Facet scales {.smaller}
+::: notes
+- Changes scale of axis ticks and text
+:::
+
+::::{.columns}
+
+:::{.column width="50%"}
+```{r facet-scales1}
+#| fig-height: 2.2
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) + 
+  geom_point() + 
+  facet_grid(smoke~race, scales = "fixed") # default
+
+```
+
+```{r facet-scales2}
+#| fig-height: 2.2
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) + 
+  geom_point() + 
+  facet_grid(smoke~race, scales = "free_x")
+
+```
+:::
+
+:::{.column width="50%"}
+```{r facet-scales3}
+#| fig-height: 2.2
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) + 
+  geom_point() + 
+  facet_grid(smoke~race, scales = "free")
+```
+
+```{r facet-scales4}
+#| fig-height: 2.2
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) + 
+  geom_point() + 
+  facet_grid(smoke~race, scales = "free_y")
+
+```
+:::
+
+::::
+
+## Position adjustments {.smaller}
+
+Useful for bar plots and histograms:
+
+- `stack`: stack overlapping bars on top of each other (default).
+- `identity`:  does nothing to overlapping bars but requires alpha.
+  - Helpful for overlapping histograms but not bar charts.
+- `fill`: stack overlapping bars and scale so the top is always at 1.
+- `dodge`: place overlapping bars side-by-side.
+
+. . .
+
+Version for scatterplots when many points overlap:
+
+- `position_nudge()`: move points by a fixed offset.
+- `position_jitter()`: add a little random noise to every position.
+- `position_jitterdodge()`: dodge points within groups, then add a little random noise.
+
+## Position adjustments: Bar charts {.smaller}
+
+```{r position-bar1}
+#| code-line-numbers: "4"
+#| output-location: "column"
+#| fig-height: 1.7
+#| fig-width: 5
+#| fig-align: center
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = smoke, 
+                      fill = race) ) + 
+  ggplot2::geom_bar() # default = stack
+
+```
+
+. . .
+
+```{r position-bar2}
+#| code-line-numbers: "4"
+#| output-location: "column"
+#| fig-height: 1.7
+#| fig-width: 5
+#| fig-align: center
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = smoke, 
+                      fill = race) ) + 
+  ggplot2::geom_bar(position = "fill")
+
+```
+
+. . .
+
+```{r position-bar3}
+#| code-line-numbers: "4"
+#| output-location: "column"
+#| fig-height: 1.7
+#| fig-width: 5
+#| fig-align: center
+
+birthwt |> 
+  ggplot2::ggplot(aes(x = smoke, 
+                      fill = race) ) + 
+  ggplot2::geom_bar(position = "dodge")
+
+```
+
+## Position adjustments: Histograms {.smaller}
+
+```{r position-hist1}
+#| code-line-numbers: "4-5"
+#| output-location: "column"
+#| fig-height: 1.7
+#| fig-width: 5
+#| fig-align: center
+
+ggplot2::ggplot(birthwt, 
+                aes(x = bwt, 
+                    color = race, fill = race)) + 
+  ggplot2::geom_histogram(position = "stack", # default = stack
+                          alpha = 0.4)
+```
+
+. . .
+
+```{r position-hist2}
+#| code-line-numbers: "4-5"
+#| output-location: "column"
+#| fig-height: 1.7
+#| fig-width: 5
+#| fig-align: center
+
+ggplot2::ggplot(birthwt, 
+                aes(x = bwt, 
+                    color = race, fill = race)) + 
+  ggplot2::geom_histogram(position = "identity", 
+                          alpha = 0.4)
+
+```
+
+. . .
+
+```{r position-hist3}
+#| code-line-numbers: "4-5"
+#| output-location: "column"
+#| fig-height: 1.7
+#| fig-width: 5
+#| fig-align: center
+
+ggplot2::ggplot(birthwt, 
+                aes(x = bwt, 
+                    color = race, fill = race)) + 
+  ggplot2::geom_histogram(position = "dodge", 
+                          alpha = 0.4)
+
+```
+
+## Exercise: Facets and position adjustments {.scrollable}
+```{code-blanks-instructions}
+
+Create a histrogram that compares the distribution of lwt across races. Ensure that each of the histograms is fully visible. Facet by low birthweight status such that it is easy to compare lwt between the two birthweight groups.
+
+```
+
+```{code-blanks}
+#| blank:
+#|   target: x = lwt, color = race, fill = race
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: position = "identity"
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: low~.
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+
+birthwt |> 
+  dplyr::mutate(race = factor(x = birthwt$race, 
+                              levels = 1:3, 
+                              labels = c("White", "Black", "Other"))) |>
+  ggplot2::ggplot(aes(x = lwt, color = race, fill = race)) + 
+  ggplot2::geom_histogram(position = "identity", alpha = 0.3) + 
+  ggplot2::facet_grid(low~.)
+
+```
+
+```{r}
+#| echo: FALSE
+
+countdown::countdown(minutes = 4, top = 0)
+
+```
+
+## Scales {.smaller}
+- Scales control how the aesthetic mappings of variables manifest visually in plots.
+  - How a variable is translated into `color`, `size`, `shape`, etc.
+- Every aesthetic has a default scale.
+
+. . .
+
+```{r scales-default}
+#| code-line-numbers: "8-11"
+#| output-location: "column"
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot2::ggplot(
+    aes(x = lwt, y = bwt)
+    ) +
+  ggplot2::geom_point(
+    aes(color = smoke)
+    ) +
+  # ggplot adds by default:
+  ggplot2::scale_x_continuous() + # x-axis
+  ggplot2::scale_y_continuous() + # y-axis
+  ggplot2::scale_color_discrete() # color
+
+```
+
+## Overriding default scales {.smaller}
+- `ggplot2` has syntax to override default scales.
+- General naming scheme: `scales_['aesthetic']{style="color:red;"}_['scale']{style="color:red;"}.
+  - `breaks` and `labels` are the main arguments used.
+
+```{r scales1}
+#| code-line-numbers: "4-12"
+#| output-location: "column"
+#| fig-height: 6
+#| fig-width: 8
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) +
+  geom_point(aes(color = smoke) ) + 
+  scale_x_continuous(
+    breaks = seq(50, 250, by = 25) 
+    ) + 
+  scale_y_continuous(
+    breaks = seq(500, 5500, by = 500) 
+    ) + 
+  scale_color_discrete(
+    labels = c("Smoker" = "Current smoker", 
+               "Nonsmoker" = "Current nonsmoker"))
+
+```
+
+## Color scales: ColorBrewer {.smaller}
+- Discrete color scale with colors picked from [ColorBrewer](https://en.wikipedia.org/wiki/ColorBrewer).
+  - Some colorblind friendly palettes (e.g., `Dark2`).
+
+::::{.columns}
+
+:::{.column .fragment .fade-in width="50%"}
+```{r scales-brewer1}
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) +
+  geom_point(aes(color = smoke) ) + 
+  ggplot2::scale_color_brewer(palette = "Dark2")
+```
+:::
+
+:::{.column .fragment .fade-in width="50%"}
+```{r scale-brewer2}
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) +
+  geom_point(aes(color = smoke) ) + 
+  ggplot2::scale_color_brewer(palette = "Set1")
+
+```
+:::
+
+::::
+
+## Color scales: Manual {.smaller}
+- It is also possible to supply your own color palette.
+  - `ggplot2` quick color [reference](https://sape.inf.usi.ch/quick-reference/ggplot2/colour).
+
+```{r scales-manual1}
+#| code-line-numbers: "4-7"
+#| fig-height: 3.5
+#| fig-width: 7
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) +
+  geom_point(aes(color = race) ) + 
+  ggplot2::scale_color_manual(
+    values = c("orangered1", 
+               "mediumpurple2", 
+               "forestgreen") )
+
+```
+
+## Color scales: Manual + packages {.smaller}
+- There are many packages with pre-specified color palettes that you can use. 
+  - E.g., [wesanderson](https://github.com/karthik/wesanderson), [ghibli](https://github.com/ewenme/ghibli), [MetBrewer](https://github.com/BlakeRMills/MetBrewer), [waRhol](https://github.com/alexskeels/waRhol),   [NatParksPalettes](https://github.com/kevinsblake/NatParksPalettes), [ggsci](https://nanx.me/ggsci/), and more.
+  - Check the [paletteer](https://github.com/EmilHvitfeldt/paletteer) package for more.
+
+```{r scales-manual2}
+#| code-line-numbers: "4-7"
+#| fig-height: 3.5
+#| fig-width: 7
+#| fig-align: center
+#| 
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) +
+  geom_point(aes(color = race) ) + 
+  ggplot2::scale_color_manual(
+    values = wesanderson::wes_palette(
+      name = "Darjeeling1", 
+      n = 3) )
+
+```
+
+## Themes
+- [Themes](https://ggplot2-book.org/themes.html) allow you to customize non-data elements of your plot.
+- `ggplot2` comes with [eight](https://r4ds.hadley.nz/communication.html#sec-themes) prespecified themes: `theme_*()`.
+  - Change multiple aspects of the plot simultaneously
+- `theme()` lets you to change specific elements of the plot to your specification.
+  - Text size, color, legend position, etc.
+
+## `theme_*()` {.smaller}
+
+```{r theme1}
+#| code-line-numbers: "4"
+#| output-location: "column"
+#| fig-height: 2.1
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) +
+  geom_point() + 
+  ggplot2::theme_bw()
+
+```
+
+. . .
+
+```{r theme2}
+#| code-line-numbers: "4"
+#| output-location: "column"
+#| fig-height: 2.1
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) +
+  geom_point() + 
+  ggplot2::theme_classic()
+
+```
+
+. . .
+
+```{r theme3}
+#| code-line-numbers: "4"
+#| output-location: "column"
+#| fig-height: 2.1
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) +
+  geom_point() + 
+  ggplot2::theme_minimal()
+
+```
+
+## `theme()` {.smaller}
+
+```{r}
+#| code-line-numbers: "4-9"
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) +
+  geom_point(aes(color = smoke) ) + 
+  ggplot2::theme_bw() + 
+  ggplot2::theme(
+    legend.position = "top", 
+    legend.title = element_blank(), 
+    legend.box.background = element_rect(color = "black"), 
+    text = element_text(size = 18)
+  )
+
+```
+
+## `theme()` {.smaller}
+
+```{r}
+#| code-line-numbers: "4-13"
+#| fig-height: 4.5
+#| fig-width: 6
+#| fig-align: center
+
+birthwt |> 
+  ggplot(aes(x = lwt, y = bwt) ) +
+  geom_point(aes(color = smoke) ) + 
+  ggplot2::theme_bw() + 
+  ggplot2::theme(
+    legend.position = "top", 
+    legend.title = element_blank(), 
+    text = element_text(size = 20),
+    axis.text.x = element_text(size = 10, color = "red", angle = 90, face = "bold")
+  )
+
+```
+
+## Exercise: Themes {.scrollable}
+
+```{code-blanks-instructions}
+
+Create a boxplot of birthweight by smoking status. Change the boxplot colors to dark blue and orange. Increase the y-axis by 500 lbs/tick mark. Make the background plain white with no grid lines. Remove the legend and bold the title.
+
+```
+
+```{code-blanks}
+#| blank:
+#|   target: scale_fill_manual
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: values
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: breaks
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: by
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: scale_x_discrete
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: theme_classic
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: none
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: element_text
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+
+birthwt |> 
+  dplyr::mutate(smoke = factor(birthwt$smoke, levels = 0:1, 
+                               labels = c("Nonsmoker", "Smoker"))) |> 
+  ggplot2::ggplot(aes(x = smoke, y = bwt, fill = smoke)) +
+  ggplot2::geom_boxplot() + 
+  ggplot2::scale_fill_manual(values = c("darkblue", "orange")) + 
+  ggplot2::scale_y_continuous(name = "Birthweight (grams)",
+                              breaks = seq(0, 5000, by = 500) ) +
+  ggplot2::scale_x_discrete(name = "Smoking status") + 
+  ggplot2::labs(title = "Birth Weight by Smoking Status") +
+  ggplot2::theme_classic() +
+  ggplot2::theme(legend.position = "none",
+                 plot.title = element_text(face = "bold", hjust = 0.5) )
+
+```
+
+```{r}
+#| echo: FALSE
+
+countdown::countdown(minutes = 5, top = 0)
+
+```
+
+## Patchwork: Combining plots {.smaller}
+- We often have many related plots that we want to combine into one figure.
+- Patchwork will automatically select the number of rows/columns based on the number of plots provided.
+
+```{r patchwork1}
+#| fig-height: 4.75
+#| fig-width: 10
+#| fig-align: center
+
+# need to load patchwork package for "+" notation to work
+bpData.bp.datasaurus + bpData.hist.datasaurus + bpData.violin.datasaurus + bpData.density.datasaurus
+
+```
+
+## Patchwork: Combining plots {.smaller}
+- Or the number of row and/or columns can be specified.
+
+```{r patchwork2}
+#| fig-height: 5.25
+#| fig-width: 9.5
+#| fig-align: center
+
+bpData.bp.datasaurus + bpData.hist.datasaurus + bpData.violin.datasaurus + bpData.density.datasaurus + 
+  patchwork::plot_layout(ncol = 1)
+
+```
+
+## Patchwork: Combining plots {.smaller}
+- `/` vertically stacks plots.
+
+```{r patchwork3}
+#| fig-height: 6
+#| fig-width: 12
+#| fig-align: center
+
+bpData.hist.datasaurus / (bpData.bp.datasaurus + bpData.violin.datasaurus)
+
+```
+
+## Patchwork: Combining plots {.smaller}
+- In patchwork `+` adds plots to a row but wraps them into new rows if necessary.
+- `|` adds plots side by side and will not autowrap.
+
+```{r patchwork4}
+#| fig-height: 6
+#| fig-width: 12
+#| fig-align: center
+
+(bpData.bp.datasaurus | bpData.violin.datasaurus) / bpData.hist.datasaurus
+
+```
+
+## Patchwork: Combining plots {.smaller}
+
+```{r patchwork5}
+#| fig-height: 4.5
+#| fig-width: 9
+#| fig-align: center
+
+(bpData.bp.datasaurus | bpData.violin.datasaurus) / bpData.hist.datasaurus + 
+  patchwork::plot_annotation(
+    title = "Histograms, boxplots, and violin plots of bp data from datasauRus",
+    caption = "Source: https://jumpingrivers.github.io/datasauRus"
+    ) + 
+  patchwork::plot_layout(
+    heights = c(2, 1) # ratio of heights
+    )
+
+```
+
+## Saving plots {.smaller}
+- Once you've made a plot, you may want to save it to share with others or to include in a paper or presentation.
+
+```{r eval = F}
+
+ggplot2::ggsave(filename = here::here("output/YYYYMMDD_module03-bpData-boxplot.pdf"), 
+                plot = bpData.violin.datasaurus, 
+                height = 6, 
+                width = 12)
+
+```
+
+- File name conventions should be used (informative and dated).
+- If `plot` is not specified, the most recent plot displayed is saved.
+- If `height` and `width` aren't specified, the dimensions of the current plot are used.
+  - Aspect ratios (width:height) of 2:1 or 4:3 are preferred.
+- Saving to .pdf gives the highest resolution.
+  - Although other file types are support (.png, .jpeg).
+
+
+
+
+
+
+
+
