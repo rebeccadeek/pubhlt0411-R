@@ -37,16 +37,12 @@ pacman::p_load(countdown)
 
 
 ## Teaching team
-[#FIXME]{style="color:red;"}
 
 ### Instructors:
 - Dr. Rebecca Deek - [rdeek@pitt.edu](mailto:rdeek@pitt.edu) 
-  - Office hours: [TBD]{style="color:red;"} (Until 10/2/2026) & by appointment.
+  - Office hours: **Tuesdays 2:30-3:30pm** (Until 10/2) & by appointment.
 - Dr. Soumik Purkayastha - [soumik@pitt.edu](mailto:soumik@pitt.edu)
-  - Office hours: [TBD]{style="color:red;"} (From 10/5/2026) & by appointment.
-
-### Course assistant
-- [TBD]{style="color:red;"}
+  - Office hours: TBD (From 10/5) & by appointment.
 
 ## Syllabus
 
@@ -128,7 +124,7 @@ pacman::p_load(countdown)
 :::
 ::::
 
-## Organizing your code: Part I
+## Organizing your code: Part I {.smaller}
 - Code is case sensitive.
 - No autocorrect.
 - Programming tools don't like spaces in object or file names, switch to underscores, dots, or camel case.
@@ -141,7 +137,7 @@ pacman::p_load(countdown)
   - [tHis.isNOT_a.ConvenTIoN]{style="font-family: monospace;"}
 
 ## Organizing your code: Part II
-- Similarly programming tools don't like special characters. Avoid [!@$%^&*]{style="font-family: monospace;"} and the like.
+- Similarly, programming tools don't like special characters. Avoid [!@$%^&*]{style="font-family: monospace;"} and the like.
 - Object names should be informative.
   - [model1]{style="font-family: monospace;"}, [model2]{style="font-family: monospace;"}, [data.new]{style="font-family: monospace;"}, [data.old]{style="font-family: monospace;"} are *not* informative.
   - [model.unadj]{style="font-family: monospace;"}, [model.adj]{style="font-family: monospace;"}, [datasetName.rmAge]{style="font-family: monospace;"}, [boxplotAge]{style="font-family: monospace;"} are more informative.
@@ -181,15 +177,18 @@ pacman::p_load(countdown)
 - .rmd (R) and .qmd (Quarto) markdown files intertwine R code and plain text language (more in a few slides).
 
 ## R Projects {.smaller}
-- We will start this course by using data that is already loaded into R. But eventually you will in access data files on your computer.
+- We will start this course by using data that is already loaded into R.
+  - Eventually you will in access data files on your computer.
   - Sooner than that you will need to access the files I create for you (lectures, labs, etc.)
 - A "working directory" is where R looks for files that you ask it to load.
   - My default working directory is `"/Users/rdeek"`.
 - Keeping all the files associated with a given project (data, R scripts, results, figures, etc.) in one directory is a wise and common practice.
   - RStudio has R projects that help with this.
     - Avoids manually setting the working directory with `setwd()`
-    - Facilitate the use of relative paths like `data/dataFileName.csv`.
+    - Facilitates the use of relative paths like `data/dataFileName.csv`.
       - If I share code and data with you as long as we both have a project and data folder, the code will run without errors.
+
+. . .
 
 ```{r getwd}
 getwd()
@@ -212,6 +211,9 @@ getwd()
 - A Quarto Markdown file (.qmd) is a plain-text document that combines plain text, executable code chunks, and formatting metadata.
   - All lectures and labs will be completed in .qmd files.
   - Similar to Rmarkdown (.rmd) but next generation.
+
+. . .
+
 - Three main components:
   - Metadata: YAML formatting.
   ```yaml
@@ -237,8 +239,8 @@ x + y
 - Some packages come preinstalled and loaded (e.g., `base`).
 - Others needs to be installed and loaded (in that order).
 ```r
-install.packages("tidyverse")
-library(tidyverse)
+install.packages("packman")
+library(packman)
 ```
 - `packman` is a package, which needs to be installed and loaded, that bundles installation and loading of other packages.
 ```r
@@ -276,13 +278,27 @@ packman::p_load(tidyverse)
 
 ## R can be used as a calculator
 
-```{r r-calculations}
+```{r r-calculations1}
 
 log(2) # logarithm, base e
 log10(2) # logarithm, base 10
 exp(2) # exponential
+
+```
+
+. . .
+
+```{r r-calculations2}
+
 sqrt(4)
 4^2
+
+```
+
+. . .
+
+```{r r-calculations3}
+
 pi
 sin(1)
 

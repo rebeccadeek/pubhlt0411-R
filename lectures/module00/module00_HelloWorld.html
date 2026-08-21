@@ -218,21 +218,16 @@ Rebecca Deek, PhD
 </section>
 <section id="teaching-team" class="slide level2">
 <h2>Teaching team</h2>
-<p><span style="color:red;">#FIXME</span></p>
 <h3 id="instructors">Instructors:</h3>
 <ul>
 <li>Dr.&nbsp;Rebecca Deek - <a href="mailto:rdeek@pitt.edu">rdeek@pitt.edu</a>
 <ul>
-<li>Office hours: <span style="color:red;">TBD</span> (Until 10/2/2026) &amp; by appointment.</li>
+<li>Office hours: <strong>Tuesdays 2:30-3:30pm</strong> (Until 10/2) &amp; by appointment.</li>
 </ul></li>
 <li>Dr.&nbsp;Soumik Purkayastha - <a href="mailto:soumik@pitt.edu">soumik@pitt.edu</a>
 <ul>
-<li>Office hours: <span style="color:red;">TBD</span> (From 10/5/2026) &amp; by appointment.</li>
+<li>Office hours: TBD (From 10/5) &amp; by appointment.</li>
 </ul></li>
-</ul>
-<h3 id="course-assistant">Course assistant</h3>
-<ul>
-<li><span style="color:red;">TBD</span></li>
 </ul>
 </section>
 <section id="syllabus" class="slide level2">
@@ -328,7 +323,7 @@ Rebecca Deek, PhD
 <p><img data-src="_figs/05b_file-organization-meme.png" alt="Decorative. Meme with poorly named folder structure."></p>
 </div></div>
 </section>
-<section id="organizing-your-code-part-i" class="slide level2">
+<section id="organizing-your-code-part-i" class="slide level2 smaller">
 <h2>Organizing your code: Part I</h2>
 <ul>
 <li>Code is case sensitive.</li>
@@ -350,7 +345,7 @@ Rebecca Deek, PhD
 <section id="organizing-your-code-part-ii" class="slide level2">
 <h2>Organizing your code: Part II</h2>
 <ul>
-<li>Similarly programming tools don’t like special characters. Avoid <span style="font-family: monospace;">!@$%^&amp;*</span> and the like.</li>
+<li>Similarly, programming tools don’t like special characters. Avoid <span style="font-family: monospace;">!@$%^&amp;*</span> and the like.</li>
 <li>Object names should be informative.
 <ul>
 <li><span style="font-family: monospace;">model1</span>, <span style="font-family: monospace;">model2</span>, <span style="font-family: monospace;">data.new</span>, <span style="font-family: monospace;">data.old</span> are <em>not</em> informative.</li>
@@ -422,8 +417,9 @@ Rebecca Deek, PhD
 <section id="r-projects" class="slide level2 smaller">
 <h2>R Projects</h2>
 <ul>
-<li>We will start this course by using data that is already loaded into R. But eventually you will in access data files on your computer.
+<li>We will start this course by using data that is already loaded into R.
 <ul>
+<li>Eventually you will in access data files on your computer.</li>
 <li>Sooner than that you will need to access the files I create for you (lectures, labs, etc.)</li>
 </ul></li>
 <li>A “working directory” is where R looks for files that you ask it to load.
@@ -435,13 +431,14 @@ Rebecca Deek, PhD
 <li>RStudio has R projects that help with this.
 <ul>
 <li>Avoids manually setting the working directory with <code>setwd()</code></li>
-<li>Facilitate the use of relative paths like <code>data/dataFileName.csv</code>.
+<li>Facilitates the use of relative paths like <code>data/dataFileName.csv</code>.
 <ul>
 <li>If I share code and data with you as long as we both have a project and data folder, the code will run without errors.</li>
 </ul></li>
 </ul></li>
 </ul></li>
 </ul>
+<div class="fragment">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">getwd</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -451,6 +448,7 @@ Rebecca Deek, PhD
 <ul>
 <li><a href="https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects">Guide to using RStudio Projects</a></li>
 </ul>
+</div>
 </section>
 <section id="directory-setup-for-pubhlt0411" class="slide level2">
 <h2>Directory setup for PUBHLT0411</h2>
@@ -479,6 +477,9 @@ Rebecca Deek, PhD
 <li>All lectures and labs will be completed in .qmd files.</li>
 <li>Similar to Rmarkdown (.rmd) but next generation.</li>
 </ul></li>
+</ul>
+<div class="fragment">
+<ul>
 <li>Three main components:
 <ul>
 <li>Metadata: YAML formatting.</li>
@@ -500,6 +501,7 @@ Rebecca Deek, PhD
 <span id="cb4-3"><a href=""></a>y <span class="ot">=</span> <span class="dv">20</span></span>
 <span id="cb4-4"><a href=""></a>x <span class="sc">+</span> y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 </ul>
+</div>
 </section>
 <section id="r-packages" class="slide level2">
 <h2>R packages</h2>
@@ -511,8 +513,8 @@ Rebecca Deek, PhD
 <li>Some packages come preinstalled and loaded (e.g., <code>base</code>).</li>
 <li>Others needs to be installed and loaded (in that order).</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span>
-<span id="cb5-2"><a href=""></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">install.packages</span>(<span class="st">"packman"</span>)</span>
+<span id="cb5-2"><a href=""></a><span class="fu">library</span>(packman)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>packman</code> is a package, which needs to be installed and loaded, that bundles installation and loading of other packages.</li>
 </ul>
@@ -568,6 +570,9 @@ Rebecca Deek, PhD
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 7.389056</code></pre>
 </div>
+</div>
+<div class="fragment">
+<div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="fu">sqrt</span>(<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2</code></pre>
@@ -576,6 +581,10 @@ Rebecca Deek, PhD
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 16</code></pre>
 </div>
+</div>
+</div>
+<div class="fragment">
+<div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>pi</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 3.141593</code></pre>
@@ -583,6 +592,7 @@ Rebecca Deek, PhD
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">sin</span>(<span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.841471</code></pre>
+</div>
 </div>
 </div>
 </section>
@@ -875,7 +885,7 @@ Rebecca Deek, PhD
                                ^</code></pre>
 </div>
 </div>
-<p><countdown-timer class="countdown" id="timer_29bdfa50" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer></p>
+<p><countdown-timer class="countdown" id="timer_a2f1e876" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer></p>
 </section>
 <section id="thats-all-until-thursday." class="slide level2">
 <h2>That’s all… until Thursday.</h2>
