@@ -47,7 +47,7 @@ pacman::p_load(countdown)
 ## Syllabus
 
 ## What you will (and won't) learn in PUBHLT0411
-![](_figs/01_data-science-infog.png){fig-alt="Steps of a data science project. Figure from R for Data Science ."}
+![](figs/01_data-science-infog.png){fig-alt="Steps of a data science project. Figure from R for Data Science ."}
 
 - **Model:** PUBHLT 0412 and 0413
 - **Communicate:** PUBHLT 0410, 0412, and 0413
@@ -59,7 +59,7 @@ pacman::p_load(countdown)
 #### Language models
 
 :::{.column width="50%"}
-![](_figs/02_MIT-news-AI-coding.png){fig-alt="Screenshot of MIT news article titled 'Can AI really code?'." height="400" fig-align=center}
+![](figs/02_MIT-news-AI-coding.png){fig-alt="Screenshot of MIT news article titled 'Can AI really code?'." height="400" fig-align=center}
 :::
 
 ::: {.column width="50%"}
@@ -72,7 +72,7 @@ pacman::p_load(countdown)
 - There are many scenarios that AI can help with coding.
 - It is important to have strong coding skills to understand where AI can produce errors/bugs, verbose code that can be made more efficient, or even hallucinates.
 
-![](_figs/03_vibe-coding.png){fig-alt="Decorative. Vibe coding meme" height="350" fig-align=center}
+![](figs/03_vibe-coding.png){fig-alt="Decorative. Vibe coding meme" height="350" fig-align=center}
 
 ## R programming
 - Common statistical programming language used by (bio)statisticians and data scientists.
@@ -108,7 +108,7 @@ pacman::p_load(countdown)
 
 :::
 
-![](_figs/04_rstudio-screenshot.png){.fragment .fade-in fig-alt="Screenshot of RStudio IDE with editor, console, and output labeled." width=100%}
+![](figs/04_rstudio-screenshot.png){.fragment .fade-in fig-alt="Screenshot of RStudio IDE with editor, console, and output labeled." width=100%}
 :::
 
 ## Organization
@@ -116,11 +116,11 @@ pacman::p_load(countdown)
 
 :::: {.columns}
 :::{.column width="50%"}
-![](_figs/05a_file-naming-meme.png){fig-alt="Decorative. XKCD meme with poorly named file scheme."}
+![](figs/05a_file-naming-meme.png){fig-alt="Decorative. XKCD meme with poorly named file scheme."}
 :::
 
 :::{.column width="50%"}
-![](_figs/05b_file-organization-meme.png){fig-alt="Decorative. Meme with poorly named folder structure."}
+![](figs/05b_file-organization-meme.png){fig-alt="Decorative. Meme with poorly named folder structure."}
 :::
 ::::
 
@@ -151,22 +151,22 @@ pacman::p_load(countdown)
   3. Sorted in a useful way.
 
 :::{.column width="33%"}
-![Don't do this (please).](_figs/06a-poor-file-organization){fig-alt="Screenshot of poor file naming system" fig-align=center}
+![Don't do this (please).](figs/06a-poor-file-organization){fig-alt="Screenshot of poor file naming system" fig-align=center}
 :::
 
 :::{.column width="33%"}
-![A better file naming system.](_figs/06b_file-organization-research.png){fig-alt="Screenshot of an informative file naming system" fig-align=center}
+![A better file naming system.](figs/06b_file-organization-research.png){fig-alt="Screenshot of an informative file naming system" fig-align=center}
 :::
 
 :::{.column width="33%"}
-![A better file naming system (for these slides).](_figs/06c_file-organization-PUBHLT0411-m0.png){fig-alt="Screenshot of file names for this module!" fig-align=center}
+![A better file naming system (for these slides).](figs/06c_file-organization-PUBHLT0411-m0.png){fig-alt="Screenshot of file names for this module!" fig-align=center}
 :::
 
 ## Why you should care
 - Extensive commenting will save you a lot of time, trouble, and frustration.
 - Your worst enemy in programming is you six months ago.
 
-![](_figs/07_comment-code-meme.png){fig-alt="Decorative. Meme regarding poorly commented code." width="400" fig-align=center}
+![](figs/07_comment-code-meme.png){fig-alt="Decorative. Meme regarding poorly commented code." width="400" fig-align=center}
 
 ## R scripts
 - Files that contain R code (and comments) are called R scripts.
@@ -305,7 +305,7 @@ sin(1)
 ```
 
 ## Objects in R
-![](_figs/08_rScreenshot-calculator.png){fig-alt="Screenshot of code from prior slide showing that no objects were saved to the environment. Code was written in a Markdown file and ran in the console." fig-align=center}
+![](figs/08_rScreenshot-calculator.png){fig-alt="Screenshot of code from prior slide showing that no objects were saved to the environment. Code was written in a Markdown file and ran in the console." fig-align=center}
 
 ## Assigning values to objects in R
 
@@ -319,7 +319,7 @@ my_object_arrow
 
 ```
 
-![](_figs/09_rScreenshot-naming-objects.png){fig-alt="Screenshot of above code showing that two objects are now saved to the environment. Code was written in a Markdown file and ran in the console." width=90% fig-align=center}
+![](figs/09_rScreenshot-naming-objects.png){fig-alt="Screenshot of above code showing that two objects are now saved to the environment. Code was written in a Markdown file and ran in the console." width=90% fig-align=center}
 
 ## Different types of objects
 
@@ -329,7 +329,7 @@ character.object = "I love PUBHLT 0411!!"
 
 ```
 
-![](_figs/10_rScreenshot-character-object.png){fig-alt="Screenshot of above code showing that a new charcater object is now saved to the environment. Code was written in a Markdown file and ran in the console. The environment view has switch from list to grid" fig-align=center}
+![](figs/10_rScreenshot-character-object.png){fig-alt="Screenshot of above code showing that a new charcater object is now saved to the environment. Code was written in a Markdown file and ran in the console. The environment view has switch from list to grid" fig-align=center}
 
 . . .
 
@@ -345,7 +345,7 @@ print(character.object)
   - Helps with reproducibility and preventing old mistakes from spilling over.
 - Alternatively, you can turn this off in your settings (Tools > Global Options)
 
-![](_figs/11_clean-slate.png){fig-alt="RStudio Global Options with a blue box around Workspace showing to save workspace never." height=4.5in fig-align=center}
+![](figs/11_clean-slate.png){fig-alt="RStudio Global Options with a blue box around Workspace showing to save workspace never." height=4.5in fig-align=center}
 
 ## Operations with objects {.smaller}
 - Writing over objects.
@@ -427,7 +427,7 @@ mean(x = twos, na.rm = T)
 :::
 
 :::{.column width="50%"}
-![](_figs/12_mean-help-file.png){fig-alt="R help documentation for the 'mean()' function."}
+![](figs/12_mean-help-file.png){fig-alt="R help documentation for the 'mean()' function."}
 :::
 
 ::::
@@ -529,4 +529,4 @@ character.object.error = I love PUBHLT 0411!!
 `r countdown(minutes = 4)`
 
 ## That's all... until Thursday.
-![](_figs/13_hello-world-meme.png){fig-alt="Decorative." fig-align=center}
+![](figs/13_hello-world-meme.png){fig-alt="Decorative." fig-align=center}

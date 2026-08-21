@@ -138,11 +138,11 @@ birthwt
 ::::{.columns}
 
 :::{.column width="50%"}
-![](_figs/01_MagrittePipe.jpg){fig-alt="Painting of a brown tobacco pipe with the handwritten French caption 'Ceci n'est pas une pipe' ('This is not a pipe') below it. René Magritte's The Treachery of Images (1929)." fig-align=center}
+![](figs/01_MagrittePipe.jpg){fig-alt="Painting of a brown tobacco pipe with the handwritten French caption 'Ceci n'est pas une pipe' ('This is not a pipe') below it. René Magritte's The Treachery of Images (1929)." fig-align=center}
 :::
 
 :::{.column width="50%"}
-![](_figs/02_pipe.png){fig-alt="Hexagonal badge with the R 'pipe' operator symbol '%>%' displayed, and the handwritten caption 'Ceci n'est pas un pipe' ('This is not a pipe') below, a pun on Magritte's painting, referencing the magrittr R package." height=3in fig-align=center}
+![](figs/02_pipe.png){fig-alt="Hexagonal badge with the R 'pipe' operator symbol '%>%' displayed, and the handwritten caption 'Ceci n'est pas un pipe' ('This is not a pipe') below, a pun on Magritte's painting, referencing the magrittr R package." height=3in fig-align=center}
 :::
 
 ::::

@@ -84,7 +84,7 @@ str(birthwt)
 :::
 
 :::{.column width="50%"}
-![](_figs/01_MASS-birthwt-help-file.png){fig-alt="R help documentation for the birthwt data from the MASS package." height=4in}
+![](figs/01_MASS-birthwt-help-file.png){fig-alt="R help documentation for the birthwt data from the MASS package." height=4in}
 :::
 ::::
 

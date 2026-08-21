@@ -60,7 +60,7 @@ data(Oxboys)
 - "Tidy" data are easy to manipulate, model and visualize. They tend to have the following structure:
   - Variables are columns, observations are rows, and values are cells.
 
-![](_figs/01_tidy-data.png){fig-alt="Same data table shown three times: columns marked as variables, rows marked as observations, and individual cells marked as values." height=3in fig-align=center}
+![](figs/01_tidy-data.png){fig-alt="Same data table shown three times: columns marked as variables, rows marked as observations, and individual cells marked as values." height=3in fig-align=center}
 
 - The `tidyr` [package](https://tidyr.tidyverse.org/) helps with this!
 
@@ -193,7 +193,7 @@ glucose_wide
 Values already tied to a variable (`id`) get repeated once per pivoted column
 :::
 
-![](_figs/02_pivot-wider.png){fig-alt="Wide-to-long reshaping diagram: a wide table with columns id, bp1, bp2 (rows A, B, C colored by id) transforms into a long table with columns id, measurement, value, where each id now has two rows, one per measurement." fig-align=center}
+![](figs/02_pivot-wider.png){fig-alt="Wide-to-long reshaping diagram: a wide table with columns id, bp1, bp2 (rows A, B, C colored by id) transforms into a long table with columns id, measurement, value, where each id now has two rows, one per measurement." fig-align=center}
 
 ## How `pivot_longer` works {.smaller}
 :::notes
@@ -201,9 +201,9 @@ Values already tied to a variable (`id`) get repeated once per pivoted column
 - Cell values get unwound row by row into the new `value` column
 :::
 
-![](_figs/03_pivot-wider-names.png){fig-alt="Same wide-to-long reshaping diagram as before, but now colored to highlight that the bp1 and bp2 column names become values in the new 'measurement' column." height=2.5in fig-align=center}
+![](figs/03_pivot-wider-names.png){fig-alt="Same wide-to-long reshaping diagram as before, but now colored to highlight that the bp1 and bp2 column names become values in the new 'measurement' column." height=2.5in fig-align=center}
 
-![](_figs/04_pivot-wider-values.png){fig-alt="Same wide-to-long reshaping diagram, but now colored to highlight that the cell values from the bp1 and bp2 columns become entries in the new 'value' column." height=2.5in fig-align=center}
+![](figs/04_pivot-wider-values.png){fig-alt="Same wide-to-long reshaping diagram, but now colored to highlight that the cell values from the bp1 and bp2 columns become entries in the new 'value' column." height=2.5in fig-align=center}
 
 ## `pivot_longer()` {.smaller}
 
@@ -988,7 +988,7 @@ write_rds(x = patients_clean, file = here::here("patients-clean.rds"))
 - Sometimes you will have many data frames that need to be joined together to perform the appropriate analysis.
 - **Mutating joins** add new variables to one data frame from matching observations in another.
 
-![](_figs/05_join-dfs.png){fig-alt="Diagram of two tables, x and y, with color-coded matching and non-matching key values (1, 2 match; 3 and 4 are unique to each table)." height=3in fig-align=center}
+![](figs/05_join-dfs.png){fig-alt="Diagram of two tables, x and y, with color-coded matching and non-matching key values (1, 2 match; 3 and 4 are unique to each table)." height=3in fig-align=center}
 
 ::: aside
 From: [https://www.garrickadenbuie.com/project/tidyexplain/](https://www.garrickadenbuie.com/project/tidyexplain/)
@@ -996,7 +996,7 @@ From: [https://www.garrickadenbuie.com/project/tidyexplain/](https://www.garrick
 
 ## Left join
 
-![](_figs/06_left-join.gif){fig-alt="Animation of left_join(x, y): all rows from x are kept (keys 1, 2, 3), with matching y values joined in; key 4 from y is dropped." height=3in fig-align=center}
+![](figs/06_left-join.gif){fig-alt="Animation of left_join(x, y): all rows from x are kept (keys 1, 2, 3), with matching y values joined in; key 4 from y is dropped." height=3in fig-align=center}
 
 > All rows from `x`, and all columns from `x` and `y`. Rows in `x` with no match in `y` will have `NA` values in the new columns from `y`.
 
@@ -1006,7 +1006,7 @@ From: [https://www.garrickadenbuie.com/project/tidyexplain/](https://www.garrick
 
 ## Right join
 
-![](_figs/07_right-join.gif){fig-alt="Animation of right_join(x, y): all rows from y are kept (keys 1, 2, 4), with matching x values joined in; key 3 from x is dropped." height=3in fig-align=center}
+![](figs/07_right-join.gif){fig-alt="Animation of right_join(x, y): all rows from y are kept (keys 1, 2, 4), with matching x values joined in; key 3 from x is dropped." height=3in fig-align=center}
 
 > All rows from `y`, and all columns from `x` and `y`. Rows in `y` with no match in `x` will have `NA` values in the new columns from `x`.
 
@@ -1016,7 +1016,7 @@ From: [https://www.garrickadenbuie.com/project/tidyexplain/](https://www.garrick
 
 ## Full join
 
-![](_figs/08_full-join.gif){fig-alt="Animation of full_join(x, y): all rows from both x and y are kept (keys 1, 2, 3, 4), with NA filled in where no match exists." height=3in fig-align=center}
+![](figs/08_full-join.gif){fig-alt="Animation of full_join(x, y): all rows from both x and y are kept (keys 1, 2, 3, 4), with NA filled in where no match exists." height=3in fig-align=center}
 
 > All rows and all columns from both `x` and `y`. Where there are no matching values, returns `NA` for the one missing.
 
@@ -1026,7 +1026,7 @@ From: [https://www.garrickadenbuie.com/project/tidyexplain/](https://www.garrick
 
 ## Inner join
 
-![](_figs/09_inner-join.gif){fig-alt="Animation of inner_join(x, y): only rows with matching keys in both x and y are kept (keys 1 and 2); keys 3 and 4 are dropped." height=3in fig-align=center}
+![](figs/09_inner-join.gif){fig-alt="Animation of inner_join(x, y): only rows with matching keys in both x and y are kept (keys 1 and 2); keys 3 and 4 are dropped." height=3in fig-align=center}
 
 > All rows from `x` where there are matching values in `y`, and all columns from `x` and `y`.
 

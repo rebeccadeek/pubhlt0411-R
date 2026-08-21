@@ -766,7 +766,7 @@ There are three types of facets:
 - `facet_grid()`: produces a 2d grid of panels defined by two variables.
   - One variable for rows and one for columns.
 
-![](_figs/01_position-facets.png){fig-alt="Comparison of facet_grid and facet_wrap layouts. Left (facet_grid): a 3×3 grid with columns A, B, C and rows 1, 2, 3, cells labeled by combination (A1, B1, C1, etc.). Right (facet_wrap): the same 3×3 grid with panels simply numbered 1–9 in reading order." height=250 fig-align=center}
+![](figs/01_position-facets.png){fig-alt="Comparison of facet_grid and facet_wrap layouts. Left (facet_grid): a 3×3 grid with columns A, B, C and rows 1, 2, 3, cells labeled by combination (A1, B1, C1, etc.). Right (facet_wrap): the same 3×3 grid with panels simply numbered 1–9 in reading order." height=250 fig-align=center}
 
 We will primary concern ourselves with `facet_grid()` as it can work for one or two faceting variables.
 

@@ -820,7 +820,7 @@ For loops make iteration explicit, but come with a repeated setup: allocate outp
 . . .
 
 ::: {#corner-img style="position: absolute; top: 275px; right: 10px; width: 150px;"}
-![](_figs/01_purrr.png)
+![](figs/01_purrr.png)
 :::
 
 - The `purrr` package provides the `map_*()` family of functions, which reduce this overhead.

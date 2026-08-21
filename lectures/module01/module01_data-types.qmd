@@ -298,7 +298,7 @@ knitr::kable(x = type.summary.table, align = "ccc") |>
 - Important properties: `typeof()`, `length()`, and `attributes()`
 - Vectors of length 1 are scalars.
 
-![](_figs/02_scal_vec.png){fig-alt="Diagram comparing a scalar, shown as a single small square, to a vector, shown as a column of five stacked squares." width=35% fig-align=center}
+![](figs/02_scal_vec.png){fig-alt="Diagram comparing a scalar, shown as a single small square, to a vector, shown as a column of five stacked squares." width=35% fig-align=center}
 
 ## Functions for vectors
 
@@ -330,7 +330,7 @@ names(named.vec)
 - Arrays are multidimensional matrices (N-dimensional).
 - Matrices and arrays must be homogeneous, containing elements all of the same data type.
 
-![](_figs/03_mat_array.png){fig-alt="Diagram comparing a matrix, shown as a single 5x5 grid, to an array, shown as multiple stacked 5x5 grids offset diagonally to represent higher dimensions." width=65% fig-align=center}
+![](figs/03_mat_array.png){fig-alt="Diagram comparing a matrix, shown as a single 5x5 grid, to an array, shown as multiple stacked 5x5 grids offset diagonally to represent higher dimensions." width=65% fig-align=center}
 
 ## Matrices and arrays {.smaller}
 
@@ -476,7 +476,7 @@ list1
   - Stored in R as a **list** of equal length vectors.
 - Rectangular tidy data: all columns must have the same number of observations. Missing data are code as `NA`.
 
-![](_figs/04_tidy-data.png){fig-alt="Diagram illustrating tidy data concepts using a table with columns country, year, cases, and population. Three panels show the same table with different elements highlighted: 'variables' (vertical arrows spanning each column), 'observations' (horizontal arrows spanning each row), and 'values' (circles around each individual cell)." fig-align=center}
+![](figs/04_tidy-data.png){fig-alt="Diagram illustrating tidy data concepts using a table with columns country, year, cases, and population. Three panels show the same table with different elements highlighted: 'variables' (vertical arrows spanning each column), 'observations' (horizontal arrows spanning each row), and 'values' (circles around each individual cell)." fig-align=center}
 
 ## Functions for data frames {.smaller}
 
