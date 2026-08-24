@@ -42,7 +42,7 @@ pacman::p_load(countdown)
 - Dr. Rebecca Deek - [rdeek@pitt.edu](mailto:rdeek@pitt.edu) 
   - Office hours: **Tuesdays 2:30-3:30pm** (Until 10/2) & by appointment.
 - Dr. Soumik Purkayastha - [soumik@pitt.edu](mailto:soumik@pitt.edu)
-  - Office hours: TBD (From 10/5) & by appointment.
+  - Office hours: **Thursdays 1:00-2:00pm** (From 10/5) & by appointment.
 
 ## Syllabus
 
