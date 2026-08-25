@@ -44,7 +44,7 @@ All data for the course will be available as preloaded object in R or through Ca
 
 **Labs** are worked on during each week's lab session and submitted to Canvas by 11:59pm that same day. There are six labs across the R half, and the lowest grade is dropped.
 
-**Homework** is completed on [DataCamp](https://www.datacamp.com), not on this site or Canvs. Each homework is an assigned set of DataCamp chapters covering the module just finished, due by 9am the day of the next lecture. Homework is graded on completion, recorded automatically through DataCamp, there is nothing to upload to Canvas. See Canvas and the syllabus for the assigned chapters and exact due dates.
+**Homework** is completed on [DataCamp](https://www.datacamp.com), not on this site or Canvas. Each homework is an assigned set of DataCamp chapters covering the module just finished, due by 9am the day of the next lecture. Homework is graded on completion, recorded automatically through DataCamp, there is nothing to upload to Canvas. See Canvas and the syllabus for the assigned chapters and exact due dates.
 
 ## Software
 

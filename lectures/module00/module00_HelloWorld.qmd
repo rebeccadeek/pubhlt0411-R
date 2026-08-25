@@ -381,7 +381,7 @@ ch.obj1 * ch.obj2
 
 ```
 
-## Operations with objects
+## More operations with objects
 
 - Concatenate scalars into vectors of length $<1$.
 
@@ -527,6 +527,8 @@ character.object.error = I love PUBHLT 0411!!
 ```
 
 `r countdown(minutes = 4)`
+
+## Lab 0
 
 ## That's all... until Thursday.
 ![](figs/13_hello-world-meme.png){fig-alt="Decorative." fig-align=center}
