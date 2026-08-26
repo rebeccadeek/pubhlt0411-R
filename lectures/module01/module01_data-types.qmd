@@ -120,11 +120,11 @@ is.numeric(numb.na)
 ```{r c-coercion}
 
 mixed.type.vector1 = c(T, 5, 9, FALSE)
-mixed.type.vector1
+mixed.type.vector1 # T/FALSE become numeric
 typeof(mixed.type.vector1)
 
 mixed.type.vector2 = c(1, "abc", "dog", T)
-mixed.type.vector2
+mixed.type.vector2 # 1/T become strings
 typeof(mixed.type.vector2)
 
 ```
@@ -135,13 +135,16 @@ typeof(mixed.type.vector2)
 $$ \textrm{logical} \rightarrow \textrm{integer} \rightarrow \textrm{double} \rightarrow \textrm{character}$$
 
 ## Coercing the type of objects {.smaller}
+::: notes
+- Important for blood types to viewed as a character for statistics. We should be able to calculate the mean, sd, etc. for blood times. Also important for regression models.
+:::
 
 - There may be times where it will be useful to change the type of a variable using a coercion function.
   - E.g., a study collected blood groups and coded them as: **O = 1; A = 2; B = 3; AB = 4**.
 
 ```{r type-coercion1}
 
-blood.types.numb = c(1, 2, 1, 4, 3, 3)
+blood.types.numb = c(1, 2, 1, 4, 3, 3) # O, A, O, AB, B, B
 typeof(blood.types.numb)
 
 ```
@@ -160,7 +163,7 @@ typeof(blood.types.char)
 
 . . .
 
-- We can coerce back to numeric (but doesn't always work).
+- We can coerce back to numeric (but doesn't always work as expected).
 
 ```{r type-coercion3}
 
@@ -170,13 +173,17 @@ typeof(blood.types.numb2)
 
 ```
 
-## Coercing the type of objects
+## Coercing the type of objects {.smaller}
 
 - Coercion does not always work in the way we expect.
 
 ```{r type-coercion4}
 
-eye.color = c("black", "blue", "brown", "green", "gray", "hazel")
+eye.color = c("blue", "brown", "green", "gray", "hazel")
+eye.color
+typeof(eye.color)
+
+# convert to numeric
 eye.color.numb = as.numeric(eye.color)
 typeof(eye.color.numb)
 eye.color.numb
@@ -191,9 +198,12 @@ eye.color.numb
   - There is no clear ordering to the colors.
 
 ## Factors {.smaller}
+::: notes
+- If levels are not provided they are taken from the unique observations and ordered in appearance order.
+:::
 
 - Factors are used for variables that have a fixed and known set of possible values.
-  - Useful when character vectors have a specific order.
+  - Also useful if character vectors have a specific order.
 
 ```{r factors1}
 
@@ -206,9 +216,12 @@ sort(day)
 
 . . .
 
+- Factors require levels, which can be specified or assumed from the data.
+  - Labels are optional and do not have to match levels.
+
 ```{r factors2}
 
-day.levels  = c("M", "T", "W", "Th", "F")
+day.levels  = c("M", "T", "W", "Th", "F") # string of levels - in order
 # x = vector of data; levels = optional vector of the unique values
 day.factor = factor(x = day, levels = day.levels)
 day.factor
@@ -261,7 +274,8 @@ day.factor2
 - The first element of the levels is called the reference. This can be changed.
 
 ```{r factors7}
-table(day.factor)
+
+table(day.factor) # count # of obs per day
 
 day.factor.F = relevel(x = day.factor, ref = "F")
 day.factor.F
@@ -314,7 +328,7 @@ length(vec)
 
 . . .
 
-- Vectors can be named.
+- Vectors can be named. Names are considered an attribute.
 
 ```{r atomic-vectors2}
 
@@ -370,7 +384,7 @@ ncol(mat1)
 
 . . .
 
-- Generalizations of `names()`: `rownams()` and `colnames()`.
+- Generalizations of `names()`: `rownames()` and `colnames()`.
 
 ```{r mat-array-funcs2}
 
@@ -382,7 +396,7 @@ colnames(mat1)
 
 . . .
 
-- Can provide names:
+- Can provide/assign names using the same functions:
 
 ```{r mat-array-funcs3}
 
@@ -400,6 +414,7 @@ rownames(mat1)
 sq.mat1 = matrix(data = 1:4, nrow = 2, byrow = TRUE)
 sq.mat2 = matrix(data = 5:8, nrow = 2, byrow = TRUE)
 sq.mat1
+
 ```
 
 . . .
@@ -429,7 +444,7 @@ sq.mat1 %*% sq.mat2 # multiplication
 
 structure.summary.table = data.frame(
   Vector = c("names()", "length()", "c()", "—", "is.null(dim(x))"),
-  Matrix = c("rownames(), colnames()", "nrow(), ncol()", "rbind(), cbind()", "t()", "is.matrix()"),
+  Matrix = c("rownames(), colnames()", "dim(), nrow(), ncol()", "rbind(), cbind()", "t()", "is.matrix()"),
   Array  = c("dimnames()", "dim()", "abind::abind()", "aperm()", "is.array()")
 )
 
@@ -454,6 +469,7 @@ list1 = list(character = c("John Smith", "Jane Doe"),
              matrix = matrix(data = 1:4, nrow = 2, byrow = T)
              )
 list1
+names(list1)
 
 ```
 
@@ -482,10 +498,10 @@ list1
 
 ```{r df1}
 
-df = data.frame("name" = c("John", "Jane", "William", "Elizabeth"), 
+df = data.frame("name" = c("John", "Jane", "William", "Elizabeth"), # variable name = elements syntax
                 "age" = c(62, 45, 39, 27), 
                 "city" = c("PGH", "SEA", "NYC", "CHI"), 
-                stringsAsFactors = F
+                stringsAsFactors = F # keep strings characters
              )
 df
 ```
@@ -542,21 +558,21 @@ is.data.frame(list.to.df)
 ```{r df-coerce3}
 
 mat.to.df = as.data.frame(mat1)
-mat.to.df
+mat.to.df # preserved row/column names
 is.data.frame(mat.to.df)
 
 ```
 
 . . .
 
-- Binding the rows (vertically stacking) can be helpful for combining two matrices.
+- Binding the rows (vertical stacking) can be helpful for combining two matrices.
   - Must be of the same dimension and have the same column names.
 
 ```{r rbind}
 
 sq.mat1.df = as.data.frame(sq.mat1)
 sq.mat2.df = as.data.frame(sq.mat2)
-sq.mat1.df # name automatically assigned matrix -> df
+sq.mat1.df # col name automatically assigned matrix -> df
 
 rbind(sq.mat1.df, sq.mat2.df)
 
@@ -585,7 +601,7 @@ rbind(sq.mat1.df, sq.mat2.df)
 named.vec[]
 named.vec[1]
 named.vec[-2]
-named.vec[c(1,3)]
+named.vec[c(1,3)] # multiple elements in c()
 named.vec[-c(2,4)]
 
 ```
@@ -642,6 +658,7 @@ typeof(list1$name)
 list1[-2]
 list1[c(1,2)]
 list1[-c(2,3)]
+list1[[c(1,2)]] # no error but not as expected!
 
 ```
 :::
@@ -661,9 +678,9 @@ list1[-c(2,3)]
 df[,1]
 typeof(df[,1]) # vector
 df[,1:2]
-typeof(df[,1:2]) # list
+typeof(df[,1:2]) # list, class = df
 df[1,]
-typeof(df[1,]) # list
+typeof(df[1,]) # list, class = df
 
 ```
 :::
@@ -718,8 +735,8 @@ df[df$name != "John",]
 
 df[df$city %in% c("PGH", "NYC"),]
 df[df$age > 40,]
-df[df$age>40 & df$city=="PGH", ] # and
-df[df$age>41 | df$city=="PGH", ] # or
+df[df$age > 40 & df$city == "PGH", ] # and
+df[df$age > 40 | df$city == "PGH", ] # or
 list1[names(list1) == "name"]
 
 ```
@@ -760,7 +777,7 @@ df$city
 :::{.fragment}
 ```{r adv-subset3}
 df$age * 12
-df[[2]] * 2
+df[[2]] * 12
 df[,2] * 12
 ```
 :::
