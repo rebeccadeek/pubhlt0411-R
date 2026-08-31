@@ -55,14 +55,13 @@ data(Oxboys)
 
 # Reshaping data: `tidyr`
 
-## Tidy Data {.smaller}
-- Data often is not formatted to be easy to analyze. Instead it is typically formatted for easy data collection.
-- "Tidy" data are easy to manipulate, model and visualize. They tend to have the following structure:
-  - Variables are columns, observations are rows, and values are cells.
+## Why tidy? {.smaller}
 
 ![](figs/01_tidy-data.png){fig-alt="Same data table shown three times: columns marked as variables, rows marked as observations, and individual cells marked as values." height=3in fig-align=center}
 
-- The `tidyr` [package](https://tidyr.tidyverse.org/) helps with this!
+- **Consistency**: If there is a consistent data structure, it’s easier to learn the tools that work with that structure due to the underlying uniformity.
+- **Vectorization**: R and the tidyverse are built to operate on columns of values, allowing R's vectorization to shine.
+  - A tidy layout is a natural byproduct.
 
 ## Same data, three layouts {.smaller}
 These three tables all describe tuberculosis (TB) surveillance: country, year, number of cases, and population.
@@ -96,12 +95,6 @@ table3
 ::::
 
 - `table1` matches the format on the prior slide. Each column is a variable and each row is an observation per country per year. Each cell is a value.
-
-## Why tidy?
-
-- **Consistency**: If there is a consistent data structure, it’s easier to learn the tools that work with that structure due to the underlying uniformity.
-- **Vectorization**: R and the tidyverse are built to operate on columns of values, allowing R's vectorization to shine.
-  - A tidy layout is a natural byproduct.
 
 ## Tidy data in action {.smaller}
 
@@ -159,11 +152,13 @@ Try writing code using `table2` or `table3` instead (it takes a lot more work).
 
 - The two main functions to reshape and tidy data are `pivot_longer()` and `pivot_wider()`.
 - **"Lengthen"** data by collapsing several columns into two.
-  - Column names move to a new `names_to` column and values to a new `values_to` column.
 - **"Widen"** data by expanding two columns into several.
-  - One column provides the new column names, the other the values.
 
 ## Lengthening data: Glucose data {.smaller}
+::: notes
+- Long format will make it easier to plot trajectories over time
+- Calculate averages per subject or per day
+:::
 
 A diabetes-prevention study asks six participants to record fasting glucose (mg/dL) each morning for six days. Some participants' monitors stopped recording early and are recorded as `NA`.
 
@@ -190,29 +185,23 @@ glucose_wide
 
 ## How `pivot_longer` works {.smaller}
 :::notes
-Values already tied to a variable (`id`) get repeated once per pivoted column
-:::
-
-![](figs/02_pivot-wider.png){fig-alt="Wide-to-long reshaping diagram: a wide table with columns id, bp1, bp2 (rows A, B, C colored by id) transforms into a long table with columns id, measurement, value, where each id now has two rows, one per measurement." fig-align=center}
-
-## How `pivot_longer` works {.smaller}
-:::notes
 - Column names (`bp1`, `bp2`) become values in the new `measurement` column, repeated once per original row
 - Cell values get unwound row by row into the new `value` column
 :::
 
-![](figs/03_pivot-wider-names.png){fig-alt="Same wide-to-long reshaping diagram as before, but now colored to highlight that the bp1 and bp2 column names become values in the new 'measurement' column." height=2.5in fig-align=center}
+![](figs/02a_pivot-wider-names.png){fig-alt="Wide-to-long reshaping diagram, colored to highlight that the bp1 and bp2 column names become values in the new 'measurement' column." height=2.5in fig-align=center}
 
-![](figs/04_pivot-wider-values.png){fig-alt="Same wide-to-long reshaping diagram, but now colored to highlight that the cell values from the bp1 and bp2 columns become entries in the new 'value' column." height=2.5in fig-align=center}
+![](figs/02b_pivot-wider-values.png){fig-alt="Same wide-to-long reshaping diagram, but now colored to highlight that the cell values from the bp1 and bp2 columns become entries in the new 'value' column." height=2.5in fig-align=center}
+
+`pivot_wider()` is just the opposite direction!
 
 ## `pivot_longer()` {.smaller}
 
 ```{r pivot-longer1}
-#| output-location: "column"
 
 glucose_wide |>
   tidyr::pivot_longer(
-    cols = tidyselect::starts_with("day"),
+    cols = day1:day6, # columns to pivot
     names_to = "day", # single column name for old names
     values_to = "glucose" # column name for values
   )
@@ -227,8 +216,13 @@ Let's breakdown the arguments of the function:
 - `"day"` and `"glucose"` are quoted because they are new variables that don't exist yet.
 
 ## `pivot_longer()`: Alternative syntax {.smaller}
+::: notes
+- Could tell R which columns to drop instead of keep
+- Could tell R to use regex
+:::
 
 ```{r pivot-longer2}
+#| code-line-numbers: "3"
 #| output-location: "column"
 
 glucose_wide |>
@@ -241,37 +235,19 @@ glucose_wide |>
 ```
 
 ```{r pivot-longer3}
+#| code-line-numbers: "3"
 #| output-location: "column"
 
 glucose_wide |>
   tidyr::pivot_longer(
-    cols = day1:day6,
-    names_to = "day",
-    values_to = "glucose"
-  )
-
-```
-
-## Dropping missing values {.smaller}
-
-- Occasionally (but not always), we may want to remove `NA` values, depending on the reason for missingness.
-- One way to do so is with `values_drop_na = TRUE`.
-  - Default is `FALSE` and probably safer.
-
-```{r longer-NA}
-
-glucose_wide |>
-  tidyr::pivot_longer(
     cols = tidyselect::starts_with("day"),
-    names_to = "day",
-    values_to = "glucose",
-    values_drop_na = TRUE
+    names_to = "day", # single column name for old names
+    values_to = "glucose" # column name for values
   )
 
 ```
 
 ## Regex: The `day` variable {.smaller}
-
 - We don't really need the `day` prefix for the values in the `day` variable.
 - `parse_number()` is a [function](https://readr.tidyverse.org/reference/parse_number.html) that drops any non-numeric characters before the first number and all characters after the first number.
   - Example of regular expressions (project idea!!)
@@ -282,7 +258,7 @@ glucose_wide |>
 
 glucose.long = glucose_wide |>
   tidyr::pivot_longer(
-    cols = tidyselect::starts_with("day"),
+    cols = day1:day6,
     names_to = "day",
     values_to = "glucose"
   ) |> 
@@ -311,93 +287,6 @@ glucose.long |>
 ```
 
 - Note: `ggplot2` automatically dropped the `NA` values for us and provided a warning.
-
-## Column names: Many variables {.smaller}
-
-- One challenging type of data tidying occurs when multiple pieces of information are stored in the column names.
-- Would like to store these in separate new variables.
-
-. . .
-
-```{r who-data}
-
-who2
-
-```
-
-- WHO tuberculosis diagnosis data: `country`, `year`, and 56 other columns like `sp_m_014`.
-  - Contain the diagnosis method, sex, and age range in the column name.
-  - E.g., `sp` = positive pulmonary smear, `m` = male, `014` = 0-14 year old.
-
-## Column names: Many variables {.smaller}
-
-```{r who-long}
-
-who2 |>
-  tidyr::pivot_longer(
-    cols = !(country:year),
-    names_to = c("diagnosis", "gender", "age"), 
-    names_sep = "_", 
-    values_to = "count" # column name for values
-  )
-
-```
-
-- `names_to`: can take a *vector* of new column names.
-- `names_sep`: tells `pivot_longer()` how to split each original column name into multiple *values*.
-
-## Column names: Variables and values {.smaller}
-
-- Another challenging type of data tidying occurs when column names include a mix of variable values and variable names
-
-```{r clinic-data}
-
-clinic_visits = tibble::tribble(
-  ~patient_id, ~date_visit1,  ~sbp_visit1, ~date_visit2,  ~sbp_visit2,
-  1,           "2023-01-05",  128,         "2023-04-02",  122,
-  2,           "2023-01-06",  145,         NA,            NA,
-  3,           "2023-01-10",  118,         "2023-04-15",  115,
-  4,           "2023-01-12",  160,         "2023-04-20",  150,
-  5,           "2023-01-15",  135,         NA,            NA
-) |>
-  dplyr::mutate(dplyr::across(tidyselect::starts_with("date"), as.Date))
-
-clinic_visits
-
-```
-
-- The column names of this dataset contain the names of two variables (`date`, `sbp`) and the values of another (`visit`, with values 1 or 2)
-
-## `pivot_longer`: The `.value` sentinel {.smaller}
-
-- A vector must be supplied to `names_to` but this time we use the special "`.value`" sentinel.
-  - This isn’t the name of a variable but a unique value that tells `pivot_longer()` to override the usual `values_to` argument.
-
-```{r clinic-data-long1}
-#| output-location: "column"
-
-clinic_visits |>
-  tidyr::pivot_longer(
-    cols = !patient_id,
-    names_to = c(".value", "visit"),
-    names_sep = "_visit"
-  )
-
-```
-
-- Uses the first component of the pivoted column names (`date`, `sbp`) as a variable name in the output.
-- Could use `values_drop_na = TRUE` to remove the rows for the second visit that never happened.
-
-## Data reshaping with `pivot_*`
-:::notes
-- These reorganize values into a new layout.
-:::
-
-- The two main functions to reshape and tidy data are `pivot_longer()` and `pivot_wider()`.
-- **"Lengthen"** data by collapsing several columns into two.
-  - Column names move to a new `names_to` column and values to a new `values_to` column.
-- **"Widen"** data by expanding two columns into several.
-  - One column provides the new column names, the other the values.
 
 ## Widening Data: Patient survey data {.smaller}
 - Increasing the number of columns (reducing the number of rows), by spreading one observation across columns.
@@ -431,105 +320,10 @@ cms_patient_experience |>
   - E.g., `names_from = measure_cd`.
 
 
-##  How `pivot_wider()` works {.smaller}
-
-Let's first use a simple dataset of blood pressure measurements to illustrate how `pivot_wider()` works.
-
-```{r bp-data}
-
-bp.df = tibble::tribble(
-  ~id, ~measurement, ~value,
-  "A",        "bp1",    100,
-  "B",        "bp1",    140,
-  "B",        "bp2",    115,
-  "A",        "bp2",    120,
-  "A",        "bp3",    105
-)
-bp.df
-```
-
-. . .
-
-```{r bp-data-wide}
-
-bp.df |>
-  tidyr::pivot_wider(
-    names_from = measurement,
-    values_from = value
-  )
-
-```
-
-##  How `pivot_wider()` works {.smaller}
-1. New **column names** are unique values of the `names_from = measurement` column.
-
-```{r bp-data-step1}
-
-bp.df |> 
-  dplyr::distinct(measurement) |> 
-  dplyr::pull()
-
-```
-
-. . .
-
-2. New **rows** are unique combinations of everything else (the `id_cols`). Defaults to `id` data since there are only 3 columns.
-
-```{r bp-data-step2}
-
-bp.df |> 
-  dplyr::select(!measurement & !value) |> # drop names_from and values_from columns
-  dplyr::distinct()
-
-```
-
-. . .
-
-3. Build an empty grid of `NA`s (then fills in values from the `values_from` input).
-
-```{r bp-data-step3}
-
-bp.df |> 
-  dplyr::select(!measurement & !value) |> 
-  dplyr::distinct() |> 
-  dplyr::mutate(bp1 = NA, bp2 = NA, bp3 = NA)
-
-```
-
-
 ## `pivot_wider()` {.smaller}
-
 Now let's apply these principals to the `cms_patient_experience` data.
 
 ```{r cms-wide1}
-
-cms_patient_experience |>
-  tidyr::pivot_wider(
-    names_from = measure_cd,
-    values_from = prf_rate
-  )
-
-```
-
-. . . 
-
-- But there still are several rows per organization... Not quite what we want.
-  - Default `id_cols` are all but `names_from` and `values_from` columns.
-
-```{r cms-wide2}
-
-cms_patient_experience |> 
-  dplyr::select(!c(measure_cd, prf_rate)) |> 
-  colnames()
-
-```
-
-
-## `pivot_wider()`: ID columns {.smaller}
-
-- Only `org_pac_id` and `org_nm` uniquely determine the organization and should be used at the `id_cols` input.
-
-```{r cms-wide3}
 
 cms_patient_experience |>
   tidyr::pivot_wider(
@@ -540,59 +334,10 @@ cms_patient_experience |>
 
 ```
 
-Now each organization is exactly one row.
+. . . 
 
-## Troubleshooting in data tidying {.smaller}
-
-- It's plausible to imagine that one participant has two blood pressure readings on the same day.
-  - What happens if their `id` and `measurement` variable is coded identically?
-- It is also plausible that human error may create two observations with the same `id` and `measurement` values.
-
-```{r bp-data-dup1}
-
-bp.df.dup = tibble::tribble(
-  ~id, ~measurement, ~value,
-  "A",        "bp1",    100,
-  "A",        "bp1",    102,
-  "A",        "bp2",    120,
-  "B",        "bp1",    140,
-  "B",        "bp2",    115
-)
-
-```
-
-What would happen if we try to `pivot_wider` such data?
-
-## Troubleshooting in data tidying {.smaller}
-:::notes
-- tidyr gives use the code to run to find duplicates
-- We know which observations are causing the issue but imagine a dataset with hundreds, thousands, or millions of observations.
-:::
-
-`tidyr` warns that values aren't uniquely identified and return list-columns instead of plain numbers.
-
-```{r bp-data-dup2}
-#| warning: TRUE
-
-bp.df.dup |>
-  tidyr::pivot_wider(
-    names_from = measurement,
-    values_from = value
-  )
-
-```
-
-. . .
-
-Trying the helper code:
-
-```{r bp-data-dup3}
-
-bp.df.dup |>
-  dplyr::summarise(n = dplyr::n(), .by = c(id, measurement)) |>
-  dplyr::filter(n > 1L)
-
-```
+- Both `org_pac_id` and `org_nm` uniquely determine the organization and should be used as the `id_cols` input.
+- Notice `measure_title` was dropped since we did not include it in `id_cols`, `names_from`, or `values_from`.
 
 ## Reshaping summary {.smaller}
 - Tidy data:
@@ -600,7 +345,7 @@ bp.df.dup |>
   - Observations in rows.
   - One value per cell. 
 - `pivot_longer()`: columns $\rightarrow$ rows.
- - Use when column names are values, not variable names.
+  - Use when column names are values, not variable names.
 - `pivot_wider()`: rows $\rightarrow$ columns.
   - Use when one observation is spread across multiple rows.
 - Both functions **preserve information**, only reshaping the data frame.
@@ -614,7 +359,7 @@ bp.df.dup |>
 
 
 ```{code-blanks-instructions}
-Recall the Oxboy data we used in module 3. Initially, pivot the height variabl to wide format. Then pivot both height and age variables to wide format.
+The `Oxboys` data records height measurements for a group of boys, taken at several occasions as they grew. Initially, pivot the height variable to wide format. Then pivot both height and age variables to wide format.
 ```
 
 ```{r}
@@ -659,6 +404,11 @@ Oxboys |>
 
 ```{code-blanks}
 #| blank:
+#|   target: Subject
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
 #|   target: names_from
 #|   prefill: false
 #|   occurrence: 1
@@ -681,24 +431,28 @@ Oxboys |>
 
 Oxboys |>
   tibble::as_tibble() |> 
-  pivot_wider(
-    names_from = Occasion,
-    values_from = c(age, height) )
+  pivot_wider(id_cols = Subject, 
+              names_from = Occasion,
+              values_from = c(age, height) )
 
 ```
 
 ```{r}
 #| echo: FALSE
 
-countdown::countdown(minutes = 5, top = 0)
+countdown::countdown(minutes = 5, bottom = 0)
 
 ```
 
 # Importing data: `readr`
 
 ## Reading data from a file {.smaller}
-- The `patients.csv` file in the `data` folder is a type of file with *c*omma-*s*eparated *v*alues.
-- On your computer you can open it with Excel but is is different from a .xlsx file, which support rich formatting, charts, equations, and multiple sheets.
+::: notes
+- Notice the hard coded NA values this will be important later
+:::
+
+- The `patients.csv` file in the `data` folder is a type of file with **c**omma-**s**eparated **v**alues.
+  - On your computer you can open it with Excel but is is different from a .xlsx file, which support rich formatting, charts, equations, and multiple sheets.
 - Alternatively, .csv files can always be open with a plain-text editor (e.g., TextEdit or Notepad).
   - If we do so, our data looks like:
   
@@ -720,7 +474,6 @@ Patient ID,First Name,diagnosis.code,treatmentGroup,AGE
   - For you this is your `PUBHLT0411` folder.
 - This way, when we read in any data, we only need to specify the path after this (relative path).
   - For me, I set a single data folder in the root directory $\rightarrow$ `data/module05/patients.csv`.
-  - If you want the data to sit in the folder for a specific module $\rightarrow$ `lectures/module05/patients.csv`.
 - Macs use `/` in paths and Windows use `\`.
 
 . . .
@@ -760,7 +513,7 @@ patients
 
 ```
 
-- Notice there are two types of `NA` values: `N/A` and `<NA>`. The latter of the two is coded correctly. Why?
+- Notice there are two types of `NA` values: `N/A` and `<NA>`. The latter of the two is coded correctly.
 
 . . .
 
@@ -773,8 +526,7 @@ patients
 
 - The `na` argument can be used to specify several different missing-value designations at once.
 
-## Transform imported data
-
+## Transform imported data {.smaller}
 - `Patient ID` and `Full Name` contain spaces, which we know doesn't constitute a machine readable name.
 
 ```{r patients-data4}
@@ -802,7 +554,6 @@ patients |> janitor::clean_names()
   - Handles the spaces, the period in `diagnosis.code`, the camelCase `treatmentGroup`, and caps in `AGE`.
 
 ## Transform imported data {.smaller}
-
 `treatment_group` has a fixed, known set of values, meaning it can be coded as a factor, instead of plain string.
 
 ```{r patients-data6}
@@ -823,87 +574,13 @@ patients_clean = patients |>
   janitor::clean_names() |>
   dplyr::mutate(
     treatment_group = factor(treatment_group),
-    age = as.numeric(dplyr::if_else(age == "five", "5", age)) # as.numeric to convert chr -> dbl
+    age = as.numeric(ifelse(age == "five", "5", age)) # as.numeric to convert chr -> dbl
   )
 patients_clean
 
 ```
 
-## `read_csv()`: Skipping metadata rows {.smaller}
-- Typically, `read_csv` reads the first line of the data as the column names.
-- It is not uncommon for a few lines of metadata to be included at the top of the file.
-  - For example in `data/module05/clinic_report.csv`:
-
-```
-Community Health Screening Report
-Site: Pittsburgh Public Health Clinic
-patient_id,temp_c,heart_rate
-1,37.2,78
-2,38.9,102
-3,36.8,65
-```
-
-. . .
-
-```{r readr-skip1}
-readr::read_csv(file = here::here("data/module05/clinic_report.csv"))
-```
-
-. . .
-
-- The `skip` argument can help automatically remove these rows.
-
-```{r readr-skip2}
-readr::read_csv(file = here::here("data/module05/clinic_report.csv"), skip = 2)
-```
-
-## `read_csv()`: Skipping comment lines
-- Alternatively, sometimes comments are ended with a leading `#`.
-  - For example in `data/module05/vitals_comment.csv`:
-
-```
-# Vitals collected during morning rounds, Ward B
-patient_id,temp_c,heart_rate
-1,37.2,78
-2,38.9,102
-3,36.8,65
-```
-
-- These lines can be skipped with the `comment` argument (or `skip`).
-
-```{r readr-comments}
-readr::read_csv(file = here::here("data/module05/vitals_comment.csv"), comment = "#")
-```
-
-## `read_csv()`: Files with no header row {.smaller}
-- Conversely, some data fils do not contain column names.
-  - For example in `data/module05/vitals_nonames.csv`:
-
-```
-1,37.2,78
-2,38.9,102
-3,36.8,65
-```
-
-- Since `readr` assumes the first row are the column names we'll have to prevent this with the `col_names` argument.
-
-```{r readr-colnames1}
-readr::read_csv(file = here::here("data/module05/vitals_nonames.csv"), col_names = FALSE)
-```
-
-. . .
-
-- Or pass in our own names.
-
-```{r readr-colnames2}
-
-readr::read_csv(file = here::here("data/module05/vitals_nonames.csv"),
-                col_names = c("patient_id", "temp_c", "heart_rate") )
-
-```
-
 ## Other file types
-
 `readr` has a function for many format types:
 
 - `read_csv2()`: semicolon-delimited
@@ -923,12 +600,11 @@ Notice that there is no `read_*` function for .xlsx files. You'll need the `read
   - Otherwise $\rightarrow$ string
 
 ```{r readr-guess-type1}
-read_csv(file = here::here("data/module05/glucose_types_demo.csv"))
+readr::read_csv(file = here::here("data/module05/glucose_types_demo.csv"))
 ```
 
-## Problems with guessing types {.smaller}
-
-- Most data sets aren't tidy and there will be many incorrect guesses. Imagine a missing numeric value code as `.` instead of leaving it blank as in `data/module05/sbp_missing.csv`:
+## Problems with guessing types
+- Most data sets aren't tidy and there will be many incorrect guesses. Imagine a missing numeric value code as `.` instead of leaving it blank:
 
 ```{r readr-guess-type2}
 readr::read_csv(file = here::here("data/module05/sbp_missing.csv"))
@@ -936,35 +612,24 @@ readr::read_csv(file = here::here("data/module05/sbp_missing.csv"))
 
 The entire vector (column) was forced to a character because of the `.`.
 
-. . .
-
+## Specifying column types {.smaller}
 - `col_types` takes a named list where the names match the column names in the CSV file.
 
 ```{r readr-define-type1}
 #| warning: TRUE 
 
-sbp = readr::read_csv(file = here::here("data/module05/sbp_missing.csv"), col_types = list(sbp = col_double()) )
-
-readr::problems(sbp) # tells us exactly where parsing failed and what it found instead.
+sbp = readr::read_csv(file = here::here("data/module05/sbp_missing.csv"), 
+                      col_types = list(sbp = col_double()) )
+readr::problems(sbp)
+sbp
 
 ```
 
 . . .
 
-```{r eval = F}
-readr::read_csv(here::here("data/module05/sbp_missing.csv"), na = ".")
-```
-
-## The nine column types
-
-- `col_logical()`, `col_double()`, `col_integer()`
-- `col_character()` — good for IDs you'll never do arithmetic on (patient IDs, phone numbers)
-- `col_factor()`, `col_date()`, `col_datetime()`
-- `col_number()` — permissive parser that ignores non-numeric junk (currency symbols, etc.)
-- `col_skip()` — drops a column entirely, which can speed up reading large files
+- **Types:** `col_logical()`, `col_double()`, `col_integer()`, `col_character()`, `col_factor()`, `col_date()`, `col_datetime()`.
 
 ## Writing data
-
 - Just as we can read files, we can export files with `write_*`.
 
 ```r
@@ -979,7 +644,7 @@ readr::write_csv(x = patients_clean, file = here::here("data/module05/patients-c
   - `read_rds` and `write_rds`.
 
 ```r
-write_rds(x = patients_clean, file = here::here("patients-clean.rds"))
+readr::write_rds(x = patients_clean, file = here::here("patients-clean.rds"))
 ```
 
 # Joining data: `dplyr`
@@ -988,7 +653,7 @@ write_rds(x = patients_clean, file = here::here("patients-clean.rds"))
 - Sometimes you will have many data frames that need to be joined together to perform the appropriate analysis.
 - **Mutating joins** add new variables to one data frame from matching observations in another.
 
-![](figs/05_join-dfs.png){fig-alt="Diagram of two tables, x and y, with color-coded matching and non-matching key values (1, 2 match; 3 and 4 are unique to each table)." height=3in fig-align=center}
+![](figs/03_join-dfs.png){fig-alt="Diagram of two tables, x and y, with color-coded matching and non-matching key values (1, 2 match; 3 and 4 are unique to each table)." height=3in fig-align=center}
 
 ::: aside
 From: [https://www.garrickadenbuie.com/project/tidyexplain/](https://www.garrickadenbuie.com/project/tidyexplain/)
@@ -996,7 +661,7 @@ From: [https://www.garrickadenbuie.com/project/tidyexplain/](https://www.garrick
 
 ## Left join
 
-![](figs/06_left-join.gif){fig-alt="Animation of left_join(x, y): all rows from x are kept (keys 1, 2, 3), with matching y values joined in; key 4 from y is dropped." height=3in fig-align=center}
+![](figs/04_left-join.gif){fig-alt="Animation of left_join(x, y): all rows from x are kept (keys 1, 2, 3), with matching y values joined in; key 4 from y is dropped." height=3in fig-align=center}
 
 > All rows from `x`, and all columns from `x` and `y`. Rows in `x` with no match in `y` will have `NA` values in the new columns from `y`.
 
@@ -1006,7 +671,7 @@ From: [https://www.garrickadenbuie.com/project/tidyexplain/](https://www.garrick
 
 ## Right join
 
-![](figs/07_right-join.gif){fig-alt="Animation of right_join(x, y): all rows from y are kept (keys 1, 2, 4), with matching x values joined in; key 3 from x is dropped." height=3in fig-align=center}
+![](figs/05_right-join.gif){fig-alt="Animation of right_join(x, y): all rows from y are kept (keys 1, 2, 4), with matching x values joined in; key 3 from x is dropped." height=3in fig-align=center}
 
 > All rows from `y`, and all columns from `x` and `y`. Rows in `y` with no match in `x` will have `NA` values in the new columns from `x`.
 
@@ -1016,7 +681,7 @@ From: [https://www.garrickadenbuie.com/project/tidyexplain/](https://www.garrick
 
 ## Full join
 
-![](figs/08_full-join.gif){fig-alt="Animation of full_join(x, y): all rows from both x and y are kept (keys 1, 2, 3, 4), with NA filled in where no match exists." height=3in fig-align=center}
+![](figs/06_full-join.gif){fig-alt="Animation of full_join(x, y): all rows from both x and y are kept (keys 1, 2, 3, 4), with NA filled in where no match exists." height=3in fig-align=center}
 
 > All rows and all columns from both `x` and `y`. Where there are no matching values, returns `NA` for the one missing.
 
@@ -1026,7 +691,7 @@ From: [https://www.garrickadenbuie.com/project/tidyexplain/](https://www.garrick
 
 ## Inner join
 
-![](figs/09_inner-join.gif){fig-alt="Animation of inner_join(x, y): only rows with matching keys in both x and y are kept (keys 1 and 2); keys 3 and 4 are dropped." height=3in fig-align=center}
+![](figs/07_inner-join.gif){fig-alt="Animation of inner_join(x, y): only rows with matching keys in both x and y are kept (keys 1 and 2); keys 3 and 4 are dropped." height=3in fig-align=center}
 
 > All rows from `x` where there are matching values in `y`, and all columns from `x` and `y`.
 
@@ -1035,7 +700,6 @@ From: [https://www.garrickadenbuie.com/project/tidyexplain/](https://www.garrick
 :::
 
 ## Join `by`
-
 - The default in the `join_*` functions is to join based on matching column names between the two data frames.
   - Alternatively, the column name can be specified explicity using `by = dplyr::join_by(col_name)`.
 - When the column names for the unique identifier is different between the two data sets use `by = join_by(colname_in_x == colname_in_y)`.
@@ -1153,6 +817,275 @@ dplyr::full_join(x = metadata, y = labdata, by = dplyr::join_by(patient_id))
 ```{r}
 #| echo: FALSE
 
-countdown::countdown(minutes = 4, top = 0)
+countdown::countdown(minutes = 4, bottom = 0)
+
+```
+
+# Appendix {visibility="uncounted"}
+
+## Column names: Many variables {.smaller visibility="uncounted"}
+- One challenging type of data tidying occurs when multiple pieces of information are stored in the column names.
+- Would like to store these in separate new variables.
+
+. . .
+
+```{r who-data}
+
+who2
+
+```
+
+- WHO tuberculosis diagnosis data: `country`, `year`, and 56 other columns like `sp_m_014`.
+  - Contain the diagnosis method, sex, and age range in the column name.
+  - E.g., `sp` = positive pulmonary smear, `m` = male, `014` = 0-14 year old.
+
+## Column names: Many variables {.smaller visibility="uncounted"}
+
+```{r who-long}
+
+who2 |>
+  tidyr::pivot_longer(
+    cols = !(country:year),
+    names_to = c("diagnosis", "gender", "age"), 
+    names_sep = "_", 
+    values_to = "count" # column name for values
+  )
+
+```
+
+- `names_to`: can take a *vector* of new column names.
+- `names_sep`: tells `pivot_longer()` how to split each original column name into multiple *values*.
+
+## Column names: Variables and values {.smaller visibility="uncounted"}
+- Another challenging type of data tidying occurs when column names include a mix of variable values and variable names
+
+```{r clinic-data}
+
+clinic_visits = tibble::tribble(
+  ~patient_id, ~date_visit1,  ~sbp_visit1, ~date_visit2,  ~sbp_visit2,
+  1,           "2023-01-05",  128,         "2023-04-02",  122,
+  2,           "2023-01-06",  145,         NA,            NA,
+  3,           "2023-01-10",  118,         "2023-04-15",  115,
+  4,           "2023-01-12",  160,         "2023-04-20",  150,
+  5,           "2023-01-15",  135,         NA,            NA
+) |>
+  dplyr::mutate(dplyr::across(tidyselect::starts_with("date"), as.Date))
+
+clinic_visits
+
+```
+
+- The column names of this dataset contain the names of two variables (`date`, `sbp`) and the values of another (`visit`, with values 1 or 2)
+
+## `pivot_longer`: The `.value` sentinel {.smaller visibility="uncounted"}
+- A vector must be supplied to `names_to` but this time we use the special "`.value`" sentinel.
+  - This isn’t the name of a variable but a unique value that tells `pivot_longer()` to override the usual `values_to` argument.
+
+```{r clinic-data-long1}
+#| output-location: "column"
+
+clinic_visits |>
+  tidyr::pivot_longer(
+    cols = !patient_id,
+    names_to = c(".value", "visit"),
+    names_sep = "_visit"
+  )
+
+```
+
+- Uses the first component of the pivoted column names (`date`, `sbp`) as a variable name in the output.
+- Could use `values_drop_na = TRUE` to remove the rows for the second visit that never happened.
+
+
+##  How `pivot_wider()` works {.smaller visibility="uncounted"}
+Let's use a simple dataset of blood pressure measurements to illustrate how `pivot_wider()` works.
+
+```{r bp-data}
+
+bp.df = tibble::tribble(
+  ~id, ~measurement, ~value,
+  "A",        "bp1",    100,
+  "B",        "bp1",    140,
+  "B",        "bp2",    115,
+  "A",        "bp2",    120,
+  "A",        "bp3",    105
+)
+bp.df
+```
+
+. . .
+
+```{r bp-data-wide}
+
+bp.df |>
+  tidyr::pivot_wider(
+    names_from = measurement,
+    values_from = value
+  )
+
+```
+
+##  How `pivot_wider()` works {.smaller visibility="uncounted"}
+1. New **column names** are unique values of the `names_from = measurement` column.
+
+```{r bp-data-step1}
+
+bp.df |> 
+  dplyr::distinct(measurement) |> 
+  dplyr::pull()
+
+```
+
+. . .
+
+2. New **rows** are unique combinations of everything else (the `id_cols`). Defaults to `id` data since there are only 3 columns.
+
+```{r bp-data-step2}
+
+bp.df |> 
+  dplyr::select(!measurement & !value) |> # drop names_from and values_from columns
+  dplyr::distinct()
+
+```
+
+. . .
+
+3. Build an empty grid of `NA`s (then fills in values from the `values_from` input).
+
+```{r bp-data-step3}
+
+bp.df |> 
+  dplyr::select(!measurement & !value) |> 
+  dplyr::distinct() |> 
+  dplyr::mutate(bp1 = NA, bp2 = NA, bp3 = NA)
+
+```
+
+
+
+## Troubleshooting in data tidying {.smaller visibility="uncounted"}
+- It's plausible to imagine that one participant has two blood pressure readings on the same day.
+  - What happens if their `id` and `measurement` variable is coded identically?
+- It is also plausible that human error may create two observations with the same `id` and `measurement` values.
+
+```{r bp-data-dup1}
+
+bp.df.dup = tibble::tribble(
+  ~id, ~measurement, ~value,
+  "A",        "bp1",    100,
+  "A",        "bp1",    102,
+  "A",        "bp2",    120,
+  "B",        "bp1",    140,
+  "B",        "bp2",    115
+)
+
+```
+
+What would happen if we try to `pivot_wider` such data?
+
+## Troubleshooting in data tidying {.smaller visibility="uncounted"}
+:::notes
+- tidyr gives use the code to run to find duplicates
+- We know which observations are causing the issue but imagine a dataset with hundreds, thousands, or millions of observations.
+:::
+
+`tidyr` warns that values aren't uniquely identified and return list-columns instead of plain numbers.
+
+```{r bp-data-dup2}
+#| warning: TRUE
+
+bp.df.dup |>
+  tidyr::pivot_wider(
+    names_from = measurement,
+    values_from = value
+  )
+
+```
+
+. . .
+
+Trying the helper code:
+
+```{r bp-data-dup3}
+
+bp.df.dup |>
+  dplyr::summarise(n = dplyr::n(), .by = c(id, measurement)) |>
+  dplyr::filter(n > 1L)
+
+```
+
+
+## `read_csv()`: Skipping metadata rows {.smaller visibility="uncounted"}
+- Typically, `read_csv` reads the first line of the data as the column names.
+- It is not uncommon for a few lines of metadata to be included at the top of the file.
+  - For example in `data/module05/clinic_report.csv`:
+
+```
+Community Health Screening Report
+Site: Pittsburgh Public Health Clinic
+patient_id,temp_c,heart_rate
+1,37.2,78
+2,38.9,102
+3,36.8,65
+```
+
+. . .
+
+```{r readr-skip1}
+readr::read_csv(file = here::here("data/module05/clinic_report.csv"))
+```
+
+. . .
+
+- The `skip` argument can help automatically remove these rows.
+
+```{r readr-skip2}
+readr::read_csv(file = here::here("data/module05/clinic_report.csv"), skip = 2)
+```
+
+
+## `read_csv()`: Skipping comment lines {visibility="uncounted"}
+- Alternatively, sometimes comments are ended with a leading `#`.
+  - For example in `data/module05/vitals_comment.csv`:
+
+```
+# Vitals collected during morning rounds, Ward B
+patient_id,temp_c,heart_rate
+1,37.2,78
+2,38.9,102
+3,36.8,65
+```
+
+- These lines can be skipped with the `comment` argument (or `skip`).
+
+```{r readr-comments}
+readr::read_csv(file = here::here("data/module05/vitals_comment.csv"), comment = "#")
+```
+
+
+## `read_csv()`: Files with no header row {.smaller visibility="uncounted"}
+- Conversely, some data fils do not contain column names.
+  - For example in `data/module05/vitals_nonames.csv`:
+
+```
+1,37.2,78
+2,38.9,102
+3,36.8,65
+```
+
+- Since `readr` assumes the first row are the column names we'll have to prevent this with the `col_names` argument.
+
+```{r readr-colnames1}
+readr::read_csv(file = here::here("data/module05/vitals_nonames.csv"), col_names = FALSE)
+```
+
+. . .
+
+- Or pass in our own names.
+
+```{r readr-colnames2}
+
+readr::read_csv(file = here::here("data/module05/vitals_nonames.csv"),
+                col_names = c("patient_id", "temp_c", "heart_rate") )
 
 ```

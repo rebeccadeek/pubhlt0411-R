@@ -238,18 +238,6 @@ Rebecca Deek, PhD
 </ol>
 </div>
 </section>
-<section id="three-main-kinds-of-functions" class="slide level2">
-<h2>Three (main) kinds of functions</h2>
-<ul>
-<li><strong>Vector functions</strong>: take one or more vectors as input and return a vector as output.</li>
-<li><strong>Data frame functions</strong>: take a data frame as input and return a data frame as output.</li>
-<li><strong>Plot functions</strong>: take a data frame as input and return a plot as output.</li>
-</ul>
-<p>We will focus on the first two types of functions today.</p>
-<ul>
-<li>There are other more advanced functions with varied input and output types.</li>
-</ul>
-</section>
 <section id="what-is-a-function" class="slide level2">
 <h2>What is a function?</h2>
 <ul>
@@ -263,45 +251,35 @@ Rebecca Deek, PhD
 </ul>
 <p>For repeated tasks we would like to write a function with arbitrary inputs that produce corresponding outputs.</p>
 </section>
-<section id="back-to-the-birthwt-data" class="slide level2">
-<h2>Back to the <code>birthwt</code> data</h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>birthwt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 189 × 10
-   low      age   lwt race  smoke   ptl    ht    ui   ftv   bwt
-   &lt;fct&gt;  &lt;int&gt; &lt;int&gt; &lt;fct&gt; &lt;fct&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
- 1 normal    19   182 black no        0     0     1     0  2523
- 2 normal    33   155 other no        0     0     0     3  2551
- 3 normal    20   105 white yes       0     0     0     1  2557
- 4 normal    21   108 white yes       0     0     1     2  2594
- 5 normal    18   107 white yes       0     0     1     0  2600
- 6 normal    21   124 other no        0     0     0     0  2622
- 7 normal    22   118 white no        0     0     0     1  2637
- 8 normal    17   103 other no        0     0     0     1  2637
- 9 normal    29   123 white yes       0     0     0     1  2663
-10 normal    26   113 white yes       0     0     0     0  2665
-# ℹ 179 more rows</code></pre>
-</div>
-</div>
-<ul>
-<li>Already done some data cleaning (converting strings to factors, etc.)</li>
-</ul>
-</section>
 <section id="a-repetitive-task" class="slide level2 smaller">
 <h2>A repetitive task</h2>
+<aside class="notes">
+<ul>
+<li>Back to birthwt data, already did some data cleaning.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 <p>Suppose we want to <strong>z-score standardize</strong> several numeric columns, meaning each column has mean 0 and standard deviation 1.</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" data-code-line-numbers="3-8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>birthwt_subset <span class="ot">=</span> birthwt <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(age, lwt, ptl, bwt)</span>
-<span id="cb3-2"><a href=""></a></span>
-<span id="cb3-3"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb3-5"><a href=""></a>    <span class="at">age =</span> (age <span class="sc">-</span> <span class="fu">mean</span>(age)) <span class="sc">/</span> <span class="fu">sd</span>(age),</span>
-<span id="cb3-6"><a href=""></a>    <span class="at">lwt =</span> (lwt <span class="sc">-</span> <span class="fu">mean</span>(age)) <span class="sc">/</span> <span class="fu">sd</span>(lwt),</span>
-<span id="cb3-7"><a href=""></a>    <span class="at">ptl =</span> (ptl <span class="sc">-</span> <span class="fu">mean</span>(ptl)) <span class="sc">/</span> <span class="fu">sd</span>(ptl),</span>
-<span id="cb3-8"><a href=""></a>    <span class="at">bwt =</span> (bwt <span class="sc">-</span> <span class="fu">mean</span>(bwt)) <span class="sc">/</span> <span class="fu">sd</span>(bwt) </span>
-<span id="cb3-9"><a href=""></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-code-line-numbers="3-8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>birthwt_subset <span class="ot">=</span> birthwt <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(age, lwt, ptl, bwt)</span>
+<span id="cb1-2"><a href=""></a></span>
+<span id="cb1-3"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> </span>
+<span id="cb1-4"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb1-5"><a href=""></a>    <span class="at">age =</span> (age <span class="sc">-</span> <span class="fu">mean</span>(age)) <span class="sc">/</span> <span class="fu">sd</span>(age),</span>
+<span id="cb1-6"><a href=""></a>    <span class="at">lwt =</span> (lwt <span class="sc">-</span> <span class="fu">mean</span>(age)) <span class="sc">/</span> <span class="fu">sd</span>(lwt),</span>
+<span id="cb1-7"><a href=""></a>    <span class="at">ptl =</span> (ptl <span class="sc">-</span> <span class="fu">mean</span>(ptl)) <span class="sc">/</span> <span class="fu">sd</span>(ptl),</span>
+<span id="cb1-8"><a href=""></a>    <span class="at">bwt =</span> (bwt <span class="sc">-</span> <span class="fu">mean</span>(bwt)) <span class="sc">/</span> <span class="fu">sd</span>(bwt) </span>
+<span id="cb1-9"><a href=""></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 189 × 4
       age   lwt    ptl    bwt
@@ -317,11 +295,6 @@ Rebecca Deek, PhD
  9  1.09   4.02 -0.397 -0.386
 10  0.521  3.70 -0.397 -0.383
 # ℹ 179 more rows</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_3c439a09" minutes="1" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 <p>Discuss with a partner what each line of code is doing, and why. Can you spot the mistake?</p>
@@ -343,106 +316,88 @@ Rebecca Deek, PhD
 <section id="writing-a-function-identify-a-pattern" class="slide level2">
 <h2>Writing a function: Identify a pattern</h2>
 <p>Let’s take a look at the repeated line out of the prior <code>dplyr::mutate()</code> statements:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>(age <span class="sc">-</span> <span class="fu">mean</span>(age)) <span class="sc">/</span> <span class="fu">sd</span>(age)</span>
-<span id="cb5-2"><a href=""></a>(lwt <span class="sc">-</span> <span class="fu">mean</span>(lwt)) <span class="sc">/</span> <span class="fu">sd</span>(lwt)</span>
-<span id="cb5-3"><a href=""></a>(ptl <span class="sc">-</span> <span class="fu">mean</span>(ptl)) <span class="sc">/</span> <span class="fu">sd</span>(ptl)</span>
-<span id="cb5-4"><a href=""></a>(bwt <span class="sc">-</span> <span class="fu">mean</span>(bwt)) <span class="sc">/</span> <span class="fu">sd</span>(bwt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>(age <span class="sc">-</span> <span class="fu">mean</span>(age)) <span class="sc">/</span> <span class="fu">sd</span>(age)</span>
+<span id="cb3-2"><a href=""></a>(lwt <span class="sc">-</span> <span class="fu">mean</span>(lwt)) <span class="sc">/</span> <span class="fu">sd</span>(lwt)</span>
+<span id="cb3-3"><a href=""></a>(ptl <span class="sc">-</span> <span class="fu">mean</span>(ptl)) <span class="sc">/</span> <span class="fu">sd</span>(ptl)</span>
+<span id="cb3-4"><a href=""></a>(bwt <span class="sc">-</span> <span class="fu">mean</span>(bwt)) <span class="sc">/</span> <span class="fu">sd</span>(bwt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Let’s put a placeholder where the variable changes.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>(█ <span class="sc">-</span> <span class="fu">mean</span>(█)) <span class="sc">/</span> <span class="fu">sd</span>(█)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>(█ <span class="sc">-</span> <span class="fu">mean</span>(█)) <span class="sc">/</span> <span class="fu">sd</span>(█)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This will be our skeleton code for writing our <code>z_score</code> function.</p>
 </section>
-<section id="the-parts-of-a-function" class="slide level2">
+<section id="the-parts-of-a-function" class="slide level2 smaller">
 <h2>The parts of a function</h2>
 <p>Every function consists of three parts:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>name <span class="ot">=</span> <span class="cf">function</span>(<span class="at">df =</span> data, <span class="at">na =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">body_do_something</span>(df, na)</span>
+<span id="cb5-3"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ol type="1">
 <li>A <strong>name</strong>: e.g., <code>z_score</code> (it computes a z-score).</li>
-<li>The <strong>arguments</strong>: the thing that varies (e.g., <code>x</code>).</li>
-<li>The <strong>body</strong>: the code that is repeated across calls.</li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>name <span class="ot">=</span> <span class="cf">function</span>(arguments) {</span>
-<span id="cb7-2"><a href=""></a>  body</span>
-<span id="cb7-3"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="arguments" class="slide level2">
-<h2>Arguments</h2>
+<div class="fragment">
+<ol start="2" type="1">
+<li>The <strong>arguments</strong>: the thing that varies (e.g., <code>x</code>, <code>y</code>, <code>df</code>).
 <ul>
 <li>These are the inputs of your function.</li>
 <li>They are used within the body of your function.</li>
 <li>They can have default values.</li>
-</ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>name <span class="ot">=</span> <span class="cf">function</span>(<span class="at">df =</span> data, <span class="at">na =</span> <span class="cn">FALSE</span>) {</span>
-<span id="cb8-2"><a href=""></a>  <span class="fu">body_do_something</span>(df, na)</span>
-<span id="cb8-3"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ul>
-<li>The names should be short but intuitive.
-<ul>
-<li><code>x</code>, <code>y</code>, <code>z</code> for vectors.</li>
-<li><code>df</code> for data frames.</li>
-<li><code>n</code> for sample size, <code>p</code> for number of variables.</li>
 </ul></li>
-</ul>
-</section>
-<section id="body" class="slide level2">
-<h2>Body</h2>
+</ol>
+</div>
+<div class="fragment">
+<ol start="3" type="1">
+<li>The <strong>body</strong>: code that is repeated across calls.
 <ul>
 <li>What you want performed within your function.</li>
-<li>A common flow is:
-<ul>
-<li>Input checks with warnings and/or error messages.</li>
-<li>Perform operations.</li>
-<li>Format output.</li>
 </ul></li>
-</ul>
+</ol>
+</div>
 </section>
-<section id="return" class="slide level2">
+<section id="return" class="slide level2 smaller">
 <h2>Return</h2>
 <ul>
 <li>What is output by your function.</li>
 <li>Returns can be implicit using the last value produced (but not stored to an object).</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>name <span class="ot">=</span> <span class="cf">function</span>(<span class="at">df =</span> data, <span class="at">na =</span> <span class="cn">FALSE</span>) {</span>
-<span id="cb9-2"><a href=""></a>  <span class="fu">body_do_something</span>(df, na)</span>
-<span id="cb9-3"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>name <span class="ot">=</span> <span class="cf">function</span>(<span class="at">df =</span> data, <span class="at">na =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb6-2"><a href=""></a>  <span class="fu">body_do_something</span>(df, na)</span>
+<span id="cb6-3"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
 <ul>
 <li>Or explicit with the <code>return</code> function.</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>name <span class="ot">=</span> <span class="cf">function</span>(<span class="at">df =</span> data, <span class="at">na =</span> <span class="cn">FALSE</span>) {</span>
-<span id="cb10-2"><a href=""></a>  out <span class="ot">=</span> <span class="fu">body_do_something</span>(df, na)</span>
-<span id="cb10-3"><a href=""></a>  <span class="fu">return</span>(out)</span>
-<span id="cb10-4"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>name <span class="ot">=</span> <span class="cf">function</span>(<span class="at">df =</span> data, <span class="at">na =</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb7-2"><a href=""></a>  out <span class="ot">=</span> <span class="fu">body_do_something</span>(df, na)</span>
+<span id="cb7-3"><a href=""></a>  <span class="fu">return</span>(out)</span>
+<span id="cb7-4"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>Returns can be single values (p-value) or a collection of values (test statistic and p-value), as well as named or unnamed.</li>
 </ul>
+</div>
 </section>
 <section id="building-z_score" class="slide level2 smaller">
 <h2>Building <code>z_score()</code></h2>
-<p>Remeber out template…</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>(█ <span class="sc">-</span> <span class="fu">mean</span>(█)) <span class="sc">/</span> <span class="fu">sd</span>(█)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Remember out template…</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>(█ <span class="sc">-</span> <span class="fu">mean</span>(█)) <span class="sc">/</span> <span class="fu">sd</span>(█)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Now let’s convert it into a proper function.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>z_score <span class="ot">=</span> <span class="cf">function</span>(x) {</span>
-<span id="cb12-2"><a href=""></a>  z <span class="ot">=</span> (x <span class="sc">-</span> <span class="fu">mean</span>(x)) <span class="sc">/</span> <span class="fu">sd</span>(x)</span>
-<span id="cb12-3"><a href=""></a>  </span>
-<span id="cb12-4"><a href=""></a>  <span class="fu">return</span>(z)</span>
-<span id="cb12-5"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>z_score <span class="ot">=</span> <span class="cf">function</span>(x) {</span>
+<span id="cb9-2"><a href=""></a>  z <span class="ot">=</span> (x <span class="sc">-</span> <span class="fu">mean</span>(x)) <span class="sc">/</span> <span class="fu">sd</span>(x)</span>
+<span id="cb9-3"><a href=""></a>  </span>
+<span id="cb9-4"><a href=""></a>  <span class="fu">return</span>(z)</span>
+<span id="cb9-5"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <ul>
 <li>Let’s try out the function on a few small examples before applying it to <code>birthwt</code>.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">z_score</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">z_score</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">10</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -1  0  1</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">z_score</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="cn">NA</span>, <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">z_score</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="cn">NA</span>, <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] NA NA NA NA NA</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_b4d5370a" minutes="2" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 <p>What’s causing the issue and how would you fix it?</p>
@@ -452,22 +407,22 @@ Rebecca Deek, PhD
 <h2>Adjusting <code>z_score()</code></h2>
 <p>There are two ways to adjust our function to handle <code>NA</code> values.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>z_score <span class="ot">=</span> <span class="cf">function</span>(x) {</span>
-<span id="cb17-2"><a href=""></a>  (x <span class="sc">-</span> <span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">/</span> <span class="fu">sd</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb17-3"><a href=""></a>}</span>
-<span id="cb17-4"><a href=""></a></span>
-<span id="cb17-5"><a href=""></a>z_score_na <span class="ot">=</span> <span class="cf">function</span>(x, <span class="at">na_logic =</span> T) {</span>
-<span id="cb17-6"><a href=""></a>  (x <span class="sc">-</span> <span class="fu">mean</span>(x, <span class="at">na.rm =</span> na_logic)) <span class="sc">/</span> <span class="fu">sd</span>(x, <span class="at">na.rm =</span> na_logic)</span>
-<span id="cb17-7"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>z_score <span class="ot">=</span> <span class="cf">function</span>(x) {</span>
+<span id="cb14-2"><a href=""></a>  (x <span class="sc">-</span> <span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">/</span> <span class="fu">sd</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-3"><a href=""></a>}</span>
+<span id="cb14-4"><a href=""></a></span>
+<span id="cb14-5"><a href=""></a>z_score_na <span class="ot">=</span> <span class="cf">function</span>(x, <span class="at">na_logic =</span> T) {</span>
+<span id="cb14-6"><a href=""></a>  (x <span class="sc">-</span> <span class="fu">mean</span>(x, <span class="at">na.rm =</span> na_logic)) <span class="sc">/</span> <span class="fu">sd</span>(x, <span class="at">na.rm =</span> na_logic)</span>
+<span id="cb14-7"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <p>Now let’s retry these functions on our small example data.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a><span class="fu">z_score</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="cn">NA</span>, <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">z_score</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="cn">NA</span>, <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -1.024695 -0.439155  0.146385        NA  1.317465</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">z_score_na</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="cn">NA</span>, <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">z_score_na</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="cn">NA</span>, <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -1.024695 -0.439155  0.146385        NA  1.317465</code></pre>
 </div>
@@ -477,12 +432,12 @@ Rebecca Deek, PhD
 <section id="using-z_score" class="slide level2 smaller">
 <h2>Using <code>z_score()</code></h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> </span>
-<span id="cb22-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">age =</span> <span class="fu">z_score</span>(age),</span>
-<span id="cb22-3"><a href=""></a>                <span class="at">lwt =</span> <span class="fu">z_score</span>(lwt),</span>
-<span id="cb22-4"><a href=""></a>                <span class="at">ptl =</span> <span class="fu">z_score</span>(ptl),</span>
-<span id="cb22-5"><a href=""></a>                <span class="at">bwt =</span> <span class="fu">z_score</span>(bwt)</span>
-<span id="cb22-6"><a href=""></a>                )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">age =</span> <span class="fu">z_score</span>(age),</span>
+<span id="cb19-3"><a href=""></a>                <span class="at">lwt =</span> <span class="fu">z_score</span>(lwt),</span>
+<span id="cb19-4"><a href=""></a>                <span class="at">ptl =</span> <span class="fu">z_score</span>(ptl),</span>
+<span id="cb19-5"><a href=""></a>                <span class="at">bwt =</span> <span class="fu">z_score</span>(bwt)</span>
+<span id="cb19-6"><a href=""></a>                )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 189 × 4
       age    lwt    ptl    bwt
@@ -508,76 +463,24 @@ Rebecca Deek, PhD
 </ul>
 </div>
 </section>
-<section id="building-another-function" class="slide level2 smaller">
-<h2>Building another function</h2>
-<p>Our <code>z_score</code> function worked well with <code>dplyr</code>’s <code>mutate</code>.</p>
-<ul>
-<li><code>z_score</code> took an <span class="math inline">\(n \times 1\)</span> vector as input and returned an <span class="math inline">\(n \times 1\)</span> vector as output.</li>
-</ul>
-<div class="fragment">
-<p>We will build a function that calculates the coefficient of variation: the ratio of the sample standard deviation to the sample mean.</p>
-<ul>
-<li>Useful for comparing variability across variables measured on different scales.</li>
-</ul>
-<p><span class="math display">\[cv = \frac{s}{\bar{x}}\]</span></p>
-</div>
-<div class="fragment">
-<ul>
-<li>Notice that by definition <span class="math inline">\(cv\)</span> takes an <span class="math inline">\(n \times 1\)</span> vector as input and returns a scalar (<span class="math inline">\(1 \times 1\)</span>) as output.
-<ul>
-<li>Making it pair well with <code>summarise()</code>.</li>
-</ul></li>
-</ul>
-</div>
-</section>
-<section id="building-cv" class="slide level2 smaller">
-<h2>Building <code>cv()</code></h2>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a>cv <span class="ot">=</span> <span class="cf">function</span>(x, <span class="at">na.rm =</span> <span class="cn">FALSE</span>) {</span>
-<span id="cb24-2"><a href=""></a>  <span class="fu">sd</span>(x, <span class="at">na.rm =</span> na.rm) <span class="sc">/</span> <span class="fu">mean</span>(x, <span class="at">na.rm =</span> na.rm)</span>
-<span id="cb24-3"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<ol type="1">
-<li>Name: <code>cv</code>.</li>
-<li>Arguments: <code>x</code> and <code>na.rm = FALSE</code>.</li>
-<li>Body: <code>sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm)</code>.</li>
-</ol>
-<p>How about return? Implicit or explicit?</p>
-<div class="fragment">
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a><span class="fu">cv</span>(<span class="at">x =</span> birthwt<span class="sc">$</span>bwt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.2476457</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">cv</span>(<span class="at">x =</span> birthwt<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.2280169</code></pre>
-</div>
-</div>
-<ul>
-<li><code>bwt</code> and <code>age</code> are on totally different scales (grams vs.&nbsp;years).
-<ul>
-<li><code>cv()</code> lets us compare their relative spread directly minimizes copying-and-pasting.</li>
-</ul></li>
-</ul>
-</div>
-</section>
 <section id="exercise-cv-by-group" class="slide level2">
 <h2>Exercise: <code>cv()</code> by group</h2>
 <div class="code-blanks-instructions-box">
-<p>Is birth weight (<code>bwt</code>) more variable among smokers or non-smokers (<code>smoke</code>)?</p>
+<p>Build a function that calculates the coefficient of variation: the ratio of the sample standard deviation to the sample mean. Is birth weight (<code>bwt</code>) more variable among smokers or non-smokers (<code>smoke</code>)?</p>
 </div>
-<pre class="code-blanks"><code>cv = function(x, na.rm = FALSE) {
+<pre class="code-blanks"><code># create function
+cv = <input class="code-blank-input" data-answer="function" data-default="" value="" size="10">(x, na.rm = FALSE) {
   sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm)
 }
 
+# run function
 birthwt |&gt;
   <input class="code-blank-input" data-answer="group_by" data-default="" value="" size="10">(<input class="code-blank-input" data-answer="smoke" data-default="" value="" size="7">) |&gt;
   summarise(<input class="code-blank-input" data-answer="cv_bwt" data-default="" value="" size="8"> = cv(x = bwt), .groups = "drop")
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_132d5771" minutes="3" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_26a2b748" minutes="3" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
@@ -618,13 +521,13 @@ birthwt |&gt;
       }</style></aside>
 <p>Let’s write a function that groups by one variable and averages another:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>grouped_mean <span class="ot">=</span> <span class="cf">function</span>(df, group_var, mean_var) {</span>
-<span id="cb29-2"><a href=""></a>  df <span class="sc">|&gt;</span></span>
-<span id="cb29-3"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(group_var) <span class="sc">|&gt;</span> <span class="co"># group by variable</span></span>
-<span id="cb29-4"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(mean_var), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="co"># calculate mean per group, drop groups</span></span>
-<span id="cb29-5"><a href=""></a>}</span>
-<span id="cb29-6"><a href=""></a></span>
-<span id="cb29-7"><a href=""></a>birthwt <span class="sc">|&gt;</span> <span class="fu">grouped_mean</span>(<span class="at">group_var =</span> race, <span class="at">mean_var =</span> bwt) <span class="co"># piping with function</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>grouped_mean <span class="ot">=</span> <span class="cf">function</span>(df, group_var, mean_var) {</span>
+<span id="cb21-2"><a href=""></a>  df <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(group_var) <span class="sc">|&gt;</span> <span class="co"># group by variable</span></span>
+<span id="cb21-4"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(mean_var), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="co"># calculate mean per group, drop groups</span></span>
+<span id="cb21-5"><a href=""></a>}</span>
+<span id="cb21-6"><a href=""></a></span>
+<span id="cb21-7"><a href=""></a>birthwt <span class="sc">|&gt;</span> <span class="fu">grouped_mean</span>(<span class="at">group_var =</span> race, <span class="at">mean_var =</span> bwt) <span class="co"># piping with function</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in `dplyr::group_by()`:
 ! Must group by variables found in `.data`.
@@ -636,14 +539,14 @@ birthwt |&gt;
 <li>Inside the function, <code>group_by()</code> looks for a column literally named <code>group_var</code></li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>df_toy <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
-<span id="cb31-2"><a href=""></a>  <span class="at">mean_var =</span> <span class="dv">1</span>,</span>
-<span id="cb31-3"><a href=""></a>  <span class="at">group_var =</span> <span class="st">"g"</span>,</span>
-<span id="cb31-4"><a href=""></a>  <span class="at">group =</span> <span class="dv">1</span>,</span>
-<span id="cb31-5"><a href=""></a>  <span class="at">x =</span> <span class="dv">10</span></span>
-<span id="cb31-6"><a href=""></a>)</span>
-<span id="cb31-7"><a href=""></a></span>
-<span id="cb31-8"><a href=""></a>df_toy <span class="sc">|&gt;</span> <span class="fu">grouped_mean</span>(<span class="at">group_var =</span> group, <span class="at">mean_var =</span> x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>df_toy <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb23-2"><a href=""></a>  <span class="at">mean_var =</span> <span class="dv">1</span>,</span>
+<span id="cb23-3"><a href=""></a>  <span class="at">group_var =</span> <span class="st">"g"</span>,</span>
+<span id="cb23-4"><a href=""></a>  <span class="at">group =</span> <span class="dv">1</span>,</span>
+<span id="cb23-5"><a href=""></a>  <span class="at">x =</span> <span class="dv">10</span></span>
+<span id="cb23-6"><a href=""></a>)</span>
+<span id="cb23-7"><a href=""></a></span>
+<span id="cb23-8"><a href=""></a>df_toy <span class="sc">|&gt;</span> <span class="fu">grouped_mean</span>(<span class="at">group_var =</span> group, <span class="at">mean_var =</span> x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
   group_var  mean
@@ -667,20 +570,20 @@ birthwt |&gt;
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a>grouped_mean <span class="ot">=</span> <span class="cf">function</span>(df, group_var, mean_var) {</span>
-<span id="cb33-2"><a href=""></a>  df <span class="sc">|&gt;</span></span>
-<span id="cb33-3"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>({{ group_var }}) <span class="sc">|&gt;</span> <span class="co"># group by variable</span></span>
-<span id="cb33-4"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>({{ mean_var }}), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="co"># calculate mean per group, drop groups</span></span>
-<span id="cb33-5"><a href=""></a>}</span>
-<span id="cb33-6"><a href=""></a></span>
-<span id="cb33-7"><a href=""></a>df_toy <span class="sc">|&gt;</span> <span class="fu">grouped_mean</span>(group, x) <span class="co"># toy data, lazy eval</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>grouped_mean <span class="ot">=</span> <span class="cf">function</span>(df, group_var, mean_var) {</span>
+<span id="cb25-2"><a href=""></a>  df <span class="sc">|&gt;</span></span>
+<span id="cb25-3"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>({{ group_var }}) <span class="sc">|&gt;</span> <span class="co"># group by variable</span></span>
+<span id="cb25-4"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>({{ mean_var }}), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="co"># calculate mean per group, drop groups</span></span>
+<span id="cb25-5"><a href=""></a>}</span>
+<span id="cb25-6"><a href=""></a></span>
+<span id="cb25-7"><a href=""></a>df_toy <span class="sc">|&gt;</span> <span class="fu">grouped_mean</span>(group, x) <span class="co"># toy data, lazy eval</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
   group  mean
   &lt;dbl&gt; &lt;dbl&gt;
 1     1    10</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> <span class="fu">grouped_mean</span>(race, bwt) <span class="co"># birthwt date mean(bwt) by race, lazy eval</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> <span class="fu">grouped_mean</span>(race, bwt) <span class="co"># birthwt date mean(bwt) by race, lazy eval</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
   race   mean
@@ -725,31 +628,31 @@ birthwt |&gt;
 <section id="a-summary-helper" class="slide level2 smaller">
 <h2>A summary helper</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a>summary6 <span class="ot">=</span> <span class="cf">function</span>(data, var) {</span>
-<span id="cb37-2"><a href=""></a>  data <span class="sc">|&gt;</span> </span>
-<span id="cb37-3"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
-<span id="cb37-4"><a href=""></a>      <span class="at">min    =</span> <span class="fu">min</span>({{ var }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb37-5"><a href=""></a>      <span class="at">mean   =</span> <span class="fu">mean</span>({{ var }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb37-6"><a href=""></a>      <span class="at">median =</span> <span class="fu">median</span>({{ var }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb37-7"><a href=""></a>      <span class="at">max    =</span> <span class="fu">max</span>({{ var }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb37-8"><a href=""></a>      <span class="at">n      =</span> <span class="fu">n</span>(),</span>
-<span id="cb37-9"><a href=""></a>      <span class="at">n_miss =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>({{ var }})),</span>
-<span id="cb37-10"><a href=""></a>      <span class="at">.groups =</span> <span class="st">"drop"</span> <span class="co"># good practice</span></span>
-<span id="cb37-11"><a href=""></a>    )</span>
-<span id="cb37-12"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>summary6 <span class="ot">=</span> <span class="cf">function</span>(data, var) {</span>
+<span id="cb29-2"><a href=""></a>  data <span class="sc">|&gt;</span> </span>
+<span id="cb29-3"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
+<span id="cb29-4"><a href=""></a>      <span class="at">min    =</span> <span class="fu">min</span>({{ var }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb29-5"><a href=""></a>      <span class="at">mean   =</span> <span class="fu">mean</span>({{ var }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb29-6"><a href=""></a>      <span class="at">median =</span> <span class="fu">median</span>({{ var }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb29-7"><a href=""></a>      <span class="at">max    =</span> <span class="fu">max</span>({{ var }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb29-8"><a href=""></a>      <span class="at">n      =</span> <span class="fu">n</span>(),</span>
+<span id="cb29-9"><a href=""></a>      <span class="at">n_miss =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>({{ var }})),</span>
+<span id="cb29-10"><a href=""></a>      <span class="at">.groups =</span> <span class="st">"drop"</span> <span class="co"># good practice</span></span>
+<span id="cb29-11"><a href=""></a>    )</span>
+<span id="cb29-12"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> <span class="fu">summary6</span>(bwt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> <span class="fu">summary6</span>(bwt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 6
     min  mean median   max     n n_miss
   &lt;int&gt; &lt;dbl&gt;  &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt;
 1   709 2945.   2977  4990   189      0</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a>birthwt <span class="sc">|&gt;</span></span>
-<span id="cb40-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(race) <span class="sc">|&gt;</span></span>
-<span id="cb40-3"><a href=""></a>  <span class="fu">summary6</span>(bwt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>birthwt <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(race) <span class="sc">|&gt;</span></span>
+<span id="cb32-3"><a href=""></a>  <span class="fu">summary6</span>(bwt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 7
   race    min  mean median   max     n n_miss
@@ -780,7 +683,7 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_9b51c765" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_3fc21847" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
@@ -796,16 +699,16 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 </ul></li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a>unique_where <span class="ot">=</span> <span class="cf">function</span>(df, condition, var) {</span>
-<span id="cb42-2"><a href=""></a>  df <span class="sc">|&gt;</span></span>
-<span id="cb42-3"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>({{ condition }}) <span class="sc">|&gt;</span></span>
-<span id="cb42-4"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">distinct</span>({{ var }})</span>
-<span id="cb42-5"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a>unique_where <span class="ot">=</span> <span class="cf">function</span>(df, condition, var) {</span>
+<span id="cb34-2"><a href=""></a>  df <span class="sc">|&gt;</span></span>
+<span id="cb34-3"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>({{ condition }}) <span class="sc">|&gt;</span></span>
+<span id="cb34-4"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">distinct</span>({{ var }})</span>
+<span id="cb34-5"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <p>Which races are represented among mothers older than 35?</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> <span class="fu">unique_where</span>(age <span class="sc">&gt;</span> <span class="dv">35</span>, race)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> <span class="fu">unique_where</span>(age <span class="sc">&gt;</span> <span class="dv">35</span>, race)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 1
   race 
@@ -828,15 +731,15 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 <li>Suppose we would like to group by both <code>race</code> and <code>smoke</code> before calculating the median.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href=""></a>count_missing <span class="ot">=</span> <span class="cf">function</span>(df, group_vars, med_var) {</span>
-<span id="cb45-2"><a href=""></a>  df <span class="sc">|&gt;</span></span>
-<span id="cb45-3"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="fu">pick</span>({{ group_vars }})) <span class="sc">|&gt;</span> <span class="co"># group_by = data-masking function</span></span>
-<span id="cb45-4"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">median =</span> <span class="fu">median</span>({{ med_var }}),</span>
-<span id="cb45-5"><a href=""></a>                     <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb45-6"><a href=""></a>    )</span>
-<span id="cb45-7"><a href=""></a>}</span>
-<span id="cb45-8"><a href=""></a></span>
-<span id="cb45-9"><a href=""></a>birthwt <span class="sc">|&gt;</span> <span class="fu">count_missing</span>(<span class="at">group_vars =</span> <span class="fu">c</span>(race, smoke), <span class="at">med_var =</span> ftv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a>count_missing <span class="ot">=</span> <span class="cf">function</span>(df, group_vars, med_var) {</span>
+<span id="cb37-2"><a href=""></a>  df <span class="sc">|&gt;</span></span>
+<span id="cb37-3"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="fu">pick</span>({{ group_vars }})) <span class="sc">|&gt;</span> <span class="co"># group_by = data-masking function</span></span>
+<span id="cb37-4"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">median =</span> <span class="fu">median</span>({{ med_var }}),</span>
+<span id="cb37-5"><a href=""></a>                     <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb37-6"><a href=""></a>    )</span>
+<span id="cb37-7"><a href=""></a>}</span>
+<span id="cb37-8"><a href=""></a></span>
+<span id="cb37-9"><a href=""></a>birthwt <span class="sc">|&gt;</span> <span class="fu">count_missing</span>(<span class="at">group_vars =</span> <span class="fu">c</span>(race, smoke), <span class="at">med_var =</span> ftv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   race  smoke median
@@ -852,45 +755,6 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 <ul>
 <li><code>pick()</code> allows you to select/reference multiple columns.</li>
 </ul>
-</div>
-</section>
-<section id="naming-functions-well" class="slide level2">
-<h2>Naming functions well</h2>
-<ul>
-<li>It is common that function names are verbs.
-<ul>
-<li>Well-known nouns are exceptions (e.g., <code>mean()</code> vs.&nbsp;<code>compute_mean()</code>).</li>
-</ul></li>
-<li>Arguments should be nouns.</li>
-<li>Trade-off between clear and short.</li>
-</ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="co"># too short</span></span>
-<span id="cb47-2"><a href=""></a><span class="fu">f</span>()</span>
-<span id="cb47-3"><a href=""></a></span>
-<span id="cb47-4"><a href=""></a><span class="co"># not a verb, or descriptive</span></span>
-<span id="cb47-5"><a href=""></a><span class="fu">my_awesome_function</span>()</span>
-<span id="cb47-6"><a href=""></a></span>
-<span id="cb47-7"><a href=""></a><span class="co"># long, but clear</span></span>
-<span id="cb47-8"><a href=""></a><span class="fu">impute_missing</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="style-and-aesthetics" class="slide level2">
-<h2>Style and aesthetics</h2>
-<p>R doesn’t care about spacing and the readability of your code, but your future self and I do.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href=""></a>z_summary <span class="ot">=</span> <span class="cf">function</span>(df, var) {</span>
-<span id="cb48-2"><a href=""></a>out <span class="ot">=</span> df <span class="sc">|&gt;</span></span>
-<span id="cb48-3"><a href=""></a>dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean=</span><span class="fu">mean</span>({{var}},<span class="at">na.rm=</span><span class="cn">TRUE</span>))</span>
-<span id="cb48-4"><a href=""></a><span class="fu">return</span>(out)</span>
-<span id="cb48-5"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="fragment">
-<p>Better styling would be:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a>z_summary <span class="ot">=</span> <span class="cf">function</span>(df, var) {</span>
-<span id="cb49-2"><a href=""></a>  </span>
-<span id="cb49-3"><a href=""></a>  out <span class="ot">=</span> df <span class="sc">|&gt;</span></span>
-<span id="cb49-4"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>({{ var }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb49-5"><a href=""></a>    </span>
-<span id="cb49-6"><a href=""></a>  <span class="fu">return</span>(out)</span>
-<span id="cb49-7"><a href=""></a>  </span>
-<span id="cb49-8"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="functions-and-iteration" class="slide level2">
@@ -925,28 +789,28 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 <h2>Recall: Reduce copying-and-pasting</h2>
 <p>Imagine a simple dataset with four numeric variables (age, bmi, sbp, and ldl cholesterol).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href=""></a>df_rnorm <span class="ot">=</span> <span class="fu">tibble</span>(</span>
-<span id="cb50-2"><a href=""></a>  <span class="at">age =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">50</span>, <span class="at">sd =</span> <span class="fl">7.3</span>),</span>
-<span id="cb50-3"><a href=""></a>  <span class="at">bmi =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">22</span>, <span class="at">sd =</span> <span class="fl">3.1</span>),</span>
-<span id="cb50-4"><a href=""></a>  <span class="at">sbp =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="fl">5.7</span>),</span>
-<span id="cb50-5"><a href=""></a>  <span class="at">ldl =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">95</span>, <span class="at">sd =</span> <span class="fl">6.1</span>)</span>
-<span id="cb50-6"><a href=""></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href=""></a>df_rnorm <span class="ot">=</span> <span class="fu">tibble</span>(</span>
+<span id="cb39-2"><a href=""></a>  <span class="at">age =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">50</span>, <span class="at">sd =</span> <span class="fl">7.3</span>),</span>
+<span id="cb39-3"><a href=""></a>  <span class="at">bmi =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">22</span>, <span class="at">sd =</span> <span class="fl">3.1</span>),</span>
+<span id="cb39-4"><a href=""></a>  <span class="at">sbp =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">100</span>, <span class="at">sd =</span> <span class="fl">5.7</span>),</span>
+<span id="cb39-5"><a href=""></a>  <span class="at">ldl =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">95</span>, <span class="at">sd =</span> <span class="fl">6.1</span>)</span>
+<span id="cb39-6"><a href=""></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We would like to calculate the median of each one.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href=""></a><span class="fu">median</span>(df_rnorm<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a><span class="fu">median</span>(df_rnorm<span class="sc">$</span>age)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 51.873</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href=""></a><span class="fu">median</span>(df_rnorm<span class="sc">$</span>bmi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a><span class="fu">median</span>(df_rnorm<span class="sc">$</span>bmi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 23.5248</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href=""></a><span class="fu">median</span>(df_rnorm<span class="sc">$</span>sbp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a><span class="fu">median</span>(df_rnorm<span class="sc">$</span>sbp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 100.0525</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href=""></a><span class="fu">median</span>(df_rnorm<span class="sc">$</span>ldl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a><span class="fu">median</span>(df_rnorm<span class="sc">$</span>ldl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 94.65499</code></pre>
 </div>
@@ -963,11 +827,11 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 <section id="for-loops" class="slide level2 smaller">
 <h2>For loops</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href=""></a>output <span class="ot">=</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"double"</span>, <span class="at">length =</span> <span class="fu">ncol</span>(df_rnorm))  <span class="co"># 1. output</span></span>
-<span id="cb59-2"><a href=""></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(df_rnorm)) {                           <span class="co"># 2. sequence</span></span>
-<span id="cb59-3"><a href=""></a>  output[[i]] <span class="ot">=</span> <span class="fu">median</span>(df_rnorm[[i]])                      <span class="co"># 3. body</span></span>
-<span id="cb59-4"><a href=""></a>}</span>
-<span id="cb59-5"><a href=""></a>output</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href=""></a>output <span class="ot">=</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">"double"</span>, <span class="at">length =</span> <span class="fu">ncol</span>(df_rnorm))  <span class="co"># 1. output</span></span>
+<span id="cb48-2"><a href=""></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(df_rnorm)) {                           <span class="co"># 2. sequence</span></span>
+<span id="cb48-3"><a href=""></a>  output[[i]] <span class="ot">=</span> <span class="fu">median</span>(df_rnorm[[i]])                      <span class="co"># 3. body</span></span>
+<span id="cb48-4"><a href=""></a>}</span>
+<span id="cb48-5"><a href=""></a>output</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  51.87300  23.52480 100.05254  94.65499</code></pre>
 </div>
@@ -988,7 +852,7 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 </ul></li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href=""></a><span class="fu">seq_along</span>(df_rnorm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href=""></a><span class="fu">seq_along</span>(df_rnorm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1 2 3 4</code></pre>
 </div>
@@ -1007,7 +871,7 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 <h2><code>birthwt</code>: Standardizing variables</h2>
 <p>Recall when we learned about functions, we standardized all the continuous variables in the <code>birthwt</code> dataset with our <code>z_score()</code> function.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href=""></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(birthwt_subset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href=""></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(birthwt_subset)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 189
 Columns: 4
@@ -1019,12 +883,12 @@ $ bwt &lt;int&gt; 2523, 2551, 2557, 2594, 2600, 2622, 2637, 2637, 2663, 2665, 27
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> </span>
-<span id="cb65-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">age =</span> <span class="fu">z_score</span>(age),</span>
-<span id="cb65-3"><a href=""></a>                <span class="at">lwt =</span> <span class="fu">z_score</span>(lwt),</span>
-<span id="cb65-4"><a href=""></a>                <span class="at">ptl =</span> <span class="fu">z_score</span>(ptl),</span>
-<span id="cb65-5"><a href=""></a>                <span class="at">bwt =</span> <span class="fu">z_score</span>(bwt)</span>
-<span id="cb65-6"><a href=""></a>                )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> </span>
+<span id="cb54-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">age =</span> <span class="fu">z_score</span>(age),</span>
+<span id="cb54-3"><a href=""></a>                <span class="at">lwt =</span> <span class="fu">z_score</span>(lwt),</span>
+<span id="cb54-4"><a href=""></a>                <span class="at">ptl =</span> <span class="fu">z_score</span>(ptl),</span>
+<span id="cb54-5"><a href=""></a>                <span class="at">bwt =</span> <span class="fu">z_score</span>(bwt)</span>
+<span id="cb54-6"><a href=""></a>                )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 189 × 4
       age    lwt    ptl    bwt
@@ -1048,11 +912,11 @@ $ bwt &lt;int&gt; 2523, 2551, 2557, 2594, 2600, 2622, 2637, 2637, 2663, 2665, 27
 <section id="birthwt-z-scores-for-loop" class="slide level2 smaller">
 <h2><code>birthwt</code> z-scores + for-loop</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href=""></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(birthwt_subset)) {               <span class="co"># 2. sequence</span></span>
-<span id="cb67-2"><a href=""></a>  birthwt_subset[[i]] <span class="ot">=</span> <span class="fu">z_score</span>(birthwt_subset[[i]]) <span class="co"># 3. body</span></span>
-<span id="cb67-3"><a href=""></a>}</span>
-<span id="cb67-4"><a href=""></a></span>
-<span id="cb67-5"><a href=""></a>birthwt_subset</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href=""></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(birthwt_subset)) {               <span class="co"># 2. sequence</span></span>
+<span id="cb56-2"><a href=""></a>  birthwt_subset[[i]] <span class="ot">=</span> <span class="fu">z_score</span>(birthwt_subset[[i]]) <span class="co"># 3. body</span></span>
+<span id="cb56-3"><a href=""></a>}</span>
+<span id="cb56-4"><a href=""></a></span>
+<span id="cb56-5"><a href=""></a>birthwt_subset</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 189 × 4
       age    lwt    ptl    bwt
@@ -1102,7 +966,7 @@ mean_birthwt_subset
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_1217f689" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_c14f18e3" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
@@ -1136,7 +1000,7 @@ mean_birthwt_subset
 <li><code>map()</code>: iterates over columns and returns a list.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href=""></a>purrr<span class="sc">::</span><span class="fu">map</span>(<span class="at">.x =</span> birthwt_subset, <span class="at">.f =</span> median)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href=""></a>purrr<span class="sc">::</span><span class="fu">map</span>(<span class="at">.x =</span> birthwt_subset, <span class="at">.f =</span> median)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$age
 [1] -0.04493484
@@ -1156,7 +1020,7 @@ $bwt
 <li><code>lapply()</code>: iterates over columns and returns a list.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href=""></a><span class="fu">lapply</span>(<span class="at">X =</span> birthwt_subset, <span class="at">FUN =</span> median)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href=""></a><span class="fu">lapply</span>(<span class="at">X =</span> birthwt_subset, <span class="at">FUN =</span> median)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$age
 [1] -0.04493484
@@ -1179,16 +1043,16 @@ $bwt
 <p><code>map</code> and <code>lapply</code> focus on performing the operation (<code>median</code>) and take care of the bookkeeping required to loop over every element and store the output under the hood.</p>
 <div class="fragment">
 <p>Can combine <code>purrr</code> and <code>lapply</code> with pipes:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">map</span>(<span class="at">.f =</span> median)</span>
-<span id="cb73-2"><a href=""></a></span>
-<span id="cb73-3"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> <span class="fu">lapply</span>(<span class="at">FUN =</span> median)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">map</span>(<span class="at">.f =</span> median)</span>
+<span id="cb62-2"><a href=""></a></span>
+<span id="cb62-3"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> <span class="fu">lapply</span>(<span class="at">FUN =</span> median)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <ol start="3" type="1">
 <li>Since we know our output should be doubles, we can also use <code>map_dbl()</code>, which returns a vector.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(median) <span class="co"># pipe and lazy eval</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(median) <span class="co"># pipe and lazy eval</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        age         lwt         ptl         bwt 
 -0.04493484 -0.28826009 -0.39681850  0.04444880 </code></pre>
@@ -1196,12 +1060,12 @@ $bwt
 </div>
 <p>Equivalent to:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">map</span>(median) <span class="sc">|&gt;</span> base<span class="sc">::</span><span class="fu">unlist</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">map</span>(median) <span class="sc">|&gt;</span> base<span class="sc">::</span><span class="fu">unlist</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        age         lwt         ptl         bwt 
 -0.04493484 -0.28826009 -0.39681850  0.04444880 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> <span class="fu">lapply</span>(median) <span class="sc">|&gt;</span> base<span class="sc">::</span><span class="fu">unlist</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href=""></a>birthwt_subset <span class="sc">|&gt;</span> <span class="fu">lapply</span>(median) <span class="sc">|&gt;</span> base<span class="sc">::</span><span class="fu">unlist</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        age         lwt         ptl         bwt 
 -0.04493484 -0.28826009 -0.39681850  0.04444880 </code></pre>
@@ -1213,8 +1077,8 @@ $bwt
 <h2><code>across()</code>: FP within <code>dplyr</code></h2>
 <p><code>across()</code> is a <em>special case</em> of a <code>dplyr</code> FP that makes it easy to apply the same transformation to multiple columns of a data frame and can be combined with other verbs (e.g., <code>mutate</code> or <code>summarise</code>).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> </span>
-<span id="cb80-2"><a href=""></a>  dplyr<span class="sc">::</span> <span class="fu">mutate</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">c</span>(age, lwt, ptl, bwt), <span class="at">.fns =</span> z_score) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> </span>
+<span id="cb69-2"><a href=""></a>  dplyr<span class="sc">::</span> <span class="fu">mutate</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">c</span>(age, lwt, ptl, bwt), <span class="at">.fns =</span> z_score) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 189 × 10
    low       age    lwt race  smoke    ptl    ht    ui   ftv    bwt
@@ -1235,9 +1099,9 @@ $bwt
 <p>Takes the columns to operate on (<code>.cols</code>) and the function(s) to apply (<code>.fns</code>) wrapped by a dplyr verb.</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> </span>
-<span id="cb82-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">c</span>(lwt, bwt), </span>
-<span id="cb82-3"><a href=""></a>                                 <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">median =</span> mean, <span class="at">cv =</span> cv) ) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> </span>
+<span id="cb71-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">c</span>(lwt, bwt), </span>
+<span id="cb71-3"><a href=""></a>                                 <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">median =</span> mean, <span class="at">cv =</span> cv) ) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 4
   lwt_median lwt_cv bwt_median bwt_cv
@@ -1248,7 +1112,73 @@ $bwt
 <p>The output columns are automatically named <code>{column}_{function}</code>, e.g.&nbsp;<code>lwt_median</code>.</p>
 </div>
 </section>
-<section id="iterating-across-files" class="slide level2 smaller">
+<section id="exercise-functional-programming" class="slide level2 smaller scrollable">
+<h2>Exercise: Functional programming</h2>
+<div class="code-blanks-instructions-box">
+<p>Write three different functional programs that will produce the mean of each variable in <code>birthwt_subset</code>.</p>
+</div>
+<pre class="code-blanks"><code>birthwt_subset = birthwt |&gt; dplyr::select(age, lwt, ptl, bwt)
+
+<input class="code-blank-input" data-answer="birthwt_subset |> map(mean)" data-default="" value="" size="29">
+<input class="code-blank-input" data-answer="birthwt_subset |> lapply(mean)" data-default="" value="" size="32">
+<input class="code-blank-input" data-answer="birthwt_subset |> map_dbl(mean)" data-default="" value="" size="33">
+</code></pre>
+<div class="cell">
+<div class="cell-output-display">
+<countdown-timer class="countdown" id="timer_05d3aa87" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+</div>
+</div>
+</section>
+<section>
+<section id="appendix" class="title-slide slide level1 center" data-visibility="uncounted">
+<h1>Appendix</h1>
+
+</section>
+<section id="naming-functions-well" class="slide level2" data-visibility="uncounted">
+<h2>Naming functions well</h2>
+<ul>
+<li>It is common that function names are verbs.
+<ul>
+<li>Well-known nouns are exceptions (e.g., <code>mean()</code> vs.&nbsp;<code>compute_mean()</code>).</li>
+</ul></li>
+<li>Arguments should be nouns.</li>
+<li>Trade-off between clear and short.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href=""></a><span class="co"># too short</span></span>
+<span id="cb73-2"><a href=""></a><span class="fu">f</span>()</span>
+<span id="cb73-3"><a href=""></a></span>
+<span id="cb73-4"><a href=""></a><span class="co"># not a verb, or descriptive</span></span>
+<span id="cb73-5"><a href=""></a><span class="fu">my_awesome_function</span>()</span>
+<span id="cb73-6"><a href=""></a></span>
+<span id="cb73-7"><a href=""></a><span class="co"># long, but clear</span></span>
+<span id="cb73-8"><a href=""></a><span class="fu">impute_missing</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="style-and-aesthetics" class="slide level2" data-visibility="uncounted">
+<h2>Style and aesthetics</h2>
+<p>R doesn’t care about spacing and the readability of your code, but your future self and I do.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href=""></a>z_summary <span class="ot">=</span> <span class="cf">function</span>(df, var) {</span>
+<span id="cb74-2"><a href=""></a>out <span class="ot">=</span> df <span class="sc">|&gt;</span></span>
+<span id="cb74-3"><a href=""></a>dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean=</span><span class="fu">mean</span>({{var}},<span class="at">na.rm=</span><span class="cn">TRUE</span>))</span>
+<span id="cb74-4"><a href=""></a><span class="fu">return</span>(out)</span>
+<span id="cb74-5"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<p>Better styling would be:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href=""></a>z_summary <span class="ot">=</span> <span class="cf">function</span>(df, var) {</span>
+<span id="cb75-2"><a href=""></a>  </span>
+<span id="cb75-3"><a href=""></a>  out <span class="ot">=</span> df <span class="sc">|&gt;</span></span>
+<span id="cb75-4"><a href=""></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>({{ var }}, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb75-5"><a href=""></a>    </span>
+<span id="cb75-6"><a href=""></a>  <span class="fu">return</span>(out)</span>
+<span id="cb75-7"><a href=""></a>  </span>
+<span id="cb75-8"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section></section>
+<section>
+<section id="advanced-materials" class="title-slide slide level1 center" data-visibility="uncounted">
+<h1>Advanced materials</h1>
+
+</section>
+<section id="iterating-across-files" class="slide level2 smaller" data-visibility="uncounted">
 <h2>Iterating across files</h2>
 <p>So far, everything we’ve done has iterated across columns of a single data frame. But there is no reason we can’t iterate over other objects, such as files.</p>
 <div class="fragment">
@@ -1264,10 +1194,10 @@ $bwt
 <li><code>base::list.files()</code> lists the files in a directory. We almost always use three arguments: <code>path</code>, <code>pattern</code>, and <code>full.names</code>.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href=""></a>gapminder.paths <span class="ot">=</span> <span class="fu">list.files</span>(<span class="at">path =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/gapminder"</span>), </span>
-<span id="cb84-2"><a href=""></a>                             <span class="at">pattern =</span> <span class="st">"[.]xlsx$"</span>, </span>
-<span id="cb84-3"><a href=""></a>                             <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb84-4"><a href=""></a>gapminder.paths <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href=""></a>gapminder.paths <span class="ot">=</span> <span class="fu">list.files</span>(<span class="at">path =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/gapminder"</span>), </span>
+<span id="cb76-2"><a href=""></a>                             <span class="at">pattern =</span> <span class="st">"[.]xlsx$"</span>, </span>
+<span id="cb76-3"><a href=""></a>                             <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb76-4"><a href=""></a>gapminder.paths <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "/Users/rdeek/Library/CloudStorage/OneDrive-UniversityofPittsburgh/Documents/teaching/PUBHLT0411/data/gapminder/1952.xlsx"
 [2] "/Users/rdeek/Library/CloudStorage/OneDrive-UniversityofPittsburgh/Documents/teaching/PUBHLT0411/data/gapminder/1957.xlsx"
@@ -1279,7 +1209,7 @@ $bwt
 </div>
 </div>
 </section>
-<section id="reading-multiple-files-with-map" class="slide level2 smaller">
+<section id="reading-multiple-files-with-map" class="slide level2 smaller" data-visibility="uncounted">
 <h2>Reading multiple files with <code>map()</code></h2>
 <p>We could read each file by hand and store the results in a list: <code>list(read_excel(gapminder.paths[[1]]), read_excel(gapminder.paths[[2]]), ...)</code>.</p>
 <ul>
@@ -1288,12 +1218,12 @@ $bwt
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href=""></a>gapminder.ls <span class="ot">=</span> purrr<span class="sc">::</span><span class="fu">map</span>(<span class="at">.x =</span> gapminder.paths, <span class="at">.f =</span> readxl<span class="sc">::</span>read_excel)</span>
-<span id="cb86-2"><a href=""></a><span class="fu">length</span>(gapminder.ls)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href=""></a>gapminder.ls <span class="ot">=</span> purrr<span class="sc">::</span><span class="fu">map</span>(<span class="at">.x =</span> gapminder.paths, <span class="at">.f =</span> readxl<span class="sc">::</span>read_excel)</span>
+<span id="cb78-2"><a href=""></a><span class="fu">length</span>(gapminder.ls)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 12</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href=""></a>gapminder.ls[[<span class="dv">1</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href=""></a>gapminder.ls[[<span class="dv">1</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 142 × 5
    country     continent lifeExp      pop gdpPercap
@@ -1313,11 +1243,11 @@ $bwt
 </div>
 </div>
 </section>
-<section id="adding-names-from-filenames" class="slide level2 smaller">
+<section id="adding-names-from-filenames" class="slide level2 smaller" data-visibility="uncounted">
 <h2>Adding names from filenames</h2>
 <p>Notice that there is no information on the year the data is from. It’s not a column in our data frame, but it is the file name.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href=""></a>gapminder.paths <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">set_names</span>(basename) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">2</span>) <span class="co"># name each element filename</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href=""></a>gapminder.paths <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">set_names</span>(basename) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">2</span>) <span class="co"># name each element filename</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                                                                                                 1952.xlsx 
 "/Users/rdeek/Library/CloudStorage/OneDrive-UniversityofPittsburgh/Documents/teaching/PUBHLT0411/data/gapminder/1952.xlsx" 
@@ -1328,10 +1258,10 @@ $bwt
 <p><code>set_names(basename)</code> names each path with just its file name (e.g.&nbsp;<code>"1952.xlsx"</code>).</p>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href=""></a>gapminder.ls.year <span class="ot">=</span> gapminder.paths <span class="sc">|&gt;</span> </span>
-<span id="cb92-2"><a href=""></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(basename) <span class="sc">|&gt;</span>  <span class="co"># name each element filename</span></span>
-<span id="cb92-3"><a href=""></a>  purrr<span class="sc">::</span><span class="fu">map</span>(readxl<span class="sc">::</span>read_excel) <span class="co"># read file</span></span>
-<span id="cb92-4"><a href=""></a><span class="fu">names</span>(gapminder.ls.year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href=""></a>gapminder.ls.year <span class="ot">=</span> gapminder.paths <span class="sc">|&gt;</span> </span>
+<span id="cb84-2"><a href=""></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(basename) <span class="sc">|&gt;</span>  <span class="co"># name each element filename</span></span>
+<span id="cb84-3"><a href=""></a>  purrr<span class="sc">::</span><span class="fu">map</span>(readxl<span class="sc">::</span>read_excel) <span class="co"># read file</span></span>
+<span id="cb84-4"><a href=""></a><span class="fu">names</span>(gapminder.ls.year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "1952.xlsx" "1957.xlsx" "1962.xlsx" "1967.xlsx" "1972.xlsx" "1977.xlsx"
  [7] "1982.xlsx" "1987.xlsx" "1992.xlsx" "1997.xlsx" "2002.xlsx" "2007.xlsx"</code></pre>
@@ -1341,8 +1271,8 @@ $bwt
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href=""></a><span class="fu">names</span>(gapminder.ls.year) <span class="ot">=</span> readr<span class="sc">::</span><span class="fu">parse_number</span>(<span class="fu">names</span>(gapminder.ls.year)) <span class="co"># rename to just year</span></span>
-<span id="cb94-2"><a href=""></a><span class="fu">names</span>(gapminder.ls.year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href=""></a><span class="fu">names</span>(gapminder.ls.year) <span class="ot">=</span> readr<span class="sc">::</span><span class="fu">parse_number</span>(<span class="fu">names</span>(gapminder.ls.year)) <span class="co"># rename to just year</span></span>
+<span id="cb86-2"><a href=""></a><span class="fu">names</span>(gapminder.ls.year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "1952" "1957" "1962" "1967" "1972" "1977" "1982" "1987" "1992" "1997"
 [11] "2002" "2007"</code></pre>
@@ -1351,15 +1281,15 @@ $bwt
 <p>And we parse to the year only (removing .xlsx).</p>
 </div>
 </section>
-<section id="combining-elements-of-a-list" class="slide level2 smaller">
+<section id="combining-elements-of-a-list" class="slide level2 smaller" data-visibility="uncounted">
 <h2>Combining elements of a list</h2>
 <p>Right now we have each data frame as an element of a list. Sometimes we may want to combine all elements into one data frame. We can use <code>bind_rows</code> for this.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href=""></a>gapminder.year <span class="ot">=</span> gapminder.paths <span class="sc">|&gt;</span> </span>
-<span id="cb96-2"><a href=""></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(basename) <span class="sc">|&gt;</span>     <span class="co"># name each element filename</span></span>
-<span id="cb96-3"><a href=""></a>  purrr<span class="sc">::</span><span class="fu">map</span>(readxl<span class="sc">::</span>read_excel) <span class="sc">|&gt;</span> <span class="co"># read file</span></span>
-<span id="cb96-4"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">"year"</span>) </span>
-<span id="cb96-5"><a href=""></a>gapminder.year <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href=""></a>gapminder.year <span class="ot">=</span> gapminder.paths <span class="sc">|&gt;</span> </span>
+<span id="cb88-2"><a href=""></a>  purrr<span class="sc">::</span><span class="fu">set_names</span>(basename) <span class="sc">|&gt;</span>     <span class="co"># name each element filename</span></span>
+<span id="cb88-3"><a href=""></a>  purrr<span class="sc">::</span><span class="fu">map</span>(readxl<span class="sc">::</span>read_excel) <span class="sc">|&gt;</span> <span class="co"># read file</span></span>
+<span id="cb88-4"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">"year"</span>) </span>
+<span id="cb88-5"><a href=""></a>gapminder.year <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1,704 × 6
   year      country     continent lifeExp      pop gdpPercap
@@ -1375,9 +1305,9 @@ $bwt
 <div class="fragment">
 <p>Once again we can parse the year, but it remains a character.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href=""></a>gapminder.year <span class="ot">=</span> gapminder.year <span class="sc">|&gt;</span> <span class="co"># bind rows of list, colname = id</span></span>
-<span id="cb98-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">parse_number</span>(year)) <span class="co"># parse year</span></span>
-<span id="cb98-3"><a href=""></a>gapminder.year <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href=""></a>gapminder.year <span class="ot">=</span> gapminder.year <span class="sc">|&gt;</span> <span class="co"># bind rows of list, colname = id</span></span>
+<span id="cb90-2"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">parse_number</span>(year)) <span class="co"># parse year</span></span>
+<span id="cb90-3"><a href=""></a>gapminder.year <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1,704 × 6
    year country     continent lifeExp      pop gdpPercap
@@ -1392,16 +1322,16 @@ $bwt
 </div>
 </div>
 </section>
-<section id="list-columns" class="slide level2 smaller">
+<section id="list-columns" class="slide level2 smaller" data-visibility="uncounted">
 <h2>List-columns</h2>
 <p>Alternatively, instead of stacking the data frames, we can keep the separate data frames and turn it into a <em>list-column</em> (!!!) in a tibble.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href=""></a>gapminder.df <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">path =</span> gapminder.paths) <span class="sc">|&gt;</span> <span class="co"># column for paths</span></span>
-<span id="cb100-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">year =</span> readr<span class="sc">::</span><span class="fu">parse_number</span>(<span class="fu">basename</span>(gapminder.paths)), <span class="co"># column for year</span></span>
-<span id="cb100-3"><a href=""></a>                <span class="at">data =</span> purrr<span class="sc">::</span><span class="fu">map</span>(path, readxl<span class="sc">::</span>read_excel) <span class="co"># column for data!!!</span></span>
-<span id="cb100-4"><a href=""></a>                )</span>
-<span id="cb100-5"><a href=""></a></span>
-<span id="cb100-6"><a href=""></a>gapminder.df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href=""></a>gapminder.df <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">path =</span> gapminder.paths) <span class="sc">|&gt;</span> <span class="co"># column for paths</span></span>
+<span id="cb92-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">year =</span> readr<span class="sc">::</span><span class="fu">parse_number</span>(<span class="fu">basename</span>(gapminder.paths)), <span class="co"># column for year</span></span>
+<span id="cb92-3"><a href=""></a>                <span class="at">data =</span> purrr<span class="sc">::</span><span class="fu">map</span>(path, readxl<span class="sc">::</span>read_excel) <span class="co"># column for data!!!</span></span>
+<span id="cb92-4"><a href=""></a>                )</span>
+<span id="cb92-5"><a href=""></a></span>
+<span id="cb92-6"><a href=""></a>gapminder.df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 12 × 3
    path                                                            year data    
@@ -1422,20 +1352,20 @@ $bwt
 </div>
 <p>Now each <strong>row</strong> is one file/year, and the <code>data</code> column holds a whole tibble in every cell.</p>
 </section>
-<section id="list-columns-1" class="slide level2 smaller">
+<section id="list-columns-1" class="slide level2 smaller" data-visibility="uncounted">
 <h2>List-columns</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb102"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href=""></a>gapminder.df <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">path =</span> gapminder.paths) <span class="sc">|&gt;</span> <span class="co"># column for paths</span></span>
-<span id="cb102-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">year =</span> readr<span class="sc">::</span><span class="fu">parse_number</span>(<span class="fu">basename</span>(gapminder.paths)), <span class="co"># column for year</span></span>
-<span id="cb102-3"><a href=""></a>                <span class="at">data =</span> purrr<span class="sc">::</span><span class="fu">map</span>(path, readxl<span class="sc">::</span>read_excel) <span class="co"># column for data!!!</span></span>
-<span id="cb102-4"><a href=""></a>                )</span>
-<span id="cb102-5"><a href=""></a></span>
-<span id="cb102-6"><a href=""></a>gapminder.df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb94"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href=""></a>gapminder.df <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">path =</span> gapminder.paths) <span class="sc">|&gt;</span> <span class="co"># column for paths</span></span>
+<span id="cb94-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">year =</span> readr<span class="sc">::</span><span class="fu">parse_number</span>(<span class="fu">basename</span>(gapminder.paths)), <span class="co"># column for year</span></span>
+<span id="cb94-3"><a href=""></a>                <span class="at">data =</span> purrr<span class="sc">::</span><span class="fu">map</span>(path, readxl<span class="sc">::</span>read_excel) <span class="co"># column for data!!!</span></span>
+<span id="cb94-4"><a href=""></a>                )</span>
+<span id="cb94-5"><a href=""></a></span>
+<span id="cb94-6"><a href=""></a>gapminder.df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>data = purrr::map(path, readxl::read_excel)</code> used the variable (vector) <code>path</code> as input and iterated over each element to read in the 12 data files.</p>
 <ul>
 <li>Being wrapped inside <code>mutate</code> added the list as a column in <code>gapminder.df</code> with each element of the list being a data frame.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb103"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href=""></a>gapminder.df<span class="sc">$</span>data[[<span class="dv">1</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb95"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href=""></a>gapminder.df<span class="sc">$</span>data[[<span class="dv">1</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 142 × 5
    country     continent lifeExp      pop gdpPercap
@@ -1454,19 +1384,19 @@ $bwt
 </div>
 </div>
 </section>
-<section id="iterating-over-list-columns" class="slide level2 smaller">
+<section id="iterating-over-list-columns" class="slide level2 smaller" data-visibility="uncounted">
 <h2>Iterating over list-columns</h2>
 <ul>
 <li><code>map</code> and <code>lapply</code> can also be applied to list-columns.</li>
 <li>We will loop the <code>data</code> column, which is technically a list with each element corresponding to a row in <code>gapminder.df</code>, to calculate the average life expectancy, across all countries, per year.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb105"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href=""></a>gapminder.df <span class="ot">=</span> gapminder.df <span class="sc">|&gt;</span> </span>
-<span id="cb105-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">avgLifeExp =</span> <span class="fu">map_dbl</span>(<span class="at">.x =</span> data, </span>
-<span id="cb105-3"><a href=""></a>                                     <span class="at">.f =</span> <span class="cf">function</span>(x) {<span class="fu">mean</span>(x<span class="sc">$</span>lifeExp)}</span>
-<span id="cb105-4"><a href=""></a>                                     )</span>
-<span id="cb105-5"><a href=""></a>                )</span>
-<span id="cb105-6"><a href=""></a>gapminder.df <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb97"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href=""></a>gapminder.df <span class="ot">=</span> gapminder.df <span class="sc">|&gt;</span> </span>
+<span id="cb97-2"><a href=""></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">avgLifeExp =</span> <span class="fu">map_dbl</span>(<span class="at">.x =</span> data, </span>
+<span id="cb97-3"><a href=""></a>                                     <span class="at">.f =</span> <span class="cf">function</span>(x) {<span class="fu">mean</span>(x<span class="sc">$</span>lifeExp)}</span>
+<span id="cb97-4"><a href=""></a>                                     )</span>
+<span id="cb97-5"><a href=""></a>                )</span>
+<span id="cb97-6"><a href=""></a>gapminder.df <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 12 × 4
   path                                                  year data     avgLifeExp
@@ -1478,7 +1408,7 @@ $bwt
 5 /Users/rdeek/Library/CloudStorage/OneDrive-Universi…  1972 &lt;tibble&gt;       57.6
 # ℹ 7 more rows</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href=""></a>gapminder.df <span class="sc">|&gt;</span> <span class="fu">select</span>(year, avgLifeExp) <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb99"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href=""></a>gapminder.df <span class="sc">|&gt;</span> <span class="fu">select</span>(year, avgLifeExp) <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 12 × 2
    year avgLifeExp
@@ -1492,7 +1422,7 @@ $bwt
 </div>
 </div>
 </section>
-<section id="things-to-remember" class="slide level2 smaller">
+<section id="things-to-remember" class="slide level2 smaller" data-visibility="uncounted">
 <h2>Things to remember</h2>
 <ul>
 <li>Functions and iteration automate repeated tasks more reliably than copying-and-pasting</li>
@@ -1508,20 +1438,8 @@ $bwt
 </ul></li>
 </ul></li>
 </ul>
-</section>
-<section id="exercise-functional-programming" class="slide level2 smaller scrollable">
-<h2>Exercise: Functional programming</h2>
-<div class="code-blanks-instructions-box">
-<p>Write three different functional programs that will produce the mean of each variable in <code>birthwt_subset</code>.</p>
-</div>
-<pre class="code-blanks"><code>birthwt_subset = birthwt |&gt; dplyr::select(age, lwt, ptl, bwt)
 
-<input class="code-blank-input" data-answer="birthwt_subset |> map(mean)" data-default="" value="" size="29">
-<input class="code-blank-input" data-answer="birthwt_subset |> lapply(mean)" data-default="" value="" size="32">
-<input class="code-blank-input" data-answer="birthwt_subset |> map_dbl(mean)" data-default="" value="" size="33">
-</code></pre>
-
-</section>
+</section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

@@ -25,7 +25,6 @@ code-blanks:
 execute:
   echo: true # show code by default
   warning: false
-  message: false
 ---
 
 ```{r setup}
@@ -54,15 +53,6 @@ head(birthwt)
 
 ```
 
-## Data manipulation
-- Rarely is data in the exact format you need for visualization and analysis. Often you will need to:
-  - Select relevant variables.
-  - Filter observations to samples of interest.
-  - Create new variables that are functions of existing ones.
-  - Summarize data points.
-  - Rename variables.
-  - Rearrange observations or variables into a more manageable or intuitive format.
-
 ## Data manipulation with `dplyr`
 - `dplyr` is a `tidyverse` package the provides functions for the grammar of data manipulation.
   - `select` relevant variables.
@@ -72,20 +62,18 @@ head(birthwt)
   - `rename` variables.
   - `arrange` observations or `relocate` variables into a more manageable or intuitive format.
 
-## `dplyr`
-- Notice that some functions operate on rows (`filter`, `arrange`), while some work on columns (`select`, `mutate`, `rename`).
-- These functions combine easily with:
-  - `group_by` another `dplyr` function for perform any operation "by group".
-  - Pipes (`%>%` and `|>`) that easily combine verbs.
+## `dplyr` basics {.smaller}
+- Each function ("verb") is designed to do one action and do it well.
+  - Gives rise to a modular structure that combines functions easily.
+      - Yay for piping (`%>%` and `|>`)!!
+- Although each function has a specific task, they share a common structure:
+  - The first argument is always a data frame.
+  - The subsequent arguments typically describe which columns to operate on using the variable names (without quotes).
+  - The output is always a new data frame.
 
 ## `dplyr` and masking {.smaller}
 
-```{r masking}
-#| message: TRUE
-
-library(tidyverse)
-
-```
+![](figs/01_masking.png){fig-alt="Console output from loading the tidyverse package in R with a startup message listing the core packages attached (dplyr, forcats, ggplot2, lubridate, purrr, readr, stringr, tibble, tidyr) with their version numbers, followed by a Conflicts section noting that dplyr's filter() and lag() functions mask the same-named functions from the stats package, and a tip about using the conflicted package to turn conflicts into errors." height=2in fig-align=center}
 
 - `R` lets us know that there are conflicts between packages.
 - In this case, between `dplyr` and other loaded packages.
@@ -97,26 +85,10 @@ library(tidyverse)
   - To used the `filter` function from the `stats` package you'll need to use the full name `stats::filter`. Likewise for `MASS::select`.
   - `packagename::function` syntax is always available and precise!
 
-## `dplyr` basics {.smaller}
-- Each function ("verb") is designed to do one action and do it well.
-  - Gives rise to a modular structure that combines functions easily.
-      - Yay for piping!!
-- Although each function has a specific task, they share a common structure:
-  - The first argument is always a data frame.
-  - The subsequent arguments typically describe which columns to operate on using the variable names (without quotes).
-  - The output is always a new data frame.
-
-## Aside: Tibbles
+## Aside: Tibbles {.smaller}
 - A core component of the tidyverse is the `tibble` package, which extends data frames to be more modern.
 - Tibbles *are* data.frames. 
-- But they have nicer a printing method and are "lazy" and "surly".
-  - They do less, they don’t change variable names or types
-    - E.g., $n \times 1$ subset remains a tibble instead of a vector.
-  - They don’t do partial matching.
-  - They complain more.
-    - E.g., if a variable doesn't exist.
-
-## `birthwt` tibble
+  - But they have nicer a printing method and are "lazy" and "surly".
 
 ```{r birthwt1}
 
@@ -138,11 +110,11 @@ birthwt
 ::::{.columns}
 
 :::{.column width="50%"}
-![](figs/01_MagrittePipe.jpg){fig-alt="Painting of a brown tobacco pipe with the handwritten French caption 'Ceci n'est pas une pipe' ('This is not a pipe') below it. René Magritte's The Treachery of Images (1929)." fig-align=center}
+![](figs/02a_MagrittePipe.jpg){fig-alt="Painting of a brown tobacco pipe with the handwritten French caption 'Ceci n'est pas une pipe' ('This is not a pipe') below it. René Magritte's The Treachery of Images (1929)." fig-align=center}
 :::
 
 :::{.column width="50%"}
-![](figs/02_pipe.png){fig-alt="Hexagonal badge with the R 'pipe' operator symbol '%>%' displayed, and the handwritten caption 'Ceci n'est pas un pipe' ('This is not a pipe') below, a pun on Magritte's painting, referencing the magrittr R package." height=3in fig-align=center}
+![](figs/02b_pipe.png){fig-alt="Hexagonal badge with the R 'pipe' operator symbol '%>%' displayed, and the handwritten caption 'Ceci n'est pas un pipe' ('This is not a pipe') below, a pun on Magritte's painting, referencing the magrittr R package." height=3in fig-align=center}
 :::
 
 ::::
@@ -287,8 +259,9 @@ dplyr::filter(birthwt, age > 25)
 # keep between age 25 (exclusive) and 30 (inclusive)
 birthwt |> dplyr::filter(age > 25 & age <= 30)
 
-# keep older than 25 with history of hypertension
-birthwt |> dplyr::filter(age > 25, ht == 1)
+# keep older than 25 with history of hypertension and save as new object
+birthwt.over25.ht = birthwt |> dplyr::filter(age > 25, ht == 1)
+birthwt.over25.ht
 
 ```
 
@@ -320,23 +293,13 @@ birthwt |> dplyr::filter(race != 1 & race != 2)
 
 ```
 
+. . .
+
 - Notice that `!` + `%in%` is equivalent to a drop statement with `&`.
 
 ```{r filter6}
 
 birthwt |> dplyr::filter(!(race %in% c(1, 2)))
-
-```
-
-## `filter()` {.smaller}
-- All `dplyr` functions create and print a new data frame. The existing data frame is **never** modified.
-
-```{r filter7}
-
-birthwt
-
-birthwt.over25 = birthwt |> dplyr::filter(age > 25)
-birthwt.over25
 
 ```
 
@@ -352,14 +315,14 @@ birthwt |> dplyr::slice(7:10)
 
 . . .
 
-```{r}
+```{r slice2}
 
 birthwt |> dplyr::slice_head(n = 2)
 ```
 
 . . .
 
-```{r}
+```{r slice3}
 
 birthwt |> dplyr::slice_tail(prop = 0.02)
 
@@ -368,7 +331,7 @@ birthwt |> dplyr::slice_tail(prop = 0.02)
 ## `slice()`
 - `slice_min` and `slice_max` select the rows with the smallest or largest values of a variable.
 
-```{r slice2}
+```{r slice4}
 
 birthwt |> dplyr::slice_min(age, n = 1)
 
@@ -376,7 +339,7 @@ birthwt |> dplyr::slice_max(bwt, n = 1)
 
 ```
 
-## `arrange()`
+## `arrange()` {.smaller}
 ::: notes
 - first order by age then within age order by bwt
 :::
@@ -391,7 +354,8 @@ birthwt |> dplyr::arrange(age, bwt)
 
 ```
 
-## `arrange()`
+## `arrange()` {.smaller}
+
 - `desc()` can be used on a column inside of `arrange()`.
   - Reorders the rows based on that column in descending (big-to-small) order.
 
@@ -403,7 +367,7 @@ birthwt |> dplyr::arrange(desc(age))
 
 Remember the number of rows has not changed. We’re only *arranging* the data, we’re **not** filtering it.
 
-## `distinct()`
+## `distinct()` 
 ::: notes
 - Not all rows are returned, some patients must have the same covariate combination
 - No id variable in this dataset
@@ -420,41 +384,35 @@ birthwt |> dplyr::distinct()
 - Typically in a cross-sectional study, with an ID variable, this returns the full dataset.
   - Helpful for finding duplicate entries.
 
-## `distinct()`
+## `distinct()` {.smaller}
 - Typically pulling the distinct combinations of a set variables is of interest.
+  - Pulls distinct combinations in the order they appear in the dataset. As such, it is often helpful to order rows by combining with `arrange()`.
 
 ```{r distinct2}
 
-birthwt |> dplyr::distinct(age, ftv)
-
-```
-
-## `distinct()`
-- Pulls distinct combinations in the order they appear in the dataset. As such, it is often helpful to order rows by combining with `arrange()`.
-
-```{r distinct3}
-
 birthwt |> 
-  dplyr::distinct(age, ftv) |> 
-  dplyr::arrange(age, ftv)
+  dplyr::distinct(age, smoke) |> 
+  dplyr::arrange(age, smoke)
 
 ```
 
-## `count()`
+## `count()` {.smaller}
 - For counting the number of occurrences for a combination of variables.
 
 ```{r count1}
+#| output-location: column
 
 birthwt |> 
-  dplyr::count(age, ftv)
+  dplyr::count(age, smoke)
 
 ```
 
+. . .
 
-## `count()`
 - Use sort to arrange from largest to smallest group.
 
 ```{r count2}
+#| output-location: column
 
 birthwt |> 
   dplyr::count(age, ftv, sort = TRUE)
@@ -563,7 +521,7 @@ birthwt |> count(ht, ui)
 ```{r}
 #| echo: FALSE
 
-countdown::countdown(minutes = 5, top = 0)
+countdown::countdown(minutes = 5, bottom = 0)
 
 ```
 
@@ -591,43 +549,13 @@ birthwt |> dplyr::mutate(bwt_lbs = bwt/453.6)
 
 ```{r mutate2}
 
-birthwt |> 
-  dplyr::mutate(ht_chr = ifelse(ht == 1, "hypertension", "no hypertension"))
-
-```
-
-## `mutate()` + `case_when()` {.smaller}
-::: notes
-- logical reads as "if"
-- ~ reads as "then"
-- , reads as "else"
-- .default is the final else
-  - . indicates its a function arugment
-:::
-
-- `case_when()` is a vectorized version of an ifelse statement.
-
-```{r mutate3}
-
 birthwt.clean = birthwt |> 
-  dplyr::mutate(
-    ht_chr = dplyr::case_when(
-      ht == 1 ~ "Hypertension", 
-      ht == 0 ~ "No hypertension", 
-      .default = NA
-    ), 
-    race = dplyr::case_when( # this will write over the orginal race var
-      race == 1 ~ "White", 
-      race == 2 ~ "Black", 
-      race == 3 ~ "Other", 
-      .default = NA
-      )
-    )
+  dplyr::mutate(ht_chr = ifelse(ht == 1, "hypertension", "no hypertension"))
 birthwt.clean
 
 ```
 
-- Options to consider: when to write over a variable and/or object.
+- More than 2? Try `dplyr::case_when()` (see Appendix).
 
 ## `select()` {.smaller}
 - If a data set has many variables, `select()` helps narrow down to a useful subset.
@@ -667,8 +595,8 @@ birthwt[,c("age", "lwt", "race", "bwt")] |> head(2)
 
 ## `select()`: Dropping variables {.smaller}
 - `!` reads as not and drops variables.
-- Historically this was done with `-`, so older code may use this syntax.
-  - Need `c()` before `-` for ranges.
+  - Historically this was done with `-`, so older code may use this syntax.
+    - Need `c()` before `-` for ranges.
 - `!` is now recommended.
 
 ::::{.columns}
@@ -721,21 +649,6 @@ birthwt |>
 
 ::::
 
-## `select()` + `where()` {.smaller}
-- `where()` takes a function as an input.
-
-```{r select7}
-
-birthwt.clean |> dplyr::select(dplyr::where(is.character)) # shorthand
-
-```
-
-```{r select8}
-
-birthwt.clean |> dplyr::select(dplyr::where(function(x) !is.character(x) ) ) # long form
-
-```
-
 ## `relocate()`
 - Moves column(s) to the start of the data frame by default.
 
@@ -747,7 +660,8 @@ birthwt |> dplyr::relocate(bwt, lwt, age)
 
 ```
 
-## `relocate()`
+## `relocate()` {.smaller}
+
 - Or to the end of the data frame.
 
 ```{r relocate2}
@@ -756,7 +670,6 @@ birthwt |> dplyr::relocate(lwt, age, .after = tidyr::last_col())
 
 ```
 
-## `relocate()`
 - Or after a specific variable. The `.before` argument works the same way.
 
 ```{r relocate3}
@@ -771,20 +684,10 @@ birthwt |> dplyr::relocate(bwt, .after = lwt)
 
 ```{r rename}
 
-birthwt.messyNames = birthwt |> 
-  dplyr::rename(Birthweight = bwt, 
-                `Mother weight` = lwt)
-birthwt.messyNames
-
-```
-
-## `rename()` vs. `janitor` package
-- When many (potentially most, if not all) names have a messy structure using `janitor::clean_names()` is a better option than renaming all variables individually.
-
-```{r janitor}
-
-birthwt.messyNames |> 
-  janitor::clean_names()
+birthwt.clean = birthwt |> 
+  dplyr::rename(birthweight = bwt, 
+                mothers_weight = lwt)
+birthwt.clean
 
 ```
 
@@ -897,34 +800,33 @@ birthwt |>
 ```{r}
 #| echo: FALSE
 
-countdown::countdown(minutes = 5, top = 0)
+countdown::countdown(minutes = 5, bottom = 0)
 
 ```
 
-## `pull()`
+## `pull()` {.smaller}
 - Works similar to `$` but in the grammar of data manipulation. Also works better with pipes.
 
 ```{r pull1}
 
 birthwt |> dplyr::pull(bwt) |> head()
 
-birthwt |> dplyr::pull(-1) |> head()
+```
 
-birthwt |> dplyr::pull(1) |> head()
+. . .
+
+```{r pull2}
+
+birthwt |> dplyr::pull(bwt) |> summary()
+birthwt |> dplyr::pull(bwt) |> sd()
 
 ```
 
-## `pull()`
-
-```{r pull2}
-#| fig-height: 4
-#| fig-width: 6
+```{r pull3}
+#| fig-height: 3
+#| fig-width: 5
 #| fig-align: center
 #| fig-alt: "Histogram of birth weights (grams), roughly bell-shaped and slightly left-skewed. Values range from about 500 to 5000, with the peak frequency (around 45) in the 3000–3500 bin. Most observations fall between 2000 and 4000."
-
-birthwt |> dplyr::pull(bwt) |> summary()
-
-birthwt |> dplyr::pull(bwt) |> sd()
 
 birthwt |> dplyr::pull(bwt) |> hist()
 
@@ -971,46 +873,79 @@ birthwt |>
 
 ```
 
-## Resoving the `group_by` warning {.smaller}
+## Resolving the `group_by` warning {.smaller}
 ::: notes
 - Use keep if doing more group based calculations, drop if you want to work on all the rows of the summarized data set.
 :::
 
+- The `.by` argument is typically used for per operation grouping while `group_by()` is intended for persistent grouping.
+
 ```{r group4}
 
 birthwt |> 
-  dplyr::group_by(smoke, race) |> 
-  dplyr::summarise(
-    mean.bwt = mean(bwt), 
-    sd.bwt = sd(bwt), 
-    .groups = "drop" # drop groups after computation
-  )
+  dplyr::summarise(.by = c(smoke, race), # alt to group_by
+                   mean.bwt = mean(bwt), sd.bwt = sd(bwt) )
 
 ```
+
+. . .
 
 ```{r group5}
 
 birthwt |> 
   dplyr::group_by(smoke, race) |> 
-  dplyr::summarise(
-    mean.bwt = mean(bwt), 
-    sd.bwt = sd(bwt), 
-    .groups = "keep" # keep groups after computation
-  )
+  dplyr::summarise(mean.bwt = mean(bwt), sd.bwt = sd(bwt), 
+                   .groups = "keep") # keep groups after computation ("drop" also possible)
 
 ```
 
-## Resolving the `group_by` warning
-- The `.by` argument is typically used for per operation grouping while `group_by()` is intended for persistent grouping.
+# Appendix {visibility="uncounted"}
 
-```{r group6}
+## `mutate()` + `case_when()` {.smaller visibility="uncounted"}
+::: notes
+- logical reads as "if"
+- ~ reads as "then"
+- , reads as "else"
+- .default is the final else
+  - . indicates its a function arugment
+:::
 
-birthwt |> 
-  dplyr::summarise(
-    .by = c(smoke, race), # alt to group_by
-    mean.bwt = mean(bwt), 
-    sd.bwt = sd(bwt)
-  )
+- `case_when()` is a vectorized version of an ifelse statement.
+
+```{r mutate3}
+
+birthwt.clean = birthwt |> 
+  dplyr::mutate(
+    ht_chr = dplyr::case_when(
+      ht == 1 ~ "Hypertension", 
+      ht == 0 ~ "No hypertension", 
+      .default = NA
+    ), 
+    race = dplyr::case_when( # this will write over the original race var
+      race == 1 ~ "White", 
+      race == 2 ~ "Black", 
+      race == 3 ~ "Other", 
+      .default = NA
+      )
+    )
+birthwt.clean
 
 ```
 
+- Options to consider: when to write over a variable and/or object.
+
+## `select()` + `where()` {.smaller visibility="uncounted"}
+- Select a variable based
+- `where()` takes a function as an input.
+
+```{r select7}
+
+birthwt.clean |> dplyr::select(dplyr::where(is.character)) # shorthand
+
+```
+
+```{r select8}
+
+birthwt.clean |> dplyr::select(dplyr::where(function(x) !is.character(x) ) ) # long form
+
+```

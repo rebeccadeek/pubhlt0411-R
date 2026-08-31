@@ -279,12 +279,14 @@ Rebecca Deek, PhD
 </div><div class="column" style="width:50%;">
 <p><img data-src="figs/01_MASS-birthwt-help-file.png" style="height:4in" alt="R help documentation for the birthwt data from the MASS package."></p>
 </div></div>
+<div class="fragment">
 <ul>
 <li>We may be interested in understanding the distribution of variables (e.g., <code>age</code>, <code>bwt</code>) or how to variables are associated with one another (e.g., <code>lwt</code> and <code>bwt</code>).
 <ul>
 <li>Visualization can help with this.</li>
 </ul></li>
 </ul>
+</div>
 </section>
 <section id="base-r-scatterplots" class="slide level2 smaller">
 <h2>Base R: Scatterplots</h2>
@@ -325,7 +327,7 @@ Rebecca Deek, PhD
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/baseR-scatter2-1.png" class="quarto-figure quarto-figure-center" alt="Scatterplot of birthweight (birthwt$bwt, y−axis, ~700–5000)versus mother′s weight (birthwt$bwt, y-axis, ~700–5000) versus mother's weight (birthwt$bwt, y−axis, ~700–5000) versus mother′s weight(birthwt$lwt, x-axis, ~75–250). Points are densely clustered between lwt 100–150, with a wide spread of birthweights and no strong linear trend." width="960"></p>
+<p><img data-src="module02_visualization-1_files/figure-revealjs/baseR-scatter2-1.png" class="quarto-figure quarto-figure-center" alt="Scatterplot of birthweight (birthwt$bwt, y-axis, ~700–5000) versus mother's weight (birthwt$lwt, x-axis, ~75–250). Points are densely clustered between lwt 100–150, with a wide spread of birthweights and no strong linear trend." width="960"></p>
 </figure>
 </div>
 </div>
@@ -402,7 +404,7 @@ Rebecca Deek, PhD
 <ul>
 <li>Thick middle line = median; thinner lines: 25%tile and 75%tile; dashed lines = “whiskers” to +/- 1.5*IQR</li>
 <li>Points beyond 1.5*IQR are given separate dots</li>
-<li>Does have data arugment</li>
+<li>Does have data argument (don’t have to use $ notation but can)</li>
 <li>cex: character expansion</li>
 </ul>
 <style type="text/css">
@@ -425,7 +427,7 @@ Rebecca Deek, PhD
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">boxplot</span>(<span class="at">x =</span> birthwt<span class="sc">$</span>bwt, </span>
 <span id="cb10-2"><a href=""></a>        <span class="at">ylab =</span> <span class="st">"Birthweight (g)"</span>, </span>
-<span id="cb10-3"><a href=""></a>        <span class="at">cex.lab =</span> <span class="fl">1.4</span>, <span class="co"># larger label text</span></span>
+<span id="cb10-3"><a href=""></a>        <span class="at">cex.lab =</span> <span class="fl">1.5</span>, <span class="co"># larger label text</span></span>
 <span id="cb10-4"><a href=""></a>        <span class="at">cex.axis =</span> <span class="fl">1.3</span> <span class="co"># larger axis text</span></span>
 <span id="cb10-5"><a href=""></a>        )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -438,14 +440,14 @@ Rebecca Deek, PhD
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">boxplot</span>(<span class="at">formula =</span> bwt <span class="sc">~</span> smoke, </span>
-<span id="cb11-2"><a href=""></a>        <span class="at">data =</span> birthwt, </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">boxplot</span>(<span class="at">formula =</span> bwt <span class="sc">~</span> smoke, <span class="co"># y ~ x</span></span>
+<span id="cb11-2"><a href=""></a>        <span class="at">data =</span> birthwt <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">smoke =</span> <span class="fu">factor</span>(smoke, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Nonsmoker"</span>, <span class="st">"Smoker"</span>))), </span>
 <span id="cb11-3"><a href=""></a>        <span class="at">ylab =</span> <span class="st">"Birthweight (g)"</span>, </span>
 <span id="cb11-4"><a href=""></a>        <span class="at">xlab =</span> <span class="st">"Smoking status"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/baseR-pairs1-1.png" class="quarto-figure quarto-figure-center" alt="Boxplot comparing birthweight (g, y-axis, ~700–5000) by smoking status (x-axis: Nonsmoker, Smoker). Nonsmokers have a higher median birthweight (~3100g) than smokers (~2800g), with a similar spread; the smoker group has one low outlier around 700g." width="960"></p>
+<p><img data-src="module02_visualization-1_files/figure-revealjs/baseR-bp2-1.png" class="quarto-figure quarto-figure-center" alt="Boxplot comparing birthweight (g, y-axis, ~700–5000) by smoking status (x-axis: Nonsmoker, Smoker). Nonsmokers have a higher median birthweight (~3100g) than smokers (~2800g), with a similar spread; the smoker group has one low outlier around 700g." width="960"></p>
 </figure>
 </div>
 </div>
@@ -478,7 +480,7 @@ Rebecca Deek, PhD
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/pairs-1.png" class="quarto-figure quarto-figure-center" alt="A 4x4 scatterplot matrix (pairs plot) comparing four variables: age, lwt (mother's weight), bwt (birthweight), and smoke (smoking status, coded 1–2). Each off-diagonal cell shows a scatterplot between the row and column variables, while the diagonal cells display the variable names. Age and lwt show a loose positive cluster with no strong pattern; bwt versus age and lwt shows scattered points with no clear trend; the smoke variable, being binary, appears as two horizontal or vertical bands of points in its scatterplots with other variables." width="960"></p>
+<p><img data-src="module02_visualization-1_files/figure-revealjs/pairs-1.png" class="quarto-figure quarto-figure-center" alt="A 4x4 scatterplot matrix (pairs plot) comparing four variables: age, lwt (mother's weight), bwt (birthweight), and smoke (smoking status, coded 1–2). Each off-diagonal cell shows a scatterplot between the row and column variables, while the diagonal cells display the variable names. Age and lwt show a loose positive cluster with no strong pattern; bwt versus age and lwt shows scattered points with no clear trend; the smoke variable, being binary, appears as two horizontal or vertical bands of points in its scatterplots with other variables." width="768"></p>
 </figure>
 </div>
 </div>
@@ -487,11 +489,11 @@ Rebecca Deek, PhD
 <li>Mostly helpful for pairs of continuous variables.</li>
 </ul>
 </section>
-<section id="exercise-ggplot" class="slide level2 scrollable">
+<section id="exercise-ggplot" class="slide level2 smaller scrollable">
 <h2>Exercise: <code>ggplot</code></h2>
 <div class="xsmall">
 <div class="code-blanks-instructions-box">
-<p>Create a boxplot of birthweight by race. Let the race labels be in string character format. Title the boxplot “Boxplot of birthweight by race” and increase the font size of the x- and y-axis labels.</p>
+<p>Create a boxplot of birthweight by race. First, set race as a factor with labels. Title the boxplot “Boxplot of birthweight by race” and increase the font size of the x- and y-axis labels.</p>
 </div>
 <pre class="code-blanks"><code>birthwt$race = <input class="code-blank-input" data-answer="factor" data-default="" value="" size="8">(x = birthwt$race, <input class="code-blank-input" data-answer="levels" data-default="" value="" size="8"> = 1:3, 
                       <input class="code-blank-input" data-answer="labels" data-default="" value="" size="8"> = c("White", "Black", "Other"))
@@ -504,7 +506,7 @@ boxplot(bwt ~ race, data = <input class="code-blank-input" data-answer="birthwt"
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_ab1e92e3" minutes="4" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_a6574652" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
@@ -531,7 +533,7 @@ boxplot(bwt ~ race, data = <input class="code-blank-input" data-answer="birthwt"
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center" alt="Scatterplot titled 'Mother's weight and birthweight' with mother's weight (lbs, x-axis, ~80–250) plotted against birthweight (g, y-axis, ~700–5000). Points are colored by smoking status (label: 'smoking status'): nonsmokers (red circles) and smokers (teal triangles). Both groups show wide scatter with a weak linear trend; nonsmoker points appear somewhat more spread toward higher birthweights." width="960"></p>
+<p><img data-src="module02_visualization-1_files/figure-revealjs/goal-plot-1.png" class="quarto-figure quarto-figure-center" alt="Scatterplot titled 'Mother's weight and birthweight' with mother's weight (lbs, x-axis, ~80–250) plotted against birthweight (g, y-axis, ~700–5000). Points are colored by smoking status (label: 'smoking status'): nonsmokers (red circles) and smokers (teal triangles). Both groups show wide scatter with a weak linear trend; nonsmoker points appear somewhat more spread toward higher birthweights." width="960"></p>
 </figure>
 </div>
 </div>
@@ -831,7 +833,7 @@ Levels: Nonsmoker Smoker</code></pre>
 </div>
 </div><div class="column" style="width:33%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>( <span class="co"># lazy eval</span></span>
 <span id="cb25-2"><a href=""></a>  birthwt, </span>
 <span id="cb25-3"><a href=""></a>  <span class="fu">aes</span>(<span class="at">x =</span> lwt, </span>
 <span id="cb25-4"><a href=""></a>      <span class="at">y =</span> bwt) ) <span class="sc">+</span></span>
@@ -846,7 +848,7 @@ Levels: Nonsmoker Smoker</code></pre>
 </div>
 </div><div class="column" style="width:33%;">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>birthwt <span class="sc">|&gt;</span> <span class="co"># piping</span></span>
 <span id="cb26-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(</span>
 <span id="cb26-3"><a href=""></a>    <span class="fu">aes</span>(<span class="at">x =</span> lwt, </span>
 <span id="cb26-4"><a href=""></a>        <span class="at">y =</span> bwt) ) <span class="sc">+</span></span>
@@ -886,6 +888,24 @@ Levels: Nonsmoker Smoker</code></pre>
 <p>Aesthetics given in <code>ggplot()</code> apply to all geometries and override <code>geom_*()</code> specifications.</p>
 </div>
 </section>
+<section id="mapping-versus-settings" class="slide level2">
+<h2>Mapping versus settings</h2>
+<ul>
+<li><strong>Mapping:</strong> determines visual properties (aesthetics) based on the <em>values of a variable in the data</em>.
+<ul>
+<li>Must be wrapped in <code>aes()</code> and passed into the <code>mapping</code> argument of <code>ggplot2()</code> or <code>geom_*()</code>.</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<ul>
+<li><strong>Setting</strong>: applies a <em>fixed, constant value,</em> not directly from the data, to visual properties of the plot.
+<ul>
+<li>Must be passed directly into <code>geom_*()</code> as an argument.</li>
+<li>E.g., <code>size = 3</code>, <code>alpha = 0.8</code>, or <code>linetype = "dotted"</code>.</li>
+</ul></li>
+</ul>
+</div>
+</section>
 <section id="color-and-shape" class="slide level2">
 <h2>Color and shape</h2>
 <aside class="notes">
@@ -903,6 +923,9 @@ Levels: Nonsmoker Smoker</code></pre>
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+<ul>
+<li>Both mapped to a <em>variable</em> <span class="math inline">\(\rightarrow\)</span> inside <code>aes()</code>.</li>
+</ul>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
 <span id="cb27-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> smoke, <span class="at">shape =</span> race))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1001,7 +1024,7 @@ Levels: Nonsmoker Smoker</code></pre>
 </div>
 </div>
 </div>
-<p>Note: We have three mappings!</p>
+<p>Note: We have three mapping arguments, and some are redundant.</p>
 </section>
 <section id="linetype-1" class="slide level2 smaller">
 <h2>Linetype</h2>
@@ -1011,15 +1034,11 @@ Levels: Nonsmoker Smoker</code></pre>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(</span>
-<span id="cb33-2"><a href=""></a>  birthwt, </span>
-<span id="cb33-3"><a href=""></a>  <span class="fu">aes</span>(<span class="at">x =</span> lwt, </span>
-<span id="cb33-4"><a href=""></a>      <span class="at">y =</span> bwt, </span>
-<span id="cb33-5"><a href=""></a>      <span class="at">color =</span> smoke) ) <span class="sc">+</span> </span>
-<span id="cb33-6"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb33-7"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">linetype =</span> <span class="dv">2</span>, </span>
-<span id="cb33-8"><a href=""></a>              <span class="at">method =</span> <span class="st">"lm"</span>, </span>
-<span id="cb33-9"><a href=""></a>              <span class="at">se =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt, </span>
+<span id="cb33-2"><a href=""></a>                             <span class="at">color =</span> smoke) ) <span class="sc">+</span> </span>
+<span id="cb33-3"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb33-4"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">linetype =</span> <span class="dv">2</span>, </span>
+<span id="cb33-5"><a href=""></a>              <span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1030,15 +1049,11 @@ Levels: Nonsmoker Smoker</code></pre>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(</span>
-<span id="cb34-2"><a href=""></a>  birthwt, </span>
-<span id="cb34-3"><a href=""></a>  <span class="fu">aes</span>(<span class="at">x =</span> lwt, </span>
-<span id="cb34-4"><a href=""></a>      <span class="at">y =</span> bwt, </span>
-<span id="cb34-5"><a href=""></a>      <span class="at">color =</span> smoke) ) <span class="sc">+</span> </span>
-<span id="cb34-6"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb34-7"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">linetype =</span> <span class="st">"dotdash"</span>, </span>
-<span id="cb34-8"><a href=""></a>              <span class="at">method =</span> <span class="st">"lm"</span>, </span>
-<span id="cb34-9"><a href=""></a>              <span class="at">se =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt, </span>
+<span id="cb34-2"><a href=""></a>                             <span class="at">color =</span> smoke) ) <span class="sc">+</span> </span>
+<span id="cb34-3"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb34-4"><a href=""></a>  <span class="fu">geom_smooth</span>(<span class="at">linetype =</span> <span class="st">"dotdash"</span>, </span>
+<span id="cb34-5"><a href=""></a>              <span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1070,7 +1085,7 @@ Levels: Nonsmoker Smoker</code></pre>
 <h2>Note on aesthetic options</h2>
 <p>Available aesthetics depend on the <code>geom</code> used. See <a href="https://ggplot2.tidyverse.org/reference/index.html#Geoms">help files</a>.</p>
 <ul>
-<li>E.g., <code>linewidth</code> or <code>linetype</code> would work for geoms with lines (e.g., <code>geom_bar</code>, <code>geom_histogram</code>, <code>geom_boxplot</code>) but not for geoms with points (e.g., <code>geom_scatter</code>).</li>
+<li>E.g., <code>linewidth</code> or <code>linetype</code> would work for geoms with lines (e.g., <code>geom_bar</code>, <code>geom_histogram</code>, <code>geom_boxplot</code>) but not for geoms with points (e.g., <code>geom_point</code>).</li>
 </ul>
 <div class="fragment">
 <ul>
@@ -1089,32 +1104,6 @@ unknown parameters: `linewidth`</code></pre>
 </div>
 </div>
 </section>
-<section id="mapping-versus-settings" class="slide level2">
-<h2>Mapping versus settings</h2>
-<ul>
-<li><strong>Mapping:</strong> determines visual properties (aesthetics) based on the <em>values of a variable in the data</em>.
-<ul>
-<li>Must be wrapped in <code>aes()</code> and passed into the <code>mapping</code> argument of <code>ggplot2()</code> or <code>geom_*()</code>.</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<ul>
-<li><strong>Setting</strong>: applies a <em>fixed, constant value,</em> not directly from the data, to visual properties of the plot.
-<ul>
-<li>Must be passed directly into <code>geom_*()</code> as an argument.</li>
-<li>E.g., <code>size = 3</code>, <code>alpha = 0.8</code>, or <code>linetype = "dotted"</code>.</li>
-</ul></li>
-</ul>
-</div>
-<div class="fragment">
-<ul>
-<li>Showed mappings and settings for <code>size</code>, <code>alpha</code>, and <code>linetype</code>.
-<ul>
-<li>Can also be done for <code>color</code>, <a href="https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#sec:shape-spec"><code>shape</code></a>, etc.</li>
-</ul></li>
-</ul>
-</div>
-</section>
 <section id="default-aesthetics" class="slide level2">
 <h2>Default aesthetics</h2>
 <p>Once you map an aesthetic, <code>ggplot2</code> takes care of the rest. It:</p>
@@ -1128,26 +1117,6 @@ unknown parameters: `linewidth`</code></pre>
 <ul>
 <li>Our main example showed how <code>labs()</code> over rides axis and legend labels. We will go over other ways to make changes to axes, labels, and legends.</li>
 </ul>
-</div>
-</section>
-<section id="exercise" class="slide level2 scrollable">
-<h2>Exercise</h2>
-<div class="code-blanks-instructions-box">
-<p>Create a scatterplot of bwt by age. Color the points by presence of uterine irritability (<code>ui</code>). Is this plot how you expected?</p>
-</div>
-<pre class="code-blanks"><code>ggplot2::ggplot(birthwt, aes(x = <input class="code-blank-input" data-answer="age" data-default="" value="" size="5">, y = <input class="code-blank-input" data-answer="bwt" data-default="" value="" size="5">) ) + 
-  ggplot2::geom_point(<input class="code-blank-input" data-answer="aes" data-default="" value="" size="5">(<input class="code-blank-input" data-answer="color" data-default="" value="" size="7"> = ui))
-</code></pre>
-<div class="code-blanks-instructions-box">
-<p>Change the value of the shape argument and see how the plot changes. Try both numbers and strings (of common shapes). Why do all points change shape?</p>
-</div>
-<pre class="code-blanks"><code>ggplot2::ggplot(birthwt, aes(x = age, y = bwt) ) + 
-  ggplot2::geom_point(shape = <input class="code-blank-input" data-answer="16" data-default="16" value="16" size="4">)
-</code></pre>
-<div class="cell">
-<div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_ffff2d47" minutes="5" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;"></countdown-timer>
-</div>
 </div>
 </section>
 <section id="visualizing-data-and-distributions" class="slide level2">
@@ -1237,311 +1206,23 @@ unknown parameters: `linewidth`</code></pre>
 </div>
 </div></div>
 </section>
-<section id="geom_histogram-one-variable" class="slide level2 smaller">
-<h2><code>geom_histogram()</code>: One variable</h2>
-<aside class="notes">
-<ul>
-<li>Default bins = 30</li>
-<li>Note that bins is <em>not</em> in <code>aes()</code> since it always a fixed number not related to any data</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-<ul>
-<li>Single continuous variable.</li>
-<li>Divides the x-axis into equally spaced bins. The height of a bar displays the number of observations that fall in each bin.</li>
-</ul>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> bwt)) <span class="sc">+</span> </span>
-<span id="cb42-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_histogram</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/geom-hist1-1.png" class="quarto-figure quarto-figure-center" alt="Histogram of birth weight, roughly bell-shaped and centered around 2800-3300 g, with a tall spike near 2500 g and a few sparse outliers below 1000 g and above 4500 g." width="576"></p>
-</figure>
+<section id="exercise-ggplot2" class="slide level2 smaller scrollable">
+<h2>Exercise: ggplot2</h2>
+<div class="code-blanks-instructions-box">
+<p>Create a scatterplot of bwt by age. Color the points by presence of uterine irritability (<code>ui</code>). Is this plot how you expected?</p>
 </div>
+<pre class="code-blanks"><code>ggplot2::ggplot(birthwt, aes(x = <input class="code-blank-input" data-answer="age" data-default="" value="" size="5">, y = <input class="code-blank-input" data-answer="bwt" data-default="" value="" size="5">) ) + 
+  ggplot2::geom_point(<input class="code-blank-input" data-answer="aes" data-default="" value="" size="5">(<input class="code-blank-input" data-answer="color" data-default="" value="" size="7"> = ui))
+</code></pre>
+<div class="code-blanks-instructions-box">
+<p>Change the value of the shape argument and see how the plot changes. Try both numbers and strings (of common shapes). Why do all points change shape?</p>
 </div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> bwt)) <span class="sc">+</span> </span>
-<span id="cb43-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/geom-hist2-1.png" class="quarto-figure quarto-figure-center" alt="Histogram of birth weight with narrow bins, showing a jagged, roughly bell-shaped distribution with multiple peaks (up to 8 counts) between 2300-3700 g, and sparse outliers below 1500 g and above 4500 g." width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="geom_histogram-two-variables" class="slide level2 smaller">
-<h2><code>geom_histogram()</code>: Two variables</h2>
-<ul>
-<li>Continuous-categorical pair.</li>
-<li>Continuous variable is always plotted on the x-axis.</li>
-</ul>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, </span>
-<span id="cb44-2"><a href=""></a>                <span class="fu">aes</span>(<span class="at">x =</span> bwt, </span>
-<span id="cb44-3"><a href=""></a>                    <span class="at">color =</span> race)) <span class="sc">+</span> </span>
-<span id="cb44-4"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_histogram</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/geom-hist3-1.png" class="quarto-figure quarto-figure-center" alt="Overlapping histograms of birth weight by race (White, Black, Other, outlined in red, green, blue respectively), all overlaid on the same axis. All three groups show similar bell-shaped distributions centered around 2500-3500 g, with the red (White) outline reaching the highest peak (17) near 2500 g." width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45" data-code-line-numbers="3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, </span>
-<span id="cb45-2"><a href=""></a>                <span class="fu">aes</span>(<span class="at">x =</span> bwt, </span>
-<span id="cb45-3"><a href=""></a>                    <span class="at">color =</span> race, <span class="at">fill =</span> race)) <span class="sc">+</span> </span>
-<span id="cb45-4"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_histogram</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/geom-hist4-1.png" class="quarto-figure quarto-figure-center" alt="Overlapping semi-transparent histograms of birth weight by race (White, Black, Other), all sharing the same axis. Distributions largely overlap in the 2000-4000 g range; White (red) shows the highest peak (17) near 2500 g, while Black and Other (green, blue) are shorter and more concentrated toward the middle of the range." width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="geom_density-one-variable" class="slide level2 smaller">
-<h2><code>geom_density()</code>: One variable</h2>
-<aside class="notes">
-<ul>
-<li>Additional information on how density estimation occurs in documentation</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-<ul>
-<li>One continuous variable.</li>
-<li>Smoothed version of a histogram.</li>
-</ul>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> bwt)) <span class="sc">+</span> </span>
-<span id="cb46-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_density</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/geom-density1-1.png" class="quarto-figure quarto-figure-center" alt="Density plot of birth weight, roughly bell-shaped with a peak around 3000-3100 g and a slight shoulder near 2500 g." width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="geom_density-two-variables" class="slide level2 smaller">
-<h2><code>geom_density()</code>: Two variables</h2>
-<ul>
-<li>Continuous-categorical pair.</li>
-<li>Continuous variable is always plotted on the x-axis.</li>
-</ul>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, </span>
-<span id="cb47-2"><a href=""></a>                <span class="fu">aes</span>(<span class="at">x =</span> bwt, </span>
-<span id="cb47-3"><a href=""></a>                    <span class="at">color =</span> race)) <span class="sc">+</span> </span>
-<span id="cb47-4"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_density</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/geom-density2-1.png" class="quarto-figure quarto-figure-center" alt="Overlaid density curves of birth weight by race, all sharing the same axis. Black (green) peaks earliest and highest around 2400-3000 g. Other (blue) peaks around 3200 g. White (red) is shifted right with a peak near 3000-3700 g." width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48" data-code-line-numbers="3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, </span>
-<span id="cb48-2"><a href=""></a>                <span class="fu">aes</span>(<span class="at">x =</span> bwt, </span>
-<span id="cb48-3"><a href=""></a>                    <span class="at">color =</span> race, <span class="at">fill =</span> race)) <span class="sc">+</span> </span>
-<span id="cb48-4"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/geom-density3-1.png" class="quarto-figure quarto-figure-center" alt="Overlapping filled density curves of birth weight by race, all sharing the same axis. Black (green) peaks earliest and highest around 2400-3000 g. Other (blue) peaks around 3200 g. White (red) is shifted right with a peak near 3000-3700 g." width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="geom_boxplot-one-variable" class="slide level2 smaller">
-<h2><code>geom_boxplot()</code>: One variable</h2>
-<aside class="notes">
-<ul>
-<li>Thick middle line = median; thinner lines: 25%tile and 75%tile; dashed lines = “whiskers” to +/- 1.5*IQR</li>
-<li>Points beyond 1.5*IQR are given separate dots</li>
-<li>Note no axis but still ticks and labels but don’t make much sense</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-<ul>
-<li>One continuous variable.</li>
-<li>Provides visualization, as well as measure of central tendency and spread.</li>
-</ul>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">y=</span>bwt)) <span class="sc">+</span> </span>
-<span id="cb49-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_boxplot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/geom_bp1-1.png" class="quarto-figure quarto-figure-center" alt="Boxplot of birth weight for all observations. Median around 3000 g, interquartile range roughly 2400-3500 g, whiskers extending from about 1000 g to 5000 g, with one low outlier near 700 g." width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="geom_boxplot-two-variables" class="slide level2 smaller">
-<h2><code>geom_boxplot()</code>: Two variables</h2>
-<aside class="notes">
-<ul>
-<li>Theme removes ticks and axis text. Will learn more in the future.</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-<ul>
-<li>Continuous-categorical pair.</li>
-<li>Can compare this to our base R plot. <code>ggplot</code> is easier to customize.</li>
-</ul>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">y =</span> bwt, <span class="at">x =</span> smoke, <span class="at">color =</span> smoke, <span class="at">fill =</span> smoke, <span class="at">linetype =</span> smoke)) <span class="sc">+</span> </span>
-<span id="cb50-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>, <span class="at">linewidth =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/geom_bp2-1.png" class="quarto-figure quarto-figure-center" alt="Boxplot comparing birth weight by smoking status. Nonsmokers (solid red) have a higher median (~3100 g) and wider range (1000-5000 g) than smokers (dashed teal), whose median is lower (~2800 g) with one low outlier near 700 g." width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="geom_scatter" class="slide level2 smaller">
-<h2><code>geom_scatter()</code></h2>
-<aside class="notes">
-<ul>
-<li>extensively reviewed in examples</li>
-</ul>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-<ul>
-<li>Two continuous variables (x- and y-axis), continuous or categorical variables for aesthetics.</li>
-<li>Can plot categorical variables on axes but not as informative.</li>
-</ul>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
-<span id="cb51-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> ftv, <span class="at">shape =</span> race))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/geom-scatter-1.png" class="quarto-figure quarto-figure-center" alt="Scatterplot of birth weight vs. mother's pre-pregnancy weight, with point shape indicating race (circle=White, triangle=Black, square=Other) and color shade indicating number of physician visits in the first trimester (ftv, dark=0 to light blue=6). Most points are dark (low ftv), scattered broadly with no clear trend by lwt; a few lighter, high-ftv points appear scattered among the mid-to-high lwt range." width="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="geoms" class="slide level2">
-<h2>Geoms</h2>
-<ul>
-<li><code>ggplot2</code> provides more than 40 geoms.</li>
-<li>We will cover a few more but not all possible plots one could make.</li>
-<li>Look into <a href="https://exts.ggplot2.tidyverse.org/gallery/">extension packages</a> to see what others have created.
-<ul>
-<li>And maybe for your final project!</li>
-</ul></li>
-</ul>
-</section>
-<section id="exercise-base-r-plots" class="slide level2 scrollable">
-<h2>Exercise: Base R plots</h2>
-<p>Determine why the code doesn’t produce a plot as expected (or at all).</p>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, </span>
-<span id="cb52-2"><a href=""></a>                <span class="fu">aes</span>(<span class="at">x =</span> age, </span>
-<span id="cb52-3"><a href=""></a>                    <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
-<span id="cb52-4"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"green"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="module02_visualization-1_files/figure-revealjs/unnamed-chunk-4-1.png" alt="Scatterplot of birth weight vs. maternal age, all points shown in the same color (legend labeled 'green' but points appear red/salmon - likely a labeling artifact). Points are densely clustered between ages 18-30, with no clear trend across age; one outlier at age 45 has the highest birth weight (~5000 g)." width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, </span>
-<span id="cb53-2"><a href=""></a>                <span class="fu">aes</span>(<span class="at">x =</span> lwt, </span>
-<span id="cb53-3"><a href=""></a>                    <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
-<span id="cb53-4"><a href=""></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">shape =</span> ui))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in `geom_point()`:
-! Problem while computing aesthetics.
-ℹ Error occurred in the 1st layer.
-Caused by error in `scale_f()`:
-! A continuous variable cannot be mapped to the shape aesthetic.
-ℹ Choose a different aesthetic or use `scale_shape_binned()`.</code></pre>
-</div>
-</div>
-</div></div>
+<pre class="code-blanks"><code>ggplot2::ggplot(birthwt, aes(x = age, y = bwt) ) + 
+  ggplot2::geom_point(shape = <input class="code-blank-input" data-answer="16" data-default="16" value="16" size="4">)
+</code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_79b84417" minutes="4" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_80e9c96d" minutes="5" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 

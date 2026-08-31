@@ -88,6 +88,8 @@ str(birthwt)
 :::
 ::::
 
+. . .
+
 - We may be interested in understanding the distribution of variables (e.g., `age`, `bwt`) or how to variables are associated with one another (e.g., `lwt` and `bwt`).
   - Visualization can help with this.
 
@@ -114,7 +116,7 @@ plot(x = birthwt$age,
 :::{.column width="50%"}
 ```{r baseR-scatter2}
 #| fig-align: center
-#| fig-alt: "Scatterplot of birthweight (birthwt$bwt, y−axis, ~700–5000)versus mother′s weight (birthwt$bwt, y-axis, ~700–5000) versus mother's weight (birthwt$bwt, y−axis, ~700–5000) versus mother′s weight(birthwt$lwt, x-axis, ~75–250). Points are densely clustered between lwt 100–150, with a wide spread of birthweights and no strong linear trend."
+#| fig-alt: "Scatterplot of birthweight (birthwt$bwt, y-axis, ~700–5000) versus mother's weight (birthwt$lwt, x-axis, ~75–250). Points are densely clustered between lwt 100–150, with a wide spread of birthweights and no strong linear trend."
 
 # shorthand: y ~ x
 plot(birthwt$bwt ~ birthwt$lwt)
@@ -187,7 +189,7 @@ lines(dens.bw) # add density as line
 ::: notes
 - Thick middle line = median; thinner lines: 25%tile and 75%tile; dashed lines = "whiskers" to +/- 1.5*IQR
 - Points beyond 1.5*IQR are given separate dots
-- Does have data arugment
+- Does have data argument (don't have to use $ notation but can)
 - cex: character expansion
 :::
 
@@ -203,7 +205,7 @@ lines(dens.bw) # add density as line
 
 boxplot(x = birthwt$bwt, 
         ylab = "Birthweight (g)", 
-        cex.lab = 1.4, # larger label text
+        cex.lab = 1.5, # larger label text
         cex.axis = 1.3 # larger axis text
         )
 
@@ -211,12 +213,12 @@ boxplot(x = birthwt$bwt,
 :::
 
 :::{.column width="50%"}
-```{r baseR-pairs1}
+```{r baseR-bp2}
 #| fig-align: center
 #| fig-alt: "Boxplot comparing birthweight (g, y-axis, ~700–5000) by smoking status (x-axis: Nonsmoker, Smoker). Nonsmokers have a higher median birthweight (~3100g) than smokers (~2800g), with a similar spread; the smoker group has one low outlier around 700g."
 
-boxplot(formula = bwt ~ smoke, 
-        data = birthwt, 
+boxplot(formula = bwt ~ smoke, # y ~ x
+        data = birthwt |> dplyr::mutate(smoke = factor(smoke, labels = c("Nonsmoker", "Smoker"))), 
         ylab = "Birthweight (g)", 
         xlab = "Smoking status")
 
@@ -234,7 +236,8 @@ boxplot(formula = bwt ~ smoke,
 - `pairs()` helps visualize multiple scatterplots in one multipanel frame.
 
 ```{r pairs}
-#| fig-height: 5
+#| fig-height: 4
+#| fig-width: 8
 #| fig-align: center
 #| fig-alt: "A 4x4 scatterplot matrix (pairs plot) comparing four variables: age, lwt (mother's weight), bwt (birthweight), and smoke (smoking status, coded 1–2). Each off-diagonal cell shows a scatterplot between the row and column variables, while the diagonal cells display the variable names. Age and lwt show a loose positive cluster with no strong pattern; bwt versus age and lwt shows scattered points with no clear trend; the smoke variable, being binary, appears as two horizontal or vertical bands of points in its scatterplots with other variables."
 
@@ -245,11 +248,11 @@ pairs(birthwt[,c("age", "lwt", "bwt", "smoke")])
 - Mostly helpful for pairs of continuous variables.
 
 
-## Exercise: `ggplot` {.scrollable}
+## Exercise: `ggplot` {.smaller .scrollable}
 
 :::{.xsmall}
 ```{code-blanks-instructions}
-Create a boxplot of birthweight by race. Let the race labels be in string character format. Title the boxplot "Boxplot of birthweight by race" and increase the font size of the x- and y-axis labels.
+Create a boxplot of birthweight by race. First, set race as a factor with labels. Title the boxplot "Boxplot of birthweight by race" and increase the font size of the x- and y-axis labels.
 ```
 
 ```{code-blanks}
@@ -303,12 +306,10 @@ birthwt$race = factor(x = birthwt$race, levels = 1:3,
 
 ```
 
-
-
-```{r}
+```{r countdown1}
 #| echo: FALSE
 
-countdown::countdown(minutes = 4, top = 0)
+countdown::countdown(minutes = 4, bottom = 0)
 
 ```
 
@@ -322,7 +323,7 @@ countdown::countdown(minutes = 4, top = 0)
 ## Goal
 - Create the following plot using `ggplot2` grammar.
 
-```{r}
+```{r goal-plot}
 #| echo: FALSE
 #| fig-align: center
 #| fig-alt: "Scatterplot titled 'Mother's weight and birthweight' with mother's weight (lbs, x-axis, ~80–250) plotted against birthweight (g, y-axis, ~700–5000). Points are colored by smoking status (label: 'smoking status'): nonsmokers (red circles) and smokers (teal triangles). Both groups show wide scatter with a weak linear trend; nonsmoker points appear somewhat more spread toward higher birthweights."
@@ -559,7 +560,7 @@ ggplot2::ggplot(
 #| fig-width: 5
 #| fig-alt: "Scatterplot of 'bwt' (birthweight, y-axis, ~700–5000) versus 'lwt' (mother's weight, x-axis, ~75–250), shown as black points with no color grouping. Points are densely clustered between lwt 100–150 and bwt 2000–4000, with a wide spread and a weak linear trend."
 
-ggplot2::ggplot(
+ggplot2::ggplot( # lazy eval
   birthwt, 
   aes(x = lwt, 
       y = bwt) ) +
@@ -573,7 +574,7 @@ ggplot2::ggplot(
 #| fig-width: 5
 #| fig-alt: "Scatterplot of 'bwt' (birthweight, y-axis, ~700–5000) versus 'lwt' (mother's weight, x-axis, ~75–250), shown as black points with no color grouping. Points are densely clustered between lwt 100–150 and bwt 2000–4000, with a wide spread and a weak linear trend."
 
-birthwt |> 
+birthwt |> # piping
   ggplot2::ggplot(
     aes(x = lwt, 
         y = bwt) ) +
@@ -610,10 +611,22 @@ Commonly used arguments are:
 
 Aesthetics given in `ggplot()` apply to all geometries and override `geom_*()` specifications.
 
+## Mapping versus settings
+- **Mapping:** determines visual properties (aesthetics) based on the *values of a variable in the data*.
+  - Must be wrapped in `aes()` and passed into the `mapping` argument of `ggplot2()` or `geom_*()`.
+
+. . .
+
+- **Setting**: applies a *fixed, constant value,* not directly from the data, to visual properties of the plot.
+  - Must be passed directly into `geom_*()` as an argument.
+  - E.g., `size = 3`, `alpha = 0.8`, or `linetype = "dotted"`.
+
 ## Color and shape
 ::: notes
 - Saw these already in our example but were the same variable
 :::
+
+- Both mapped to a *variable* $\rightarrow$ inside `aes()`.
 
 ```{r color-shape}
 #| fig-height: 4.5
@@ -686,7 +699,7 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) +
 - Mapped to a *variable* $\rightarrow$ inside `aes()`.
 
 ```{r linetype1}
-#| fig-height: 4
+#| fig-height: 3.5
 #| fig-width: 6
 #| fig-align: center
 #| fig-alt: "Scatterplot of birth weight (bwt) vs. mother's weight (lwt), with point color showing smoking status (nonsmoker in red, smoker in teal), with a linear trend line fitted for each group (solid red for nonsmoker line, dashed teal for smoker line). Both trend lines show a slight positive slope, with nonsmokers having consistently higher predicted birth weight than smokers across the range of mother's weight."
@@ -698,7 +711,7 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) +
 
 ```
 
-Note: We have three mappings!
+Note: We have three mapping arguments, and some are redundant.
 
 ## Linetype {.smaller}
 - Mapped to a [discrete *constant* or string](https://ggplot2.tidyverse.org/reference/aes_linetype_size_shape.html#linetype) $\rightarrow$ outside `aes()`.
@@ -712,15 +725,11 @@ Note: We have three mappings!
 #| fig-align: center
 #| fig-alt: "Scatterplot of birth weight (bwt) vs. mother's weight (lwt), with point color showing smoking status (nonsmoker in red, smoker in teal), with a dashed linear trend line fitted for each group (nonsmoker in red, smoker in teal). Both lines slope slightly upward, with nonsmokers showing consistently higher predicted birth weight than smokers."
 
-ggplot2::ggplot(
-  birthwt, 
-  aes(x = lwt, 
-      y = bwt, 
-      color = smoke) ) + 
+ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt, 
+                             color = smoke) ) + 
   ggplot2::geom_point() + 
   geom_smooth(linetype = 2, 
-              method = "lm", 
-              se = F)
+              method = "lm", se = F)
 
 ```
 :::
@@ -732,15 +741,11 @@ ggplot2::ggplot(
 #| fig-align: center
 #| fig-alt: "Scatterplot of birth weight (bwt) vs. mother's weight (lwt), with point color showing smoking status (nonsmoker in red, smoker in teal), with a dash-dot linear trend line fitted for each group (nonsmoker in red, smoker in teal). Both lines slope slightly upward, with nonsmokers showing consistently higher predicted birth weight than smokers."
 
-ggplot2::ggplot(
-  birthwt, 
-  aes(x = lwt, 
-      y = bwt, 
-      color = smoke) ) + 
+ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt, 
+                             color = smoke) ) + 
   ggplot2::geom_point() + 
   geom_smooth(linetype = "dotdash", 
-              method = "lm", 
-              se = F)
+              method = "lm", se = F)
 
 ```
 :::
@@ -767,7 +772,7 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) +
 ## Note on aesthetic options {.smaller}
 Available aesthetics depend on the `geom` used. See [help files](https://ggplot2.tidyverse.org/reference/index.html#Geoms).
 
-- E.g., `linewidth` or `linetype` would work for geoms with lines (e.g., `geom_bar`, `geom_histogram`, `geom_boxplot`) but not for geoms with points (e.g., `geom_scatter`).
+- E.g., `linewidth` or `linetype` would work for geoms with lines (e.g., `geom_bar`, `geom_histogram`, `geom_boxplot`) but not for geoms with points (e.g., `geom_point`).
 
 . . .
 
@@ -786,21 +791,6 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) +
 
 ```
 
-## Mapping versus settings
-- **Mapping:** determines visual properties (aesthetics) based on the *values of a variable in the data*.
-  - Must be wrapped in `aes()` and passed into the `mapping` argument of `ggplot2()` or `geom_*()`.
-
-. . .
-
-- **Setting**: applies a *fixed, constant value,* not directly from the data, to visual properties of the plot.
-  - Must be passed directly into `geom_*()` as an argument.
-  - E.g., `size = 3`, `alpha = 0.8`, or `linetype = "dotted"`.
-
-. . .
-
-- Showed mappings and settings for `size`, `alpha`, and `linetype`.
-  - Can also be done for `color`, [`shape`](https://ggplot2.tidyverse.org/articles/ggplot2-specs.html#sec:shape-spec), etc.
-
 ## Default aesthetics
 Once you map an aesthetic, `ggplot2` takes care of the rest. It: 
 
@@ -813,66 +803,6 @@ Once you map an aesthetic, `ggplot2` takes care of the rest. It:
 These are the *default options* provided by `ggplot2`, there are functions and arguments to override them.
 
 - Our main example showed how `labs()` over rides axis and legend labels. We will go over other ways to make changes to axes, labels, and legends.
-
-## Exercise {.scrollable}
-
-```{code-blanks-instructions}
-
-Create a scatterplot of bwt by age. Color the points by presence of uterine irritability (`ui`). Is this plot how you expected?
-
-```
-
-```{code-blanks}
-#| blank:
-#|   target: age
-#|   prefill: false
-#|   occurrence: 1
-#|   match: token
-#| blank:
-#|   target: bwt
-#|   prefill: false
-#|   occurrence: 1
-#|   match: token
-#| blank:
-#|   target: aes
-#|   prefill: false
-#|   occurrence: 2
-#|   match: token
-#| blank:
-#|   target: color
-#|   prefill: false
-#|   occurrence: 1
-#|   match: token
-
-ggplot2::ggplot(birthwt, aes(x = age, y = bwt) ) + 
-  ggplot2::geom_point(aes(color = ui))
-
-```
-
-```{code-blanks-instructions}
-
-Change the value of the shape argument and see how the plot changes. Try both numbers and strings (of common shapes). Why do all points change shape?
-
-```
-
-```{code-blanks}
-#| blank:
-#|   target: 16
-#|   prefill: true
-#|   occurrence: 1
-#|   match: token
-
-ggplot2::ggplot(birthwt, aes(x = age, y = bwt) ) + 
-  ggplot2::geom_point(shape = 16)
-
-```
-
-```{r}
-#| echo: FALSE
-
-countdown::countdown(minutes = 5, top = 0)
-
-```
 
 ## Visualizing data and distributions
 - How you visualize data depends on multiple considerations.
@@ -943,244 +873,64 @@ ggplot2::ggplot(birthwt,
 
 ::::
 
-## `geom_histogram()`: One variable {.smaller}
-::: notes
-- Default bins = 30
-- Note that bins is *not* in `aes()` since it always a fixed number not related to any data
-:::
+## Exercise: ggplot2 {.smaller .scrollable}
 
-- Single continuous variable.
-- Divides the x-axis into equally spaced bins. The height of a bar displays the number of observations that fall in each bin.
+```{code-blanks-instructions}
 
-::::{.columns}
-
-:::{.column width="50%"}
-```{r geom-hist1}
-#| fig-height: 4.5
-#| fig-width: 6
-#| fig-align: center
-#| fig-alt: "Histogram of birth weight, roughly bell-shaped and centered around 2800-3300 g, with a tall spike near 2500 g and a few sparse outliers below 1000 g and above 4500 g."
-
-ggplot2::ggplot(birthwt, aes(x = bwt)) + 
-  ggplot2::geom_histogram()
-
-```
-:::
-
-:::{.column width="50%"}
-```{r geom-hist2}
-#| code-line-numbers: "2"
-#| fig-height: 4.5
-#| fig-width: 6
-#| fig-align: center
-#| fig-alt: "Histogram of birth weight with narrow bins, showing a jagged, roughly bell-shaped distribution with multiple peaks (up to 8 counts) between 2300-3700 g, and sparse outliers below 1500 g and above 4500 g."
-
-ggplot2::ggplot(birthwt, aes(x = bwt)) + 
-  ggplot2::geom_histogram(bins=100)
-
-```
-:::
-
-::::
-
-## `geom_histogram()`: Two variables {.smaller}
-- Continuous-categorical pair.
-- Continuous variable is always plotted on the x-axis.
-
-::::{.columns}
-
-:::{.column width="50%"}
-```{r geom-hist3}
-#| fig-height: 4.5
-#| fig-width: 6
-#| fig-align: center
-#| fig-alt: "Overlapping histograms of birth weight by race (White, Black, Other, outlined in red, green, blue respectively), all overlaid on the same axis. All three groups show similar bell-shaped distributions centered around 2500-3500 g, with the red (White) outline reaching the highest peak (17) near 2500 g."
-
-ggplot2::ggplot(birthwt, 
-                aes(x = bwt, 
-                    color = race)) + 
-  ggplot2::geom_histogram()
-
-```
-:::
-
-:::{.column width="50%"}
-```{r geom-hist4}
-#| code-line-numbers: "3-4"
-#| fig-height: 4.5
-#| fig-width: 6
-#| fig-align: center
-#| fig-alt: "Overlapping semi-transparent histograms of birth weight by race (White, Black, Other), all sharing the same axis. Distributions largely overlap in the 2000-4000 g range; White (red) shows the highest peak (17) near 2500 g, while Black and Other (green, blue) are shorter and more concentrated toward the middle of the range."
-
-ggplot2::ggplot(birthwt, 
-                aes(x = bwt, 
-                    color = race, fill = race)) + 
-  ggplot2::geom_histogram(alpha = 0.7)
-
-```
-:::
-
-::::
-
-## `geom_density()`: One variable {.smaller}
-::: notes
-- Additional information on how density estimation occurs in documentation
-:::
-
-- One continuous variable.
-- Smoothed version of a histogram.
-
-```{r geom-density1}
-#| fig-height: 4.5
-#| fig-width: 6
-#| fig-align: center
-#| fig-alt: "Density plot of birth weight, roughly bell-shaped with a peak around 3000-3100 g and a slight shoulder near 2500 g."
-
-ggplot2::ggplot(birthwt, aes(x = bwt)) + 
-  ggplot2::geom_density()
+Create a scatterplot of bwt by age. Color the points by presence of uterine irritability (`ui`). Is this plot how you expected?
 
 ```
 
-## `geom_density()`: Two variables {.smaller}
-- Continuous-categorical pair.
-- Continuous variable is always plotted on the x-axis.
+```{code-blanks}
+#| blank:
+#|   target: age
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: bwt
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: aes
+#|   prefill: false
+#|   occurrence: 2
+#|   match: token
+#| blank:
+#|   target: color
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
 
-::::{.columns}
-
-:::{.column width="50%"}
-```{r geom-density2}
-#| fig-height: 4.5
-#| fig-width: 6
-#| fig-align: center
-#| fig-alt: "Overlaid density curves of birth weight by race, all sharing the same axis. Black (green) peaks earliest and highest around 2400-3000 g. Other (blue) peaks around 3200 g. White (red) is shifted right with a peak near 3000-3700 g."
-
-ggplot2::ggplot(birthwt, 
-                aes(x = bwt, 
-                    color = race)) + 
-  ggplot2::geom_density()
-
-```
-:::
-
-:::{.column width="50%"}
-```{r geom-density3}
-#| code-line-numbers: "3-4"
-#| fig-height: 4.5
-#| fig-width: 6
-#| fig-align: center
-#| fig-alt: "Overlapping filled density curves of birth weight by race, all sharing the same axis. Black (green) peaks earliest and highest around 2400-3000 g. Other (blue) peaks around 3200 g. White (red) is shifted right with a peak near 3000-3700 g."
-
-ggplot2::ggplot(birthwt, 
-                aes(x = bwt, 
-                    color = race, fill = race)) + 
-  ggplot2::geom_density(alpha = 0.6)
-
-```
-:::
-
-::::
-
-## `geom_boxplot()`: One variable {.smaller}
-::: notes
-- Thick middle line = median; thinner lines: 25%tile and 75%tile; dashed lines = "whiskers" to +/- 1.5*IQR
-- Points beyond 1.5*IQR are given separate dots
-- Note no axis but still ticks and labels but don't make much sense
-:::
-
-- One continuous variable.
-- Provides visualization, as well as measure of central tendency and spread.
-
-```{r geom_bp1}
-#| fig-height: 4.5
-#| fig-width: 6
-#| fig-align: center
-#| fig-alt: "Boxplot of birth weight for all observations. Median around 3000 g, interquartile range roughly 2400-3500 g, whiskers extending from about 1000 g to 5000 g, with one low outlier near 700 g."
-
-ggplot2::ggplot(birthwt, aes(y=bwt)) + 
-  ggplot2::geom_boxplot()
+ggplot2::ggplot(birthwt, aes(x = age, y = bwt) ) + 
+  ggplot2::geom_point(aes(color = ui))
 
 ```
 
-## `geom_boxplot()`: Two variables {.smaller}
-::: notes
-- Theme removes ticks and axis text. Will learn more in the future.
-:::
+```{code-blanks-instructions}
 
-- Continuous-categorical pair.
-- Can compare this to our base R plot. `ggplot` is easier to customize.
-
-```{r geom_bp2}
-#| fig-height: 4.5
-#| fig-width: 6
-#| fig-align: center
-#| fig-alt: "Boxplot comparing birth weight by smoking status. Nonsmokers (solid red) have a higher median (~3100 g) and wider range (1000-5000 g) than smokers (dashed teal), whose median is lower (~2800 g) with one low outlier near 700 g."
-
-ggplot2::ggplot(birthwt, aes(y = bwt, x = smoke, color = smoke, fill = smoke, linetype = smoke)) + 
-  ggplot2::geom_boxplot(alpha = 0.25, linewidth = 1)
+Change the value of the shape argument and see how the plot changes. Try both numbers and strings (of common shapes). Why do all points change shape?
 
 ```
 
-## `geom_scatter()` {.smaller}
-::: notes
-- extensively reviewed in examples
-:::
+```{code-blanks}
+#| blank:
+#|   target: 16
+#|   prefill: true
+#|   occurrence: 1
+#|   match: token
 
-- Two continuous variables (x- and y-axis), continuous or categorical variables for aesthetics.
-- Can plot categorical variables on axes but not as informative.
-
-```{r geom-scatter}
-#| fig-height: 4.5
-#| fig-width: 6
-#| fig-align: center
-#| fig-alt: "Scatterplot of birth weight vs. mother's pre-pregnancy weight, with point shape indicating race (circle=White, triangle=Black, square=Other) and color shade indicating number of physician visits in the first trimester (ftv, dark=0 to light blue=6). Most points are dark (low ftv), scattered broadly with no clear trend by lwt; a few lighter, high-ftv points appear scattered among the mid-to-high lwt range."
-
-ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) + 
-  ggplot2::geom_point(aes(color = ftv, shape = race))
+ggplot2::ggplot(birthwt, aes(x = age, y = bwt) ) + 
+  ggplot2::geom_point(shape = 16)
 
 ```
 
-## Geoms
-- `ggplot2` provides more than 40 geoms.
-- We will cover a few more but not all possible plots one could make.
-- Look into [extension packages](https://exts.ggplot2.tidyverse.org/gallery/) to see what others have created.
-  - And maybe for your final project!
-
-## Exercise: Base R plots {.scrollable}
-
-Determine why the code doesn't produce a plot as expected (or at all).
-
-::::{.columns}
-
-:::{.column width="50%"}
-```{r}
-#| fig-alt: "Scatterplot of birth weight vs. maternal age, all points shown in the same color (legend labeled 'green' but points appear red/salmon - likely a labeling artifact). Points are densely clustered between ages 18-30, with no clear trend across age; one outlier at age 45 has the highest birth weight (~5000 g)."
-
-ggplot2::ggplot(birthwt, 
-                aes(x = age, 
-                    y = bwt) ) + 
-  geom_point(aes(color = "green"))
-
-```
-:::
-
-:::{.column width="50%"}
-```{r}
-#| error: TRUE
-
-ggplot2::ggplot(birthwt, 
-                aes(x = lwt, 
-                    y = bwt) ) + 
-  geom_point(aes(shape = ui))
-
-```
-:::
-
-::::
-
-```{r}
+```{r countdown2}
 #| echo: FALSE
 
-countdown::countdown(minutes = 4, top = 0)
+countdown::countdown(minutes = 5, bottom = 0)
 
 ```
+
 
