@@ -26,7 +26,7 @@ Below are interactive lectures slides so that you may follow along with the in-c
 | **Module 1:** Data types and structures | Lecture + Lab Thu Aug 27 | Advanced R: Data Structures<br>Advanced R: Subsetting | [Slides](lectures/module01/module01_data-types.html) |
 | **Module 2:** Data visualization I | Lecture Tue Sep 1<br>Lab Thu Sep 3 | R4DS 1 Data Visualization<br>R4DS 9.1-9.2 Layers | [Slides](lectures/module02/module02_visualization-1.html) |
 | **Module 3:** Data visualization II | Lecture Tue Sep 8<br>Lab Thu Sep 10 | R4DS 9.3-9.9 Layers<br>R4DS 11 Communication | [Slides](lectures/module03/module03-visualization-2.html) |
-| **Module 4:** Data Wrangling I | Lecture Tue Sep 15<br>Lab Thu Sep 17 | R4DS 3 Data Transformation | [Slides](lectures/module04/module02-wrangling-1.html) |
+| **Module 4:** Data Wrangling I | Lecture Tue Sep 15<br>Lab Thu Sep 17 | R4DS 3 Data Transformation | [Slides](lectures/module04/module04-wrangling-1.html) |
 | **Module 5:** Data Wrangling II | Lecture Tue Sep 22<br>Lab Thu Sep 24 | R4DS 5 Data Tidying<br>R4DS 7 Data Import<br>R4DS 19 Joins | [Slides](lectures/module05/module05-data-wrangling-2.html) |
 | **Module 6:** Functions and iteration | Lecture Tue Sep 29<br>Lab Thu Oct 1 | R4DS 26.1-26.3<br>R4DS (1e) 21.1-21.5 | [Slides](lectures/module06/module06-functions-iteration.html) |
 :::
