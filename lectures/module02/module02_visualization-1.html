@@ -292,9 +292,8 @@ Rebecca Deek, PhD
 <h2>Base R: Scatterplots</h2>
 <aside class="notes">
 <ul>
-<li>Examines the relationship between two numeric variables.</li>
 <li>Shorthand y~x notation (similar to regression). Personal preference of which to use.</li>
-<li>age: mother’s age; lwt: mother’s weight as last menstrual period.</li>
+<li>Two plots: birthweight ~ mother’s age and birthweight ~ mother’s weight.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -307,6 +306,9 @@ Rebecca Deek, PhD
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+<ul>
+<li>Examines the relationship between two numeric variables.</li>
+</ul>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
@@ -335,6 +337,9 @@ Rebecca Deek, PhD
 </div></div>
 <ul>
 <li>R has plotted <em>numeric</em> <code>bwt</code> on the y-axis and either <em>numeric</em> <code>age</code> or <code>lwt</code> on the x-axis.</li>
+</ul>
+<div class="fragment">
+<ul>
 <li>Must use <code>data$var</code> syntax, as there is no <code>data</code> argument.</li>
 </ul>
 <div class="cell">
@@ -344,12 +349,13 @@ Rebecca Deek, PhD
 ! object 'bwt' not found</code></pre>
 </div>
 </div>
+</div>
 </section>
 <section id="base-r-histograms" class="slide level2 smaller">
 <h2>Base R: Histograms</h2>
 <ul>
 <li>Graphical summary of the distribution of a numeric variable.</li>
-<li>Automatically creates the breakpoints (bins) in the histogram using the Sturges formula. Can be altered with <code>breaks</code>.</li>
+<li>Automatically creates the breakpoints (bins) in the histogram using the Sturges formula. Can be altered with <code>breaks</code> argument.</li>
 </ul>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -368,7 +374,7 @@ Rebecca Deek, PhD
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">hist</span>(<span class="at">x =</span> birthwt<span class="sc">$</span>bwt, </span>
 <span id="cb8-2"><a href=""></a>     <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">700</span>,<span class="dv">5000</span>, <span class="dv">100</span>), </span>
 <span id="cb8-3"><a href=""></a>     <span class="at">main =</span> <span class="st">"Birthweight"</span>, </span>
-<span id="cb8-4"><a href=""></a>     <span class="at">freq =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-4"><a href=""></a>     <span class="at">freq =</span> <span class="cn">FALSE</span> <span class="co"># density instead of counts</span></span>
 <span id="cb8-5"><a href=""></a>     )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -382,6 +388,22 @@ Rebecca Deek, PhD
 </section>
 <section id="base-r-histograms-density-curve" class="slide level2">
 <h2>Base R: Histograms + density curve</h2>
+<aside class="notes">
+<ul>
+<li>Layering the density curve over the histogram.</li>
+<li>Provide complementary information.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 <ul>
 <li>An estimated density curve can be added to proportion histograms.</li>
 </ul>
@@ -406,6 +428,7 @@ Rebecca Deek, PhD
 <li>Points beyond 1.5*IQR are given separate dots</li>
 <li>Does have data argument (don’t have to use $ notation but can)</li>
 <li>cex: character expansion</li>
+<li>0/1 notation: good candidate for factor</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -441,7 +464,7 @@ Rebecca Deek, PhD
 </div><div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">boxplot</span>(<span class="at">formula =</span> bwt <span class="sc">~</span> smoke, <span class="co"># y ~ x</span></span>
-<span id="cb11-2"><a href=""></a>        <span class="at">data =</span> birthwt <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">smoke =</span> <span class="fu">factor</span>(smoke, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Nonsmoker"</span>, <span class="st">"Smoker"</span>))), </span>
+<span id="cb11-2"><a href=""></a>        <span class="at">data =</span> birthwt, </span>
 <span id="cb11-3"><a href=""></a>        <span class="at">ylab =</span> <span class="st">"Birthweight (g)"</span>, </span>
 <span id="cb11-4"><a href=""></a>        <span class="at">xlab =</span> <span class="st">"Smoking status"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -458,7 +481,7 @@ Rebecca Deek, PhD
 <h2>Base R: Pairs plots</h2>
 <aside class="notes">
 <ul>
-<li>First row: y-axis is age while x-axis changes between lwt, bwt, and smoke.</li>
+<li>First row: x-axis is age while y-axis changes between lwt, bwt, and smoke.</li>
 <li>Scatterplot not too helpful for smoke despite coded as numerical because it is binary.</li>
 </ul>
 <style type="text/css">
@@ -489,11 +512,11 @@ Rebecca Deek, PhD
 <li>Mostly helpful for pairs of continuous variables.</li>
 </ul>
 </section>
-<section id="exercise-ggplot" class="slide level2 smaller scrollable">
-<h2>Exercise: <code>ggplot</code></h2>
+<section id="exercise-base-r" class="slide level2 smaller scrollable">
+<h2>Exercise: <code>Base R</code></h2>
 <div class="xsmall">
 <div class="code-blanks-instructions-box">
-<p>Create a boxplot of birthweight by race. First, set race as a factor with labels. Title the boxplot “Boxplot of birthweight by race” and increase the font size of the x- and y-axis labels.</p>
+<p>Create a boxplot of birthweight by race. First, set race (currently numeric 1, 2, 3) as a factor with labels. Title the boxplot “Boxplot of birthweight by race” and increase the font size of the x- and y-axis labels.</p>
 </div>
 <pre class="code-blanks"><code>birthwt$race = <input class="code-blank-input" data-answer="factor" data-default="" value="" size="8">(x = birthwt$race, <input class="code-blank-input" data-answer="levels" data-default="" value="" size="8"> = 1:3, 
                       <input class="code-blank-input" data-answer="labels" data-default="" value="" size="8"> = c("White", "Black", "Other"))
@@ -506,7 +529,7 @@ boxplot(bwt ~ race, data = <input class="code-blank-input" data-answer="birthwt"
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_a6574652" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_3e763561" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
@@ -807,8 +830,24 @@ Levels: Nonsmoker Smoker</code></pre>
 </section>
 <section id="ggplot2-calls" class="slide level2 smaller">
 <h2><code>ggplot2</code> calls</h2>
+<aside class="notes">
 <ul>
-<li><code>ggplot2()</code> has two main arguments: <code>data</code> and <code>mapping</code>.</li>
+<li>Lazy evaluation is less verbose and infers the first input is data and the second is a mapping</li>
+<li>Pipes are in the format data |&gt; ggplot() and take the data as the first argument</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<ul>
+<li><code>ggplot()</code> has two main arguments: <code>data</code> and <code>mapping</code>.</li>
 <li>These names can be omitted and R will infer their assignments.
 <ul>
 <li>Helps to keep code concise and readable.</li>
@@ -865,7 +904,7 @@ Levels: Nonsmoker Smoker</code></pre>
 </section>
 <section id="aesthetic-options" class="slide level2">
 <h2>Aesthetic options</h2>
-<p>Visual characteristics of the plotting geoms that can be <em>mapped to a specific variable in the data</em>.</p>
+<p>Aesthetics are visual characteristics of the plotting geoms that can be <em>mapped to a specific variable in the data</em>.</p>
 <div class="fragment">
 <p>Commonly used arguments are:</p>
 <div class="column" style="width:50%;">
@@ -910,7 +949,7 @@ Levels: Nonsmoker Smoker</code></pre>
 <h2>Color and shape</h2>
 <aside class="notes">
 <ul>
-<li>Saw these already in our example but were the same variable</li>
+<li>Saw these already in our example but were the same variable but now different variables for color and shapes.</li>
 </ul>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -924,10 +963,10 @@ Levels: Nonsmoker Smoker</code></pre>
           display:block!important;
       }</style></aside>
 <ul>
-<li>Both mapped to a <em>variable</em> <span class="math inline">\(\rightarrow\)</span> inside <code>aes()</code>.</li>
+<li>Both <strong>mapped</strong> to a <em>variable</em> <span class="math inline">\(\rightarrow\)</span> inside <code>aes()</code>.</li>
 </ul>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
 <span id="cb27-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> smoke, <span class="at">shape =</span> race))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -941,10 +980,10 @@ Levels: Nonsmoker Smoker</code></pre>
 <section id="size" class="slide level2">
 <h2>Size</h2>
 <ul>
-<li>Mapped to a <em>variable</em> <span class="math inline">\(\rightarrow\)</span> inside <code>aes()</code>.</li>
+<li><strong>Mapped</strong> to a <em>variable</em> <span class="math inline">\(\rightarrow\)</span> inside <code>aes()</code>.</li>
 </ul>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
 <span id="cb28-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> smoke, <span class="at">size =</span> ftv))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -958,10 +997,10 @@ Levels: Nonsmoker Smoker</code></pre>
 <section id="size-1" class="slide level2">
 <h2>Size</h2>
 <ul>
-<li>Mapped to a <em>constant</em> <span class="math inline">\(\rightarrow\)</span> outside <code>aes()</code>.</li>
+<li><strong>Set</strong> to a <em>constant</em> <span class="math inline">\(\rightarrow\)</span> outside <code>aes()</code>.</li>
 </ul>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
 <span id="cb29-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> smoke), <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -975,10 +1014,10 @@ Levels: Nonsmoker Smoker</code></pre>
 <section id="alpha" class="slide level2">
 <h2>Alpha</h2>
 <ul>
-<li>Mapped to a <em>variable</em> <span class="math inline">\(\rightarrow\)</span> inside <code>aes()</code>.</li>
+<li><strong>Mapped</strong> to a <em>variable</em> <span class="math inline">\(\rightarrow\)</span> inside <code>aes()</code>.</li>
 </ul>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
 <span id="cb30-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> smoke, <span class="at">alpha =</span> ftv))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -992,10 +1031,10 @@ Levels: Nonsmoker Smoker</code></pre>
 <section id="alpha-1" class="slide level2">
 <h2>Alpha</h2>
 <ul>
-<li>Mapped to a <em>constant</em> (between 0 and 1) <span class="math inline">\(\rightarrow\)</span> outside <code>aes()</code>.</li>
+<li><strong>Set</strong> to a <em>constant</em> (between 0 and 1) <span class="math inline">\(\rightarrow\)</span> outside <code>aes()</code>.</li>
 </ul>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31" data-code-line-numbers="2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
 <span id="cb31-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> smoke), <span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -1008,11 +1047,28 @@ Levels: Nonsmoker Smoker</code></pre>
 </section>
 <section id="linetype" class="slide level2 smaller">
 <h2>Linetype</h2>
+<aside class="notes">
 <ul>
-<li>Mapped to a <em>variable</em> <span class="math inline">\(\rightarrow\)</span> inside <code>aes()</code>.</li>
+<li>First example of layering geoms.</li>
+<li>Linetype won’t work for geom_point because no lines.</li>
+<li>Adding in linear regression line with geom_smooth.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<ul>
+<li><strong>Mapped</strong> to a <em>variable</em> <span class="math inline">\(\rightarrow\)</span> inside <code>aes()</code>.</li>
 </ul>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32" data-code-line-numbers="2-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
 <span id="cb32-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> smoke)) <span class="sc">+</span> </span>
 <span id="cb32-3"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">color =</span> smoke, <span class="at">linetype =</span> smoke), </span>
 <span id="cb32-4"><a href=""></a>                       <span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> F)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1029,7 +1085,7 @@ Levels: Nonsmoker Smoker</code></pre>
 <section id="linetype-1" class="slide level2 smaller">
 <h2>Linetype</h2>
 <ul>
-<li>Mapped to a <a href="https://ggplot2.tidyverse.org/reference/aes_linetype_size_shape.html#linetype">discrete <em>constant</em> or string</a> <span class="math inline">\(\rightarrow\)</span> outside <code>aes()</code>.</li>
+<li><strong>Set</strong> to a <a href="https://ggplot2.tidyverse.org/reference/aes_linetype_size_shape.html#linetype">discrete <em>constant</em> or string</a> <span class="math inline">\(\rightarrow\)</span> outside <code>aes()</code>.</li>
 </ul>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -1065,8 +1121,11 @@ Levels: Nonsmoker Smoker</code></pre>
 </div></div>
 <p>Note: Mappings were condensed.</p>
 </section>
-<section id="linewidth" class="slide level2">
+<section id="linewidth" class="slide level2 smaller">
 <h2>Linewidth</h2>
+<ul>
+<li><strong>Set</strong> to a constant <span class="math inline">\(\rightarrow\)</span> outside <code>aes()</code>.</li>
+</ul>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
 <span id="cb35-2"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> smoke)) <span class="sc">+</span> </span>
@@ -1083,13 +1142,28 @@ Levels: Nonsmoker Smoker</code></pre>
 </section>
 <section id="note-on-aesthetic-options" class="slide level2 smaller">
 <h2>Note on aesthetic options</h2>
+<aside class="notes">
+<ul>
+<li>Example supplies linewidth to point geom (ignored) and a discrete factor to alpha which produces a warning.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 <p>Available aesthetics depend on the <code>geom</code> used. See <a href="https://ggplot2.tidyverse.org/reference/index.html#Geoms">help files</a>.</p>
 <ul>
 <li>E.g., <code>linewidth</code> or <code>linetype</code> would work for geoms with lines (e.g., <code>geom_bar</code>, <code>geom_histogram</code>, <code>geom_boxplot</code>) but not for geoms with points (e.g., <code>geom_point</code>).</li>
 </ul>
 <div class="fragment">
 <ul>
-<li>Supplying a discrete variable for <code>alpha</code> or <code>size</code> doesn’t make sense. Likewise for a continuous variable and <code>shape</code>.</li>
+<li>Supplying a discrete variable for <code>alpha</code> or <code>size</code> doesn’t make sense.</li>
 </ul>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, <span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
@@ -1102,6 +1176,9 @@ unknown parameters: `linewidth`</code></pre>
 <pre><code>Warning: Using alpha for a discrete variable is not advised.</code></pre>
 </div>
 </div>
+<ul>
+<li>Likewise for a continuous variable and <code>shape</code>.</li>
+</ul>
 </div>
 </section>
 <section id="default-aesthetics" class="slide level2">
@@ -1112,12 +1189,10 @@ unknown parameters: `linewidth`</code></pre>
 <li>Constructs a legend that explains the mapping between levels and values.</li>
 <li>For <code>x</code> and <code>y</code> aesthetics, no legend is created. Instead an axis line with tick marks and a label is made.</li>
 </ul>
-<div class="fragment">
 <p>These are the <em>default options</em> provided by <code>ggplot2</code>, there are functions and arguments to override them.</p>
 <ul>
 <li>Our main example showed how <code>labs()</code> over rides axis and legend labels. We will go over other ways to make changes to axes, labels, and legends.</li>
 </ul>
-</div>
 </section>
 <section id="visualizing-data-and-distributions" class="slide level2">
 <h2>Visualizing data and distributions</h2>
@@ -1194,7 +1269,7 @@ unknown parameters: `linewidth`</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41" data-code-line-numbers="4-5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href=""></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(birthwt, </span>
 <span id="cb41-2"><a href=""></a>                <span class="fu">aes</span>(<span class="at">x =</span> smoke, </span>
 <span id="cb41-3"><a href=""></a>                    <span class="at">fill =</span> race) ) <span class="sc">+</span> </span>
-<span id="cb41-4"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span> </span>
+<span id="cb41-4"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span> <span class="co"># rel freq</span></span>
 <span id="cb41-5"><a href=""></a>  ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Proportion"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -1207,9 +1282,24 @@ unknown parameters: `linewidth`</code></pre>
 </div></div>
 </section>
 <section id="exercise-ggplot2" class="slide level2 smaller scrollable">
-<h2>Exercise: ggplot2</h2>
+<h2>Exercise: <code>ggplot2</code></h2>
+<aside class="notes">
+<ul>
+<li>Max shape number 127</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 <div class="code-blanks-instructions-box">
-<p>Create a scatterplot of bwt by age. Color the points by presence of uterine irritability (<code>ui</code>). Is this plot how you expected?</p>
+<p>Create a scatterplot of age (x) vs birthweight (y). Color the points by presence of uterine irritability (<code>ui</code>). Is this plot how you expected?</p>
 </div>
 <pre class="code-blanks"><code>ggplot2::ggplot(birthwt, aes(x = <input class="code-blank-input" data-answer="age" data-default="" value="" size="5">, y = <input class="code-blank-input" data-answer="bwt" data-default="" value="" size="5">) ) + 
   ggplot2::geom_point(<input class="code-blank-input" data-answer="aes" data-default="" value="" size="5">(<input class="code-blank-input" data-answer="color" data-default="" value="" size="7"> = ui))
@@ -1222,7 +1312,7 @@ unknown parameters: `linewidth`</code></pre>
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_80e9c96d" minutes="5" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_aa9deaa6" minutes="5" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 

@@ -95,10 +95,11 @@ str(birthwt)
 
 ## Base R: Scatterplots {.smaller}
 ::: notes
-- Examines the relationship between two numeric variables.
 - Shorthand y~x notation (similar to regression). Personal preference of which to use.
-- age: mother's age; lwt: mother's weight as last menstrual period.
+- Two plots: birthweight ~ mother's age and birthweight ~ mother's weight.
 :::
+
+- Examines the relationship between two numeric variables.
 
 ::::{.columns}
 
@@ -127,6 +128,9 @@ plot(birthwt$bwt ~ birthwt$lwt)
 ::::
 
 - R has plotted *numeric* `bwt` on the y-axis and either *numeric* `age` or `lwt` on the x-axis.
+
+. . .
+
 - Must use `data$var` syntax, as there is no `data` argument.
 
 ```{r baseR-scatter3}
@@ -138,7 +142,7 @@ plot(x = bwt, y = age)
 
 ## Base R: Histograms {.smaller}
 - Graphical summary of the distribution of a numeric variable.
-- Automatically creates the breakpoints (bins) in the histogram using the Sturges formula. Can be altered with `breaks`.
+- Automatically creates the breakpoints (bins) in the histogram using the Sturges formula. Can be altered with `breaks` argument.
 
 ::::{.columns}
 
@@ -162,7 +166,7 @@ hist(birthwt$bwt)
 hist(x = birthwt$bwt, 
      breaks = seq(700,5000, 100), 
      main = "Birthweight", 
-     freq = FALSE
+     freq = FALSE # density instead of counts
      )
 
 ```
@@ -171,6 +175,11 @@ hist(x = birthwt$bwt,
 ::::
 
 ## Base R: Histograms + density curve
+::: notes
+- Layering the density curve over the histogram.
+- Provide complementary information.
+:::
+
 - An estimated density curve can be added to proportion histograms.
 
 ```{r baseR-hist3}
@@ -191,6 +200,7 @@ lines(dens.bw) # add density as line
 - Points beyond 1.5*IQR are given separate dots
 - Does have data argument (don't have to use $ notation but can)
 - cex: character expansion
+- 0/1 notation: good candidate for factor
 :::
 
 - Graphical summary of the distribution of a numeric variable.
@@ -218,7 +228,7 @@ boxplot(x = birthwt$bwt,
 #| fig-alt: "Boxplot comparing birthweight (g, y-axis, ~700–5000) by smoking status (x-axis: Nonsmoker, Smoker). Nonsmokers have a higher median birthweight (~3100g) than smokers (~2800g), with a similar spread; the smoker group has one low outlier around 700g."
 
 boxplot(formula = bwt ~ smoke, # y ~ x
-        data = birthwt |> dplyr::mutate(smoke = factor(smoke, labels = c("Nonsmoker", "Smoker"))), 
+        data = birthwt, 
         ylab = "Birthweight (g)", 
         xlab = "Smoking status")
 
@@ -229,7 +239,7 @@ boxplot(formula = bwt ~ smoke, # y ~ x
 
 ## Base R: Pairs plots {.smaller}
 ::: notes
-- First row: y-axis is age while x-axis changes between lwt, bwt, and smoke.
+- First row: x-axis is age while y-axis changes between lwt, bwt, and smoke.
 - Scatterplot not too helpful for smoke despite coded as numerical because it is binary.
 :::
 
@@ -248,11 +258,11 @@ pairs(birthwt[,c("age", "lwt", "bwt", "smoke")])
 - Mostly helpful for pairs of continuous variables.
 
 
-## Exercise: `ggplot` {.smaller .scrollable}
+## Exercise: `Base R` {.smaller .scrollable}
 
 :::{.xsmall}
 ```{code-blanks-instructions}
-Create a boxplot of birthweight by race. First, set race as a factor with labels. Title the boxplot "Boxplot of birthweight by race" and increase the font size of the x- and y-axis labels.
+Create a boxplot of birthweight by race. First, set race (currently numeric 1, 2, 3) as a factor with labels. Title the boxplot "Boxplot of birthweight by race" and increase the font size of the x- and y-axis labels.
 ```
 
 ```{code-blanks}
@@ -534,7 +544,11 @@ ggplot2::ggplot(data = birthwt,
 ```
 
 ## `ggplot2` calls {.smaller}
-- `ggplot2()` has two main arguments: `data` and `mapping`.
+::: notes
+- Lazy evaluation is less verbose and infers the first input is data and the second is a mapping
+- Pipes are in the format data |> ggplot() and take the data as the first argument
+:::
+- `ggplot()` has two main arguments: `data` and `mapping`.
 - These names can be omitted and R will infer their assignments.
   - Helps to keep code concise and readable.
 - We will learn about the pipe functions `%>%` and `|>` to streamline code.
@@ -586,7 +600,7 @@ birthwt |> # piping
 ::::
 
 ## Aesthetic options
-Visual characteristics of the plotting geoms that can be *mapped to a specific variable in the data*.
+Aesthetics are visual characteristics of the plotting geoms that can be *mapped to a specific variable in the data*.
 
 . . .
 
@@ -623,12 +637,13 @@ Aesthetics given in `ggplot()` apply to all geometries and override `geom_*()` s
 
 ## Color and shape
 ::: notes
-- Saw these already in our example but were the same variable
+- Saw these already in our example but were the same variable but now different variables for color and shapes.
 :::
 
-- Both mapped to a *variable* $\rightarrow$ inside `aes()`.
+- Both **mapped** to a *variable* $\rightarrow$ inside `aes()`.
 
 ```{r color-shape}
+#| code-line-numbers: "2"
 #| fig-height: 4.5
 #| fig-width: 6
 #| fig-align: center
@@ -640,9 +655,10 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) +
 ```
 
 ## Size
-- Mapped to a *variable* $\rightarrow$ inside `aes()`.
+- **Mapped** to a *variable* $\rightarrow$ inside `aes()`.
 
 ```{r size1}
+#| code-line-numbers: "2"
 #| fig-height: 4.5
 #| fig-width: 6
 #| fig-align: center
@@ -654,9 +670,10 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) +
 ```
 
 ## Size
-- Mapped to a *constant* $\rightarrow$ outside `aes()`.
+- **Set** to a *constant* $\rightarrow$ outside `aes()`.
 
 ```{r size2}
+#| code-line-numbers: "2"
 #| fig-height: 4.5
 #| fig-width: 6
 #| fig-align: center
@@ -668,9 +685,10 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) +
 ```
 
 ## Alpha
-- Mapped to a *variable* $\rightarrow$ inside `aes()`.
+- **Mapped** to a *variable* $\rightarrow$ inside `aes()`.
 
 ```{r alpha1}
+#| code-line-numbers: "2"
 #| fig-height: 4.5
 #| fig-width: 6
 #| fig-align: center
@@ -682,9 +700,10 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) +
 ```
 
 ## Alpha
-- Mapped to a *constant* (between 0 and 1) $\rightarrow$ outside `aes()`.
+- **Set** to a *constant* (between 0 and 1) $\rightarrow$ outside `aes()`.
 
 ```{r alpha2}
+#| code-line-numbers: "2"
 #| fig-height: 4.5
 #| fig-width: 6
 #| fig-align: center
@@ -696,9 +715,16 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) +
 ```
 
 ## Linetype {.smaller}
-- Mapped to a *variable* $\rightarrow$ inside `aes()`.
+::: notes
+- First example of layering geoms.
+- Linetype won't work for geom_point because no lines.
+- Adding in linear regression line with geom_smooth.
+:::
+
+- **Mapped** to a *variable* $\rightarrow$ inside `aes()`.
 
 ```{r linetype1}
+#| code-line-numbers: "2-4"
 #| fig-height: 3.5
 #| fig-width: 6
 #| fig-align: center
@@ -714,7 +740,7 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) +
 Note: We have three mapping arguments, and some are redundant.
 
 ## Linetype {.smaller}
-- Mapped to a [discrete *constant* or string](https://ggplot2.tidyverse.org/reference/aes_linetype_size_shape.html#linetype) $\rightarrow$ outside `aes()`.
+- **Set** to a [discrete *constant* or string](https://ggplot2.tidyverse.org/reference/aes_linetype_size_shape.html#linetype) $\rightarrow$ outside `aes()`.
 
 ::::{.columns}
 
@@ -754,7 +780,9 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt,
 
 Note: Mappings were condensed.
 
-## Linewidth
+## Linewidth {.smaller}
+
+- **Set** to a constant $\rightarrow$ outside `aes()`.
 
 ```{r linewidth}
 #| fig-height: 4.5
@@ -770,13 +798,17 @@ ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) +
 ```
 
 ## Note on aesthetic options {.smaller}
+::: notes
+- Example supplies linewidth to point geom (ignored) and a discrete factor to alpha which produces a warning.
+:::
+
 Available aesthetics depend on the `geom` used. See [help files](https://ggplot2.tidyverse.org/reference/index.html#Geoms).
 
 - E.g., `linewidth` or `linetype` would work for geoms with lines (e.g., `geom_bar`, `geom_histogram`, `geom_boxplot`) but not for geoms with points (e.g., `geom_point`).
 
 . . .
 
-- Supplying a discrete variable for `alpha` or `size` doesn't make sense. Likewise for a continuous variable and `shape`.
+- Supplying a discrete variable for `alpha` or `size` doesn't make sense.
 
 ```{r aes-options-warning}
 #| warning: TRUE
@@ -788,8 +820,10 @@ Available aesthetics depend on the `geom` used. See [help files](https://ggplot2
 ggplot2::ggplot(birthwt, aes(x = lwt, y = bwt) ) + 
   ggplot2::geom_point(aes(alpha = smoke), linewidth = 2)
 
-
 ```
+
+- Likewise for a continuous variable and `shape`.
+
 
 ## Default aesthetics
 Once you map an aesthetic, `ggplot2` takes care of the rest. It: 
@@ -797,8 +831,6 @@ Once you map an aesthetic, `ggplot2` takes care of the rest. It:
 - Selects a reasonable scale to use with the aesthetic.
 - Constructs a legend that explains the mapping between levels and values.
 - For `x` and `y` aesthetics, no legend is created. Instead an axis line with tick marks and a label is made.
-
-. . .
 
 These are the *default options* provided by `ggplot2`, there are functions and arguments to override them.
 
@@ -865,7 +897,7 @@ ggplot2::ggplot(birthwt,
 ggplot2::ggplot(birthwt, 
                 aes(x = smoke, 
                     fill = race) ) + 
-  ggplot2::geom_bar(position = "fill") + 
+  ggplot2::geom_bar(position = "fill") + # rel freq
   ggplot2::labs(y = "Proportion")
 
 ```
@@ -873,11 +905,14 @@ ggplot2::ggplot(birthwt,
 
 ::::
 
-## Exercise: ggplot2 {.smaller .scrollable}
+## Exercise: `ggplot2` {.smaller .scrollable}
+::: notes
+- Max shape number 127
+:::
 
 ```{code-blanks-instructions}
 
-Create a scatterplot of bwt by age. Color the points by presence of uterine irritability (`ui`). Is this plot how you expected?
+Create a scatterplot of age (x) vs birthweight (y). Color the points by presence of uterine irritability (`ui`). Is this plot how you expected?
 
 ```
 
