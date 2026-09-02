@@ -5,6 +5,7 @@ author: Rebecca Deek, PhD
 institute: University of Pittsburgh, Biostatistics and Health Data Science
 format: 
   revealjs:
+    embed-resources: true
     slide-number: true
     code-line-numbers: true
     linestretch: 1
@@ -28,8 +29,9 @@ execute:
   message: false
 ---
 
+## Housekeeping/setup {.smaller}
+
 ```{r setup}
-#| echo: FALSE
 #| results: hide
 
 # the code below will load the necessary packages for this assignment

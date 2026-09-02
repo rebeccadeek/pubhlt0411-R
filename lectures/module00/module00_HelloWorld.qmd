@@ -5,6 +5,7 @@ author: Rebecca Deek, PhD
 institute: University of Pittsburgh, Biostatistics and Health Data Science
 format: 
   revealjs:
+    embed-resources: true
     slide-number: true
     code-line-numbers: true
     linestretch: 1
@@ -20,10 +21,10 @@ execute:
 ```{r setup}
 #| echo: false
 
-# the code below will load the necessary packages for this assignment
+# the code below will load the necessary packages for these slides
 # packages are normally loaded using library(packageName) after installing them.
-# the `pacman` package has a function called `p_load` that checks if a package is installed.
-# if it isn't installed, it will install it, otherwise it will load it.
+# the `pacman` package has a function called `p_load` that checks if a package is 
+# installed. If it isn't installed, it will install it, otherwise it will load it.
 
 # this line installs the pacman package, if you need it
 if(!require(pacman)){
