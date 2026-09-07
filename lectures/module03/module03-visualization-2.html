@@ -2842,6 +2842,7 @@ display:block!important;
 <aside class="notes">
 <ul>
 <li>Additional information on how density estimation occurs in documentation</li>
+<li>In base R we had to explicitly change the the freq to density, ggplot does this automatically</li>
 </ul>
 <style type="text/css">
 span.MJX_Assistive_MathML {
@@ -2909,7 +2910,7 @@ display:block!important;
 <ul>
 <li>Thick middle line = median; thinner lines: 25%tile and 75%tile; dashed lines = “whiskers” to +/- 1.5*IQR</li>
 <li>Points beyond 1.5*IQR are given separate dots</li>
-<li>Theme removes ticks and axis text on the right example. Will learn more in the future.</li>
+<li>Theme removes ticks and axis text on the left example. Will learn more in the later in lecture</li>
 </ul>
 <style type="text/css">
 span.MJX_Assistive_MathML {
@@ -2960,7 +2961,7 @@ display:block!important;
 <h2><code>geom_scatter()</code></h2>
 <aside class="notes">
 <ul>
-<li>extensively reviewed in examples</li>
+<li>Saw last lecture and lab</li>
 </ul>
 <style type="text/css">
 span.MJX_Assistive_MathML {
@@ -3053,6 +3054,21 @@ display:block!important;
 </section>
 <section id="exercise-ggplot2" class="slide level2 scrollable">
 <h2>Exercise: ggplot2</h2>
+<aside class="notes">
+<ul>
+<li>ui is a binary 0/1 (no/yes) variable. Should make a factor before calling shape.</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <p>Determine why the code doesn’t produce a plot as expected (or at all) and identify a solution.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -3087,14 +3103,17 @@ Caused by error in `scale_f()`:
 </div></div>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_a0cb122b" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_a28f30cd" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
 <section id="layering-geoms-scatterplot-example" class="slide level2 smaller">
 <h2>Layering geoms: Scatterplot example</h2>
 <aside class="notes">
-<p>Overlay points and a trend line on the same plot to make the trend clearer against the raw data.</p>
+<ul>
+<li>Overlay points and a loess line on the same plot to make the trend clearer against the raw data.</li>
+<li>Base R example with histogram and density plot (can do the same with ggplot).</li>
+</ul>
 <style type="text/css">
 span.MJX_Assistive_MathML {
 position:absolute!important;
@@ -3229,10 +3248,10 @@ display:block!important;
 <h2>Implicit statistical transformations</h2>
 <aside class="notes">
 <ul>
-<li>Top: count n obs per smoke x race group</li>
-<li>LHS: geom_bar(stat = count) -&gt; default</li>
-<li>RHS: using precalculated counts w geom_bar(stat = “identity”)</li>
-<li>Both plots are the same</li>
+<li>Top: geom_bar(stat = count) -&gt; default.</li>
+<li>LHS: count n obs per smoke x race group.</li>
+<li>RHS: using precalculated counts w geom_bar(stat = “identity”).</li>
+<li>Both plots are the same but top is easier with fewer lines of code.</li>
 </ul>
 <style type="text/css">
 span.MJX_Assistive_MathML {
@@ -3441,6 +3460,25 @@ display:block!important;
 </section>
 <section id="facets-with-fixed-layout" class="slide level2 smaller">
 <h2>Facets with fixed layout</h2>
+<aside class="notes">
+<ul>
+<li>Adding back in full data set to be able to compare facets to overall trend.</li>
+<li>Requires two geom_point() functions.
+<ul>
+<li>layout = “fixed” is what keeps all the data points.</li>
+</ul></li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29" data-code-line-numbers="3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href></a>birthwt <span class="sc">|&gt;</span> </span>
 <span id="cb29-2"><a href></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span> </span>
@@ -3710,7 +3748,7 @@ display:block!important;
 <section id="exercise-facets-and-position-adjustments" class="slide level2 smaller scrollable">
 <h2>Exercise: Facets and position adjustments</h2>
 <div class="code-blanks-instructions-box">
-<p>Create a histogram that compares the distribution of lwt across races. Ensure that each of the histograms is fully visible. Row-wise facet by low birthweight status.</p>
+<p>Create a histogram that compares the distribution of lwt across races. Map race to the color of the histograms. Ensure that each of the histograms is fully visible. Row-wise facet by low birthweight status (<code>low</code>).</p>
 </div>
 <pre class="code-blanks"><code>birthwt |&gt; 
   dplyr::mutate(race = factor(x = birthwt$race, 
@@ -3722,12 +3760,27 @@ display:block!important;
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_829c1f0c" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_e6458f74" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
 <section id="scales" class="slide level2 smaller">
 <h2>Scales</h2>
+<aside class="notes">
+<ul>
+<li>Default scales –&gt; never specified x/y breaks or colors. Automatically set</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <ul>
 <li>Scales control how the aesthetic mappings of variables manifest visually in plots.
 <ul>
@@ -3845,7 +3898,7 @@ display:block!important;
 </ul></li>
 </ul>
 <div class="columns">
-<div class="column" style="width:50%;">
+<div class="column fragment fade-in" style="width:50%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46" data-code-line-numbers="4-7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href></a>birthwt <span class="sc">|&gt;</span> </span>
 <span id="cb46-2"><a href></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span></span>
@@ -3862,7 +3915,7 @@ display:block!important;
 </div>
 </div>
 </div>
-</div><div class="column" style="width:50%;">
+</div><div class="column fragment fade-in" style="width:50%;">
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47" data-code-line-numbers="4-7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href></a>birthwt <span class="sc">|&gt;</span> </span>
 <span id="cb47-2"><a href></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> lwt, <span class="at">y =</span> bwt) ) <span class="sc">+</span></span>
@@ -3973,7 +4026,14 @@ display:block!important;
 <section id="exercise-themes" class="slide level2 smaller scrollable">
 <h2>Exercise: Themes</h2>
 <div class="code-blanks-instructions-box">
-<p>Create a boxplot of birthweight by smoking status. Change the boxplot colors to dark blue and orange. Increase the y-axis by 500 grams per tick mark. Make the background plain white with no grid lines. Remove the legend and bold the title.</p>
+<p>Create a boxplot of birthweight by smoking status.</p>
+<ol type="1">
+<li><p>Change the boxplot colors to dark blue and orange.</p></li>
+<li><p>Increase the y-axis by 500 grams per tick mark.</p></li>
+<li><p>Change the x-axis title to “Smoking status”</p></li>
+<li><p>Make the background plain white with no grid lines using a <code>theme_*</code>.</p></li>
+<li><p>Remove the legend and bold the title.</p></li>
+</ol>
 </div>
 <pre class="code-blanks"><code>birthwt |&gt; 
   dplyr::mutate(smoke = factor(birthwt$smoke, levels = 0:1, 
@@ -3991,7 +4051,7 @@ display:block!important;
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_4428e0bb" minutes="5" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_bdc1e31e" minutes="5" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>

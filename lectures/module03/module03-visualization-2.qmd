@@ -135,6 +135,7 @@ ggplot2::ggplot(birthwt,
 ## `geom_density()` {.smaller}
 ::: notes
 - Additional information on how density estimation occurs in documentation
+- In base R we had to explicitly change the the freq to density, ggplot does this automatically
 :::
 
 ::::{.columns}
@@ -194,7 +195,7 @@ ggplot2::ggplot(birthwt,
 ::: notes
 - Thick middle line = median; thinner lines: 25%tile and 75%tile; dashed lines = "whiskers" to +/- 1.5*IQR
 - Points beyond 1.5*IQR are given separate dots
-- Theme removes ticks and axis text on the right example. Will learn more in the future.
+- Theme removes ticks and axis text on the left example. Will learn more in the later in lecture
 :::
 
 - Continuous variable on the y- or x-axis provides visualization, as well as measures of central tendency and spread.
@@ -235,7 +236,7 @@ ggplot2::ggplot(birthwt, aes(x = bwt, y = race,
 
 ## `geom_scatter()` {.smaller}
 ::: notes
-- extensively reviewed in examples
+- Saw last lecture and lab
 :::
 
 - Two continuous variables (x- and y-axis), continuous or categorical variables for aesthetics.
@@ -291,6 +292,9 @@ violinPlot.bwt.race
   - And maybe for your final project!
 
 ## Exercise: ggplot2 {.scrollable}
+::: notes
+- ui is a binary 0/1 (no/yes) variable. Should make a factor before calling shape.
+:::
 
 Determine why the code doesn't produce a plot as expected (or at all) and identify a solution.
 
@@ -331,7 +335,8 @@ countdown::countdown(minutes = 4, bottom = 0)
 
 ## Layering geoms: Scatterplot example {.smaller}
 ::: notes
-Overlay points and a trend line on the same plot to make the trend clearer against the raw data.
+- Overlay points and a loess line on the same plot to make the trend clearer against the raw data.
+- Base R example with histogram and density plot (can do the same with ggplot).
 :::
 
 - Geoms can show similar or complementary information about the data 
@@ -450,10 +455,10 @@ birthwt |>
 
 ## Implicit statistical transformations {.smaller}
 ::: notes
-- Top: count n obs per smoke x race group 
-- LHS: geom_bar(stat = count) -> default
-- RHS: using precalculated counts w geom_bar(stat = "identity")
-- Both plots are the same
+- Top: geom_bar(stat = count) -> default.
+- LHS: count n obs per smoke x race group.
+- RHS: using precalculated counts w geom_bar(stat = "identity").
+- Both plots are the same but top is easier with fewer lines of code.
 :::
 - `stat = "count"` is the default for `geom_bar`.
 
@@ -619,6 +624,11 @@ birthwt |>
 ::::
 
 ## Facets with fixed layout {.smaller}
+::: notes
+- Adding back in full data set to be able to compare facets to overall trend.
+- Requires two geom_point() functions.
+  - layout = "fixed" is what keeps all the data points.
+:::
 
 ```{r facet4}
 #| code-line-numbers: "3-4"
@@ -861,7 +871,7 @@ ggplot2::ggplot(birthwt,
 ## Exercise: Facets and position adjustments {.smaller .scrollable}
 ```{code-blanks-instructions}
 
-Create a histogram that compares the distribution of lwt across races. Ensure that each of the histograms is fully visible. Row-wise facet by low birthweight status.
+Create a histogram that compares the distribution of lwt across races. Map race to the color of the histograms. Ensure that each of the histograms is fully visible. Row-wise facet by low birthweight status (`low`).
 
 ```
 
@@ -900,6 +910,9 @@ countdown::countdown(minutes = 4, bottom = 0)
 ```
 
 ## Scales {.smaller}
+::: notes
+- Default scales --> never specified x/y breaks or colors. Automatically set
+:::
 - Scales control how the aesthetic mappings of variables manifest visually in plots.
   - How a variable is translated into `color`, `size`, `shape`, etc.
 - Every aesthetic has a default scale.
@@ -997,7 +1010,7 @@ birthwt |>
 
 ::::{.columns}
 
-:::{.column width="50%"}
+:::{.column .fragment .fade-in width="50%"}
 ```{r scales-manual1}
 #| code-line-numbers: "4-7"
 #| fig-height: 3
@@ -1015,7 +1028,7 @@ birthwt |>
 ```
 :::
 
-:::{.column width="50%"}
+:::{.column .fragment .fade-in width="50%"}
 ```{r scales-manual2}
 #| code-line-numbers: "4-7"
 #| fig-height: 3
@@ -1116,7 +1129,17 @@ birthwt |>
 
 ```{code-blanks-instructions}
 
-Create a boxplot of birthweight by smoking status. Change the boxplot colors to dark blue and orange. Increase the y-axis by 500 grams per tick mark. Make the background plain white with no grid lines. Remove the legend and bold the title.
+Create a boxplot of birthweight by smoking status.
+
+1) Change the boxplot colors to dark blue and orange.
+
+2) Increase the y-axis by 500 grams per tick mark. 
+
+3) Change the x-axis title to "Smoking status" 
+
+4) Make the background plain white with no grid lines using a `theme_*`.
+
+5) Remove the legend and bold the title.
 
 ```
 
