@@ -67,10 +67,17 @@ data(birthwt)
 - Each function ("verb") is designed to do one action and do it well.
   - Gives rise to a modular structure that combines functions easily.
       - Yay for piping (`%>%` and `|>`)!!
+
+. . .
+
 - Although each function has a specific task, they share a common structure:
   - The first argument is always a data frame.
   - The subsequent arguments typically describe which columns to operate on using the variable names (without quotes).
   - The output is always a new data frame.
+
+```r
+data_clean = dplyr::verb(.data = df, ... = doSomeDataManipulation)
+```
 
 ## `dplyr` and masking {.smaller}
 
@@ -78,15 +85,19 @@ data(birthwt)
 
 - `R` lets us know that there are conflicts between packages.
 - In this case, between `dplyr` and other loaded packages.
-  - Particularly `stat` which is loaded by default and `MASS` which we loaded for our birthweight data.
 
 . . .
 
 - Since dplyr was loaded last it "masks" the functions with the same name from other packages
-  - To used the `filter` function from the `stats` package you'll need to use the full name `stats::filter`. Likewise for `MASS::select`.
+  - To used the `filter` function from the `stats` package you'll need to use the full name `stats::filter`.
   - `packagename::function` syntax is always available and precise!
 
 ## Aside: Tibbles {.smaller}
+::: notes
+- tibbles automatically only print a subset of the data.
+- Provide information on data types and size of data frame
+:::
+
 - A core component of the tidyverse is the `tibble` package, which extends data frames to be more modern.
 - Tibbles *are* data.frames. 
   - But they have nicer a printing method and are "lazy" and "surly".
@@ -161,6 +172,9 @@ x %>% mean()
 ::::
 
 ## Readability of pipes {.smaller}
+::: notes
+- Read pipes as "and then".
+:::
 Pipes make your code more readable by:
 
 - Avoiding nested function calls.
@@ -178,8 +192,8 @@ work_RAD = do_science(do_lecture(commute(morning_RAD)))
 ```{r ex-pipe2, eval = F}
 
 commuter_RAD = commute(morning_RAD)
-teacher_RAD = do_lecture(commuter_RAD)
-work_RAD = do_science(teacher_RAD)
+lecture_RAD = do_lecture(commuter_RAD)
+research_RAD = do_science(teacher_RAD)
 
 ```
 
@@ -227,6 +241,10 @@ birthwt |> boxplot(bwt ~ race, data = _)
 
 
 ## Common row-wise functions
+::: notes
+- Eight row-wise functions.
+:::
+
 - `filter()`: pick rows based on logical conditions.
 - `slice()`: pick rows based on positional index.
 - `arrange()`: sort/reorder rows based on variable(s).
@@ -236,6 +254,10 @@ birthwt |> boxplot(bwt ~ race, data = _)
 - ... many others!
 
 ## `filter()`
+::: notes
+- Full data set hs 189 observations.
+:::
+
 - Keeps or removes rows based on the values of column(s) [variable(s)].
 - Takes a data frame as input. Second and subsequent arguments are conditions that must be true to keep the row.
 
@@ -290,7 +312,7 @@ birthwt |> dplyr::filter(ftv %in% c(2, 3, 4))
 
 ```{r filter5}
 
-birthwt |> dplyr::filter(race != 1 & race != 2)
+birthwt |> dplyr::filter(ftv != 0 & ftv != 1)
 
 ```
 
@@ -300,16 +322,17 @@ birthwt |> dplyr::filter(race != 1 & race != 2)
 
 ```{r filter6}
 
-birthwt |> dplyr::filter(!(race %in% c(1, 2)))
+birthwt |> dplyr::filter(!(ftv %in% c(0, 1)))
 
 ```
 
 ## `slice()` {.smaller}
 - Extracts rows using integer location.
-- Input is a data frame and a positional index.
+- Input is a data frame and a positional index (default).
 
 ```{r slice1}
 
+# select rows 7 through 10
 birthwt |> dplyr::slice(7:10)
 
 ```
@@ -318,13 +341,16 @@ birthwt |> dplyr::slice(7:10)
 
 ```{r slice2}
 
+# select the first two rows
 birthwt |> dplyr::slice_head(n = 2)
+
 ```
 
 . . .
 
 ```{r slice3}
 
+# select the last 2% of rows
 birthwt |> dplyr::slice_tail(prop = 0.02)
 
 ```
@@ -334,8 +360,10 @@ birthwt |> dplyr::slice_tail(prop = 0.02)
 
 ```{r slice4}
 
+# select the first row with the smallest age
 birthwt |> dplyr::slice_min(age, n = 1)
 
+# select the last row with the largest birthweight
 birthwt |> dplyr::slice_max(bwt, n = 1)
 
 ```
@@ -368,10 +396,10 @@ birthwt |> dplyr::arrange(desc(age))
 
 Remember the number of rows has not changed. We’re only *arranging* the data, we’re **not** filtering it.
 
-## `distinct()` 
+## `distinct()`
 ::: notes
-- Not all rows are returned, some patients must have the same covariate combination
-- No id variable in this dataset
+- Not all rows are returned, some patients must have the same covariate combination.
+- No id variable in this dataset.
 :::
 
 - Finds all the unique rows in a dataset.
@@ -386,6 +414,10 @@ birthwt |> dplyr::distinct()
   - Helpful for finding duplicate entries.
 
 ## `distinct()` {.smaller}
+::: notes
+- `n_distinct()` used on a variable (or set of variables) and cannot be use with pipes.
+:::
+
 - Typically pulling the distinct combinations of a set variables is of interest.
   - Pulls distinct combinations in the order they appear in the dataset. As such, it is often helpful to order rows by combining with `arrange()`.
 
@@ -397,7 +429,24 @@ birthwt |>
 
 ```
 
+. . .
+
+```{r distinct-n}
+
+dplyr::n_distinct(birthwt$age) # cannot pipe
+dplyr::n_distinct(birthwt$age, birthwt$smoke)
+
+
+```
+
+- `n_distinct()` gives the distinct number of observations per variable (or sets of variables).
+
 ## `count()` {.smaller}
+::: notes
+- `n_distinct()` gives number of distinct combinations.
+- `count()` gives number of observation per distinct grouping.
+:::
+
 - For counting the number of occurrences for a combination of variables.
 
 ```{r count1}
@@ -416,7 +465,7 @@ birthwt |>
 #| output-location: column
 
 birthwt |> 
-  dplyr::count(age, ftv, sort = TRUE)
+  dplyr::count(age, smoke, sort = TRUE)
 
 ```
 
@@ -444,13 +493,13 @@ birthwt |>
 
 Create a dataset of: 
 
-  1. observations with mothers weight greater than 150 and two 1st trimester visits.
+  1. observations with mothers weight (`lwt`) greater than 150 and two 1st trimester visits (`ftv`).
 
-  2. observations with the ten largest birth weight.
+  2. observations with the ten largest birthweight (`bwt`).
 
-  3. of all observations ordered from most to least 1st trimester visits
+  3. of all observations ordered from most to least 1st trimester visits (`ftv`).
 
-  4. enumerating the number of observations for each hypertension (ht) and uterine irritability (ui) combination.
+  4. enumerating the number of observations for each hypertension (`ht`) and uterine irritability (`ui`) combination.
 ```
 
 ```{code-blanks}
@@ -480,7 +529,7 @@ birthwt |> filter(lwt > 150, ftv == 2)
 #|   occurrence: 1
 #|   match: token
 #| blank:
-#|   target: n = 10
+#|   target: bwt
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
@@ -509,11 +558,6 @@ birthwt |> arrange(desc(ftv)) |> head()
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
-#| blank:
-#|   target: ht, ui
-#|   prefill: false
-#|   occurrence: 1
-#|   match: token
 
 birthwt |> count(ht, ui)
 
@@ -522,11 +566,15 @@ birthwt |> count(ht, ui)
 ```{r}
 #| echo: FALSE
 
-countdown::countdown(minutes = 5, bottom = 0)
+countdown::countdown(minutes = 4, bottom = 0)
 
 ```
 
 ## Common column-wise functions
+::: notes
+- Five column-wise functions.
+:::
+
 - `mutate()`: create or modify columns.
 - `select()`: extract specific columns by name.
 - `rename()`: rename columns using old name.
@@ -546,6 +594,10 @@ birthwt |> dplyr::mutate(bwt_lbs = bwt/453.6)
 - By default new columns are added to the right-hand side of the data frame.
 
 ## `mutate()`
+:::
+- Saving to a new data set (haven't saved anything so far).
+:::
+
 - `ifelse()` works well if there are only two groups.
 
 ```{r mutate2}
@@ -623,7 +675,7 @@ birthwt |>
 ::::
 
 ## `select()`: Dropping variables {.smaller}
-- Multiple separate drop statements, i.e., not a single range (`:`), need `&` or `c()`.
+- Multiple separate drop statement (i.e., not a single range with `:`) need `&` or `c()`.
 - `,` alone won't work for dropping.
 
 ::::{.columns}
@@ -679,13 +731,13 @@ birthwt |> dplyr::relocate(bwt, .after = lwt)
 
 ```
 
-## `rename()`
+## `rename()` {.smaller}
 - If you want to keep all columns but rename a few use `rename()`.
 - `newName = oldName` syntax.
 
 ```{r rename}
 
-birthwt.clean = birthwt |> 
+birthwt.clean = birthwt.clean |> 
   dplyr::rename(birthweight = bwt, 
                 mothers_weight = lwt)
 birthwt.clean
@@ -698,12 +750,13 @@ birthwt.clean
 
 ```{r multiverb1}
 
-birthwt |> 
+birthwt.clean.pipe = birthwt |> 
   dplyr::filter(low == 1, smoke == 1, age < 20) |> # keep subjects with low birthwt, smokers, under 20
   dplyr::select(age, race, lwt, bwt) |> # keep age, race, mother's weight, and birthwt vars
   dplyr::mutate(bwt_lbs = bwt/453.6) |> # turn grams into lbs
   dplyr::select(-bwt) |> # remove birthwt g var
   dplyr::arrange(lwt) # order by mother's weight
+birthwt.clean.pipe
 
 ```
 
@@ -741,7 +794,7 @@ birthwt.filter = dplyr::arrange(birthwt.filter, lwt)
 ```{code-blanks-instructions}
 Using the `birthwt` dataset:
 
-  1. Remove `race`, `ptl`, `ht`, and `ui` from the dataset
+  1. Drop `race`, `ptl`, `ht`, and `ui` from the dataset
   
   2. Change `smoke` to `smoking_status` and `low` to `low_bwt`
 
@@ -771,11 +824,6 @@ Using the `birthwt` dataset:
 #|   match: token
 #| blank:
 #|   target: low_bwt = low
-#|   prefill: false
-#|   occurrence: 1
-#|   match: token
-#| blank:
-#|   target: relocate
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
@@ -843,7 +891,7 @@ birthwt |>
 
 ```
 
-- Notice that the data has not changed, but the output indicates that it is “grouped by” smoke (Groups: smoke [2]).
+- Notice that the data has not changed, but the output indicates that it is “grouped by” smoke (`Groups: smoke [2]`).
   - This means subsequent operations will be performed "by smoke group".
 
 ## `group_by()` {.smaller}
@@ -877,6 +925,7 @@ birthwt |>
 ## Resolving the `group_by` warning {.smaller}
 ::: notes
 - Use keep if doing more group based calculations, drop if you want to work on all the rows of the summarized data set.
+- Drop is equivalent to using .by.
 :::
 
 - The `.by` argument is typically used for per operation grouping while `group_by()` is intended for persistent grouping.
