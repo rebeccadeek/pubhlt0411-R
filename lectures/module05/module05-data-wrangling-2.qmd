@@ -17,9 +17,11 @@ filters:
 code-blanks:
   packages:
     - nlme
+    - tidyr
     - dplyr
   setup:
     - library(nlme)
+    - library(tidyr)
     - library(dplyr)
   plot-width: 100
   plot-height: 100
@@ -66,6 +68,10 @@ data(Oxboys)
   - A tidy layout is a natural byproduct.
 
 ## Same data, three layouts {.smaller}
+::: notes
+- Table 2: cases and population really represent different variables
+- Table 3: rate is coded as a character
+:::
 These three tables all describe tuberculosis (TB) surveillance: country, year, number of cases, and population.
 
 ::::{.columns}
@@ -212,7 +218,7 @@ glucose_wide |>
 
 Let's breakdown the arguments of the function:
 
-- `cols`: which columns to pivot (same syntax as `dplyr::select()`).
+- `cols`: which columns to pivot (`tidyverse` syntax: no `""` and `:` operator).
 - `names_to`: name for the new column that holds the old column *names*.
 - `values_to`: name for the new column that holds the cell *values*.
 - `"day"` and `"glucose"` are quoted because they are new variables that don't exist yet.
@@ -229,8 +235,8 @@ Let's breakdown the arguments of the function:
 
 glucose_wide |>
   tidyr::pivot_longer(
-    cols = !patient_id,
-    names_to = "day",
+    cols = !patient_id, # drop id and pivot all other columns
+    names_to = "day", 
     values_to = "glucose"
   )
 
@@ -242,14 +248,18 @@ glucose_wide |>
 
 glucose_wide |>
   tidyr::pivot_longer(
-    cols = tidyselect::starts_with("day"),
-    names_to = "day", # single column name for old names
-    values_to = "glucose" # column name for values
+    cols = tidyselect::starts_with("day"), 
+    names_to = "day", 
+    values_to = "glucose" 
   )
 
 ```
 
 ## Regex: The `day` variable {.smaller}
+::: notes
+- R automatically turned day into dbl
+:::
+
 - We don't really need the `day` prefix for the values in the `day` variable.
 - `parse_number()` is a [function](https://readr.tidyverse.org/reference/parse_number.html) that drops any non-numeric characters before the first number and all characters after the first number.
   - Example of regular expressions (project idea!!)
@@ -272,7 +282,8 @@ glucose.long
 
 ## Plotting long data {.smaller}
 ::: notes
-This would have been significantly harder without tidying our data
+- Per subject trajectories
+- This would have been significantly harder without tidying our data
 :::
 
 ```{r longer-plot}
@@ -281,6 +292,7 @@ This would have been significantly harder without tidying our data
 #| fig-align: center
 #| warning: TRUE
 
+# subject-level trajectories
 glucose.long |>
   ggplot2::ggplot(aes(x = day, y = glucose, color = patient_id)) +
   ggplot2::geom_line() +
@@ -291,6 +303,10 @@ glucose.long |>
 - Note: `ggplot2` automatically dropped the `NA` values for us and provided a warning.
 
 ## Widening Data: Patient survey data {.smaller}
+::: notes
+- Organization ID and name, measurement ID and name, prf (measure performance rate) rate
+:::
+
 - Increasing the number of columns (reducing the number of rows), by spreading one observation across columns.
 
 ```{r cms-data}
@@ -308,6 +324,7 @@ cms_patient_experience
 
 ```{r cms-data-distinct}
 
+# distinct measures
 cms_patient_experience |>
   dplyr::distinct(measure_cd, measure_title)
 
@@ -317,21 +334,24 @@ cms_patient_experience |>
 
 . . .
 
-- `pivot_wider()` has the opposite interface to pivot_longer(). 
-  - Instead of choosing new column names, we need to provide the existing columns that define the values (`values_from`) and the column name (`names_from`).
+- `pivot_wider()` has the opposite interface to `pivot_longer()`. 
+  - Instead of choosing new column names, we need to provide the existing columns that define the new column names (`names_from`) and the values (`values_from`).
   - E.g., `names_from = measure_cd`.
 
 
 ## `pivot_wider()` {.smaller}
+::: notes
+- Ok to drop measure_title since we use measure_cd (id) as the column names
+:::
 Now let's apply these principals to the `cms_patient_experience` data.
 
 ```{r cms-wide1}
 
 cms_patient_experience |>
   tidyr::pivot_wider(
-    id_cols = org_pac_id:org_nm,
-    names_from = measure_cd,
-    values_from = prf_rate
+    id_cols = org_pac_id:org_nm, # id columns: org id and name
+    names_from = measure_cd,     # measure id = new columns
+    values_from = prf_rate       # performance rate = new values
   )
 
 ```
@@ -361,7 +381,7 @@ cms_patient_experience |>
 
 
 ```{code-blanks-instructions}
-The `Oxboys` data records height measurements for a group of boys, taken at several occasions as they grew. Initially, pivot the height variable to wide format. Then pivot both height and age variables to wide format.
+The `Oxboys` data records height measurements for a group of boys, taken at several occasions as they grew. Initially, pivot the height variable to wide format. Then pivot both height and age variables to wide format (Hint: Try adding `c()` into the second pivot).
 ```
 
 ```{r}
@@ -406,7 +426,7 @@ Oxboys |>
 
 ```{code-blanks}
 #| blank:
-#|   target: Subject
+#|   target: id_cols
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
@@ -442,7 +462,7 @@ Oxboys |>
 ```{r}
 #| echo: FALSE
 
-countdown::countdown(minutes = 5, bottom = 0)
+countdown::countdown(minutes = 4, bottom = 0)
 
 ```
 
@@ -453,7 +473,7 @@ countdown::countdown(minutes = 5, bottom = 0)
 - Notice the hard coded NA values this will be important later
 :::
 
-- The `patients.csv` file in the `data` folder is a type of file with **c**omma-**s**eparated **v**alues.
+- The `patients.csv` file in the `data/module05` subfolder is a type of file with **c**omma-**s**eparated **v**alues.
   - On your computer you can open it with Excel but is is different from a .xlsx file, which support rich formatting, charts, equations, and multiple sheets.
 - Alternatively, .csv files can always be open with a plain-text editor (e.g., TextEdit or Notepad).
   - If we do so, our data looks like:
@@ -472,11 +492,17 @@ Patient ID,First Name,diagnosis.code,treatmentGroup,AGE
   - Including comma-separated values (CSV) and tab-separated values (TSV) files.
 
 ## `read_csv()` {.smaller}
-- The `patients.csv` sits in the `data` folder of our directory. Since we use R projects, our working directory is already the root directory where our `.Rproj` sits.
+- The `patients.csv` sits in the `data/module05` subfolder of our course directory. Since we use R projects, our working directory is already the root directory where our `.Rproj` sits.
   - For you this is your `PUBHLT0411` folder.
+
+```{r}
+getwd()
+```
+
+
 - This way, when we read in any data, we only need to specify the path after this (relative path).
-  - For me, I set a single data folder in the root directory $\rightarrow$ `data/module05/patients.csv`.
-- Macs use `/` in paths and Windows use `\`.
+  - I set a single data folder in the root directory $\rightarrow$ `data/module05/patients.csv`.
+  - Macs use `/` in paths and Windows use `\`.
 
 . . .
 
@@ -501,12 +527,12 @@ patients = readr::read_csv(file = here::here("data/module05/patients.csv")) # re
 
 . . .
 
-- But it **is** needed when knitting a document because knitr automatically changes the working directory to the folder containing the .rmd/.qmd file.
+- But it **is** needed when rendering a document because `knitr` automatically changes the working directory to the folder containing the .rmd/.qmd file.
 
 ## `read_csv()` and missing data {.smaller}
 :::notes
 - Go to previous slide and see NA for age is an actual blank whereas N/A is written for diagnosis.
-- By default blanks "" are the read as NA need to tell R other codings
+- By default blanks "" are the read as NA. Need to tell R other codings
 :::
 
 ```{r patients-data2}
@@ -528,7 +554,7 @@ patients
 
 - The `na` argument can be used to specify several different missing-value designations at once.
 
-## Transform imported data {.smaller}
+## Wrangle imported data {.smaller}
 - `Patient ID` and `Full Name` contain spaces, which we know doesn't constitute a machine readable name.
 
 ```{r patients-data4}
@@ -543,7 +569,7 @@ patients |>
 
 - The space requires the use of backticks to refer to the variable.
 
-## `rename()` vs. `janitor` package
+## `rename()` vs. `janitor` package {.smaller}
 - When many (potentially most, if not all) names have a messy structure using `janitor::clean_names()` is a better option than renaming all variables individually.
 
 ```{r patients-data5}
@@ -553,9 +579,13 @@ patients |> janitor::clean_names()
 ```
 
 - Converts every column name to `snake_case` in one step.
-  - Handles the spaces, the period in `diagnosis.code`, the camelCase `treatmentGroup`, and caps in `AGE`.
+  - Handles the
+    - Spaces.
+    - Period in `diagnosis.code`.
+    - camelCase `treatmentGroup`.
+    - Caps in `AGE`.
 
-## Transform imported data {.smaller}
+## Wrangle imported data {.smaller}
 `treatment_group` has a fixed, known set of values, meaning it can be coded as a factor, instead of plain string.
 
 ```{r patients-data6}
@@ -583,6 +613,10 @@ patients_clean
 ```
 
 ## Other file types
+::: notes
+- readxl could be another project idea
+:::
+
 `readr` has a function for many format types:
 
 - `read_csv2()`: semicolon-delimited
@@ -595,7 +629,7 @@ patients_clean
 Notice that there is no `read_*` function for .xlsx files. You'll need the `readxl` package for this.
 
 ## How readr guesses types
-- A CSV file doesn’t contain any information about the type of each variable, so `readr` guesses the type.
+- A .csv file doesn’t contain any information about the type of each variable, so `readr` guesses the type.
   - Only `T` / `F` / `TRUE` / `FALSE`? $\rightarrow$ logical
   - Only numbers? $\rightarrow$ numeric
   - Matches the ISO8601 standard? $\rightarrow$ date / date-time
@@ -615,7 +649,7 @@ readr::read_csv(file = here::here("data/module05/sbp_missing.csv"))
 The entire vector (column) was forced to a character because of the `.`.
 
 ## Specifying column types {.smaller}
-- `col_types` takes a named list where the names match the column names in the CSV file.
+- `col_types` takes a named list where the names match the column names in the .csv file.
 
 ```{r readr-define-type1}
 #| warning: TRUE 
@@ -631,14 +665,14 @@ sbp
 
 - **Types:** `col_logical()`, `col_double()`, `col_integer()`, `col_character()`, `col_factor()`, `col_date()`, `col_datetime()`.
 
-## Writing data
+## Writing data {.smaller}
 - Just as we can read files, we can export files with `write_*`.
 
 ```r
 readr::write_csv(x = patients_clean, file = here::here("data/module05/patients-clean.csv"))
 ```
 
-- If we were to import the exported dataset, `readr` start from scratch (e.g., guess the columns again, with no knowledge of the work we previously did).
+- If we were to import the exported dataset, `readr` will start from scratch (e.g., guess the columns again, with no knowledge of the work we previously did).
 
 . . .
 
@@ -731,7 +765,7 @@ labdata
 
 ```{r joins3}
 
-dplyr::inner_join(x = labdata, y = metadata, by = dplyr::join_by(patient_id))
+dplyr::inner_join(x = metadata, y = labdata, by = dplyr::join_by(patient_id))
 
 ```
 
@@ -742,11 +776,6 @@ Use the `metadata` and `labdata` from the prior slide, write two different joins
 ```
 
 ```{code-blanks}
-#| blank:
-#|   target: left_join
-#|   prefill: false
-#|   occurrence: 1
-#|   match: token
 #| blank:
 #|   target: labdata
 #|   prefill: false
@@ -767,11 +796,6 @@ dplyr::left_join(x = labdata, y = metadata, by = join_by(patient_id))
 ```
 
 ```{code-blanks}
-#| blank:
-#|   target: right_join
-#|   prefill: false
-#|   occurrence: 1
-#|   match: token
 #| blank:
 #|   target: metadata
 #|   prefill: false

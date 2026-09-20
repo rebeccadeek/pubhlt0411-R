@@ -594,7 +594,7 @@ birthwt |> dplyr::mutate(bwt_lbs = bwt/453.6)
 - By default new columns are added to the right-hand side of the data frame.
 
 ## `mutate()`
-:::
+::: notes
 - Saving to a new data set (haven't saved anything so far).
 :::
 

@@ -2707,7 +2707,8 @@ if (!window.customElements.get('countdown-timer')) {
   })
 })()
 </script>
-  <script>window.codeBlanksPackages = ["nlme","dplyr"];window.codeBlanksSetup = `library(nlme)
+  <script>window.codeBlanksPackages = ["nlme","tidyr","dplyr"];window.codeBlanksSetup = `library(nlme)
+  library(tidyr)
   library(dplyr)`;window.codeBlanksPlotWidth = 100;window.codeBlanksPlotHeight = 100;window.codeBlanksProgressiveReveal = false;</script>
 </head>
 <body class="quarto-light">
@@ -2774,6 +2775,22 @@ Rebecca Deek, PhD
 </section>
 <section id="same-data-three-layouts" class="slide level2 smaller">
 <h2>Same data, three layouts</h2>
+<aside class="notes">
+<ul>
+<li>Table 2: cases and population really represent different variables</li>
+<li>Table 3: rate is coded as a character</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <p>These three tables all describe tuberculosis (TB) surveillance: country, year, number of cases, and population.</p>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -3026,7 +3043,7 @@ display:block!important;
 </div>
 <p>Let’s breakdown the arguments of the function:</p>
 <ul>
-<li><code>cols</code>: which columns to pivot (same syntax as <code>dplyr::select()</code>).</li>
+<li><code>cols</code>: which columns to pivot (<code>tidyverse</code> syntax: no <code>&quot;&quot;</code> and <code>:</code> operator).</li>
 <li><code>names_to</code>: name for the new column that holds the old column <em>names</em>.</li>
 <li><code>values_to</code>: name for the new column that holds the cell <em>values</em>.</li>
 <li><code>&quot;day&quot;</code> and <code>&quot;glucose&quot;</code> are quoted because they are new variables that don’t exist yet.</li>
@@ -3054,8 +3071,8 @@ display:block!important;
 <div class="column">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href></a>glucose_wide <span class="sc">|&gt;</span></span>
 <span id="cb17-2"><a href></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
-<span id="cb17-3"><a href></a>    <span class="at">cols =</span> <span class="sc">!</span>patient_id,</span>
-<span id="cb17-4"><a href></a>    <span class="at">names_to =</span> <span class="st">&quot;day&quot;</span>,</span>
+<span id="cb17-3"><a href></a>    <span class="at">cols =</span> <span class="sc">!</span>patient_id, <span class="co"># drop id and pivot all other columns</span></span>
+<span id="cb17-4"><a href></a>    <span class="at">names_to =</span> <span class="st">&quot;day&quot;</span>, </span>
 <span id="cb17-5"><a href></a>    <span class="at">values_to =</span> <span class="st">&quot;glucose&quot;</span></span>
 <span id="cb17-6"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div><div class="column">
@@ -3080,9 +3097,9 @@ display:block!important;
 <div class="column">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href></a>glucose_wide <span class="sc">|&gt;</span></span>
 <span id="cb19-2"><a href></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
-<span id="cb19-3"><a href></a>    <span class="at">cols =</span> tidyselect<span class="sc">::</span><span class="fu">starts_with</span>(<span class="st">&quot;day&quot;</span>),</span>
-<span id="cb19-4"><a href></a>    <span class="at">names_to =</span> <span class="st">&quot;day&quot;</span>, <span class="co"># single column name for old names</span></span>
-<span id="cb19-5"><a href></a>    <span class="at">values_to =</span> <span class="st">&quot;glucose&quot;</span> <span class="co"># column name for values</span></span>
+<span id="cb19-3"><a href></a>    <span class="at">cols =</span> tidyselect<span class="sc">::</span><span class="fu">starts_with</span>(<span class="st">&quot;day&quot;</span>), </span>
+<span id="cb19-4"><a href></a>    <span class="at">names_to =</span> <span class="st">&quot;day&quot;</span>, </span>
+<span id="cb19-5"><a href></a>    <span class="at">values_to =</span> <span class="st">&quot;glucose&quot;</span> </span>
 <span id="cb19-6"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div><div class="column">
 <div class="cell-output cell-output-stdout">
@@ -3105,6 +3122,21 @@ display:block!important;
 </section>
 <section id="regex-the-day-variable" class="slide level2 smaller">
 <h2>Regex: The <code>day</code> variable</h2>
+<aside class="notes">
+<ul>
+<li>R automatically turned day into dbl</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <ul>
 <li>We don’t really need the <code>day</code> prefix for the values in the <code>day</code> variable.</li>
 <li><code>parse_number()</code> is a <a href="https://readr.tidyverse.org/reference/parse_number.html">function</a> that drops any non-numeric characters before the first number and all characters after the first number.
@@ -3145,7 +3177,10 @@ display:block!important;
 <section id="plotting-long-data" class="slide level2 smaller">
 <h2>Plotting long data</h2>
 <aside class="notes">
-<p>This would have been significantly harder without tidying our data</p>
+<ul>
+<li>Per subject trajectories</li>
+<li>This would have been significantly harder without tidying our data</li>
+</ul>
 <style type="text/css">
 span.MJX_Assistive_MathML {
 position:absolute!important;
@@ -3158,10 +3193,11 @@ overflow: hidden!important;
 display:block!important;
 }</style></aside>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href></a>glucose.long <span class="sc">|&gt;</span></span>
-<span id="cb23-2"><a href></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> glucose, <span class="at">color =</span> patient_id)) <span class="sc">+</span></span>
-<span id="cb23-3"><a href></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb23-4"><a href></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href></a><span class="co"># subject-level trajectories</span></span>
+<span id="cb23-2"><a href></a>glucose.long <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> day, <span class="at">y =</span> glucose, <span class="at">color =</span> patient_id)) <span class="sc">+</span></span>
+<span id="cb23-4"><a href></a>  ggplot2<span class="sc">::</span><span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb23-5"><a href></a>  ggplot2<span class="sc">::</span><span class="fu">geom_point</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 10 rows containing missing values or values outside the scale range
 (`geom_line()`).</code></pre>
@@ -3184,6 +3220,21 @@ display:block!important;
 </section>
 <section id="widening-data-patient-survey-data" class="slide level2 smaller">
 <h2>Widening Data: Patient survey data</h2>
+<aside class="notes">
+<ul>
+<li>Organization ID and name, measurement ID and name, prf (measure performance rate) rate</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <ul>
 <li>Increasing the number of columns (reducing the number of rows), by spreading one observation across columns.</li>
 </ul>
@@ -3217,8 +3268,9 @@ display:block!important;
 <section id="patient-survey-data-measures" class="slide level2 smaller">
 <h2>Patient survey data: Measures</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href></a>cms_patient_experience <span class="sc">|&gt;</span></span>
-<span id="cb28-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>(measure_cd, measure_title)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href></a><span class="co"># distinct measures</span></span>
+<span id="cb28-2"><a href></a>cms_patient_experience <span class="sc">|&gt;</span></span>
+<span id="cb28-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>(measure_cd, measure_title)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 2
   measure_cd   measure_title                                                    
@@ -3236,9 +3288,9 @@ display:block!important;
 </ul>
 <div class="fragment">
 <ul>
-<li><code>pivot_wider()</code> has the opposite interface to pivot_longer().
+<li><code>pivot_wider()</code> has the opposite interface to <code>pivot_longer()</code>.
 <ul>
-<li>Instead of choosing new column names, we need to provide the existing columns that define the values (<code>values_from</code>) and the column name (<code>names_from</code>).</li>
+<li>Instead of choosing new column names, we need to provide the existing columns that define the new column names (<code>names_from</code>) and the values (<code>values_from</code>).</li>
 <li>E.g., <code>names_from = measure_cd</code>.</li>
 </ul></li>
 </ul>
@@ -3246,13 +3298,28 @@ display:block!important;
 </section>
 <section id="pivot_wider" class="slide level2 smaller">
 <h2><code>pivot_wider()</code></h2>
+<aside class="notes">
+<ul>
+<li>Ok to drop measure_title since we use measure_cd (id) as the column names</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <p>Now let’s apply these principals to the <code>cms_patient_experience</code> data.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href></a>cms_patient_experience <span class="sc">|&gt;</span></span>
 <span id="cb30-2"><a href></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
-<span id="cb30-3"><a href></a>    <span class="at">id_cols =</span> org_pac_id<span class="sc">:</span>org_nm,</span>
-<span id="cb30-4"><a href></a>    <span class="at">names_from =</span> measure_cd,</span>
-<span id="cb30-5"><a href></a>    <span class="at">values_from =</span> prf_rate</span>
+<span id="cb30-3"><a href></a>    <span class="at">id_cols =</span> org_pac_id<span class="sc">:</span>org_nm, <span class="co"># id columns: org id and name</span></span>
+<span id="cb30-4"><a href></a>    <span class="at">names_from =</span> measure_cd,     <span class="co"># measure id = new columns</span></span>
+<span id="cb30-5"><a href></a>    <span class="at">values_from =</span> prf_rate       <span class="co"># performance rate = new values</span></span>
 <span id="cb30-6"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 95 × 8
@@ -3319,7 +3386,7 @@ overflow: hidden!important;
 display:block!important;
 }</style></aside>
 <div class="code-blanks-instructions-box">
-<p>The <code>Oxboys</code> data records height measurements for a group of boys, taken at several occasions as they grew. Initially, pivot the height variable to wide format. Then pivot both height and age variables to wide format.</p>
+<p>The <code>Oxboys</code> data records height measurements for a group of boys, taken at several occasions as they grew. Initially, pivot the height variable to wide format. Then pivot both height and age variables to wide format (Hint: Try adding <code>c()</code> into the second pivot).</p>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href></a>tibble<span class="sc">::</span><span class="fu">as_tibble</span>(Oxboys) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -3341,13 +3408,13 @@ $ Occasion &lt;ord&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 
 </code></pre>
 <pre class="code-blanks"><code>Oxboys |&gt;
   tibble::as_tibble() |&gt; 
-  pivot_wider(id_cols = <input class="code-blank-input" data-answer="Subject" data-default value size="9">, 
+  pivot_wider(<input class="code-blank-input" data-answer="id_cols" data-default value size="9"> = Subject, 
               <input class="code-blank-input" data-answer="names_from" data-default value size="12"> = <input class="code-blank-input" data-answer="Occasion" data-default value size="10">,
               <input class="code-blank-input" data-answer="values_from" data-default value size="13"> = <input class="code-blank-input" data-answer="c(age, height)" data-default value size="16"> )
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_db2f7b78" minutes="5" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_82c1f60e" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section></section>
@@ -3374,7 +3441,7 @@ overflow: hidden!important;
 display:block!important;
 }</style></aside>
 <ul>
-<li>The <code>patients.csv</code> file in the <code>data</code> folder is a type of file with <strong>c</strong>omma-<strong>s</strong>eparated <strong>v</strong>alues.
+<li>The <code>patients.csv</code> file in the <code>data/module05</code> subfolder is a type of file with <strong>c</strong>omma-<strong>s</strong>eparated <strong>v</strong>alues.
 <ul>
 <li>On your computer you can open it with Excel but is is different from a .xlsx file, which support rich formatting, charts, equations, and multiple sheets.</li>
 </ul></li>
@@ -3400,19 +3467,27 @@ display:block!important;
 <section id="read_csv" class="slide level2 smaller">
 <h2><code>read_csv()</code></h2>
 <ul>
-<li>The <code>patients.csv</code> sits in the <code>data</code> folder of our directory. Since we use R projects, our working directory is already the root directory where our <code>.Rproj</code> sits.
+<li>The <code>patients.csv</code> sits in the <code>data/module05</code> subfolder of our course directory. Since we use R projects, our working directory is already the root directory where our <code>.Rproj</code> sits.
 <ul>
 <li>For you this is your <code>PUBHLT0411</code> folder.</li>
 </ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href></a><span class="fu">getwd</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;/Users/rdeek/Library/CloudStorage/OneDrive-UniversityofPittsburgh/Documents/teaching/PUBHLT0411&quot;</code></pre>
+</div>
+</div>
+<ul>
 <li>This way, when we read in any data, we only need to specify the path after this (relative path).
 <ul>
-<li>For me, I set a single data folder in the root directory <span class="math inline">\(\rightarrow\)</span> <code>data/module05/patients.csv</code>.</li>
-</ul></li>
+<li>I set a single data folder in the root directory <span class="math inline">\(\rightarrow\)</span> <code>data/module05/patients.csv</code>.</li>
 <li>Macs use <code>/</code> in paths and Windows use <code>\</code>.</li>
+</ul></li>
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href></a>patients <span class="ot">=</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/patients.csv&quot;</span>)) <span class="co"># relative path</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href></a>patients <span class="ot">=</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/patients.csv&quot;</span>)) <span class="co"># relative path</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 6 Columns: 5
 ── Column specification ────────────────────────────────────────────────────────
@@ -3446,7 +3521,7 @@ dbl (1): Patient ID
 </div>
 <div class="fragment">
 <ul>
-<li>But it <strong>is</strong> needed when knitting a document because knitr automatically changes the working directory to the folder containing the .rmd/.qmd file.</li>
+<li>But it <strong>is</strong> needed when rendering a document because <code>knitr</code> automatically changes the working directory to the folder containing the .rmd/.qmd file.</li>
 </ul>
 </div>
 </section>
@@ -3455,7 +3530,7 @@ dbl (1): Patient ID
 <aside class="notes">
 <ul>
 <li>Go to previous slide and see NA for age is an actual blank whereas N/A is written for diagnosis.</li>
-<li>By default blanks “” are the read as NA need to tell R other codings</li>
+<li>By default blanks “” are the read as NA. Need to tell R other codings</li>
 </ul>
 <style type="text/css">
 span.MJX_Assistive_MathML {
@@ -3469,7 +3544,7 @@ overflow: hidden!important;
 display:block!important;
 }</style></aside>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href></a>patients</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href></a>patients</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
   `Patient ID` `First Name` diagnosis.code    treatmentGroup         AGE  
@@ -3487,8 +3562,8 @@ display:block!important;
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href></a>patients <span class="ot">=</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/patients.csv&quot;</span>), <span class="at">na =</span> <span class="fu">c</span>(<span class="st">&quot;N/A&quot;</span>, <span class="st">&quot;&quot;</span>))</span>
-<span id="cb39-2"><a href></a>patients</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href></a>patients <span class="ot">=</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/patients.csv&quot;</span>), <span class="at">na =</span> <span class="fu">c</span>(<span class="st">&quot;N/A&quot;</span>, <span class="st">&quot;&quot;</span>))</span>
+<span id="cb41-2"><a href></a>patients</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
   `Patient ID` `First Name` diagnosis.code    treatmentGroup         AGE  
@@ -3506,17 +3581,17 @@ display:block!important;
 </ul>
 </div>
 </section>
-<section id="transform-imported-data" class="slide level2 smaller">
-<h2>Transform imported data</h2>
+<section id="wrangle-imported-data" class="slide level2 smaller">
+<h2>Wrangle imported data</h2>
 <ul>
 <li><code>Patient ID</code> and <code>Full Name</code> contain spaces, which we know doesn’t constitute a machine readable name.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href></a>patients <span class="sc">|&gt;</span></span>
-<span id="cb41-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(</span>
-<span id="cb41-3"><a href></a>    <span class="at">patient_id =</span> <span class="st">`</span><span class="at">Patient ID</span><span class="st">`</span>,</span>
-<span id="cb41-4"><a href></a>    <span class="at">first_name  =</span> <span class="st">`</span><span class="at">First Name</span><span class="st">`</span></span>
-<span id="cb41-5"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href></a>patients <span class="sc">|&gt;</span></span>
+<span id="cb43-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(</span>
+<span id="cb43-3"><a href></a>    <span class="at">patient_id =</span> <span class="st">`</span><span class="at">Patient ID</span><span class="st">`</span>,</span>
+<span id="cb43-4"><a href></a>    <span class="at">first_name  =</span> <span class="st">`</span><span class="at">First Name</span><span class="st">`</span></span>
+<span id="cb43-5"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
   patient_id first_name diagnosis.code    treatmentGroup         AGE  
@@ -3533,13 +3608,13 @@ display:block!important;
 <li>The space requires the use of backticks to refer to the variable.</li>
 </ul>
 </section>
-<section id="rename-vs.-janitor-package" class="slide level2">
+<section id="rename-vs.-janitor-package" class="slide level2 smaller">
 <h2><code>rename()</code> vs. <code>janitor</code> package</h2>
 <ul>
 <li>When many (potentially most, if not all) names have a messy structure using <code>janitor::clean_names()</code> is a better option than renaming all variables individually.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href></a>patients <span class="sc">|&gt;</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href></a>patients <span class="sc">|&gt;</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
   patient_id first_name diagnosis_code    treatment_group        age  
@@ -3555,17 +3630,23 @@ display:block!important;
 <ul>
 <li>Converts every column name to <code>snake_case</code> in one step.
 <ul>
-<li>Handles the spaces, the period in <code>diagnosis.code</code>, the camelCase <code>treatmentGroup</code>, and caps in <code>AGE</code>.</li>
+<li>Handles the
+<ul>
+<li>Spaces.</li>
+<li>Period in <code>diagnosis.code</code>.</li>
+<li>camelCase <code>treatmentGroup</code>.</li>
+<li>Caps in <code>AGE</code>.</li>
+</ul></li>
 </ul></li>
 </ul>
 </section>
-<section id="transform-imported-data-1" class="slide level2 smaller">
-<h2>Transform imported data</h2>
+<section id="wrangle-imported-data-1" class="slide level2 smaller">
+<h2>Wrangle imported data</h2>
 <p><code>treatment_group</code> has a fixed, known set of values, meaning it can be coded as a factor, instead of plain string.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href></a>patients <span class="sc">|&gt;</span></span>
-<span id="cb45-2"><a href></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
-<span id="cb45-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">treatment_group =</span> <span class="fu">factor</span>(treatment_group))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href></a>patients <span class="sc">|&gt;</span></span>
+<span id="cb47-2"><a href></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
+<span id="cb47-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">treatment_group =</span> <span class="fu">factor</span>(treatment_group))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
   patient_id first_name diagnosis_code    treatment_group        age  
@@ -3581,13 +3662,13 @@ display:block!important;
 <div class="fragment">
 <p>Patient 5’s age was entered as <code>&quot;five&quot;</code>, so the <code>age</code> column was read in as string/character.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href></a>patients_clean <span class="ot">=</span> patients <span class="sc">|&gt;</span></span>
-<span id="cb47-2"><a href></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
-<span id="cb47-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb47-4"><a href></a>    <span class="at">treatment_group =</span> <span class="fu">factor</span>(treatment_group),</span>
-<span id="cb47-5"><a href></a>    <span class="at">age =</span> <span class="fu">as.numeric</span>(<span class="fu">ifelse</span>(age <span class="sc">==</span> <span class="st">&quot;five&quot;</span>, <span class="st">&quot;5&quot;</span>, age)) <span class="co"># as.numeric to convert chr -&gt; dbl</span></span>
-<span id="cb47-6"><a href></a>  )</span>
-<span id="cb47-7"><a href></a>patients_clean</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href></a>patients_clean <span class="ot">=</span> patients <span class="sc">|&gt;</span></span>
+<span id="cb49-2"><a href></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
+<span id="cb49-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb49-4"><a href></a>    <span class="at">treatment_group =</span> <span class="fu">factor</span>(treatment_group),</span>
+<span id="cb49-5"><a href></a>    <span class="at">age =</span> <span class="fu">as.numeric</span>(<span class="fu">ifelse</span>(age <span class="sc">==</span> <span class="st">&quot;five&quot;</span>, <span class="st">&quot;5&quot;</span>, age)) <span class="co"># as.numeric to convert chr -&gt; dbl</span></span>
+<span id="cb49-6"><a href></a>  )</span>
+<span id="cb49-7"><a href></a>patients_clean</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
   patient_id first_name diagnosis_code    treatment_group          age
@@ -3604,6 +3685,21 @@ display:block!important;
 </section>
 <section id="other-file-types" class="slide level2">
 <h2>Other file types</h2>
+<aside class="notes">
+<ul>
+<li>readxl could be another project idea</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <p><code>readr</code> has a function for many format types:</p>
 <ul>
 <li><code>read_csv2()</code>: semicolon-delimited</li>
@@ -3618,7 +3714,7 @@ display:block!important;
 <section id="how-readr-guesses-types" class="slide level2">
 <h2>How readr guesses types</h2>
 <ul>
-<li>A CSV file doesn’t contain any information about the type of each variable, so <code>readr</code> guesses the type.
+<li>A .csv file doesn’t contain any information about the type of each variable, so <code>readr</code> guesses the type.
 <ul>
 <li>Only <code>T</code> / <code>F</code> / <code>TRUE</code> / <code>FALSE</code>? <span class="math inline">\(\rightarrow\)</span> logical</li>
 <li>Only numbers? <span class="math inline">\(\rightarrow\)</span> numeric</li>
@@ -3627,7 +3723,7 @@ display:block!important;
 </ul></li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/glucose_types_demo.csv&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/glucose_types_demo.csv&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 4
   diabetic glucose visit_date notes    
@@ -3644,7 +3740,7 @@ display:block!important;
 <li>Most data sets aren’t tidy and there will be many incorrect guesses. Imagine a missing numeric value code as <code>.</code> instead of leaving it blank:</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/sbp_missing.csv&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/sbp_missing.csv&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 1
   sbp  
@@ -3660,25 +3756,25 @@ display:block!important;
 <section id="specifying-column-types" class="slide level2 smaller">
 <h2>Specifying column types</h2>
 <ul>
-<li><code>col_types</code> takes a named list where the names match the column names in the CSV file.</li>
+<li><code>col_types</code> takes a named list where the names match the column names in the .csv file.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href></a>sbp <span class="ot">=</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/sbp_missing.csv&quot;</span>), </span>
-<span id="cb53-2"><a href></a>                      <span class="at">col_types =</span> <span class="fu">list</span>(<span class="at">sbp =</span> <span class="fu">col_double</span>()) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href></a>sbp <span class="ot">=</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/sbp_missing.csv&quot;</span>), </span>
+<span id="cb55-2"><a href></a>                      <span class="at">col_types =</span> <span class="fu">list</span>(<span class="at">sbp =</span> <span class="fu">col_double</span>()) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: One or more parsing issues, call `problems()` on your data frame for details,
 e.g.:
   dat &lt;- vroom(...)
   problems(dat)</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href></a>readr<span class="sc">::</span><span class="fu">problems</span>(sbp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href></a>readr<span class="sc">::</span><span class="fu">problems</span>(sbp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 5
     row   col expected actual file                                              
   &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;                                             
 1     3     1 a double .      /Users/rdeek/Library/CloudStorage/OneDrive-Univer…</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href></a>sbp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href></a>sbp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 1
     sbp
@@ -3695,14 +3791,14 @@ e.g.:
 </ul>
 </div>
 </section>
-<section id="writing-data" class="slide level2">
+<section id="writing-data" class="slide level2 smaller">
 <h2>Writing data</h2>
 <ul>
 <li>Just as we can read files, we can export files with <code>write_*</code>.</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(<span class="at">x =</span> patients_clean, <span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/patients-clean.csv&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(<span class="at">x =</span> patients_clean, <span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/patients-clean.csv&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li>If we were to import the exported dataset, <code>readr</code> start from scratch (e.g., guess the columns again, with no knowledge of the work we previously did).</li>
+<li>If we were to import the exported dataset, <code>readr</code> will start from scratch (e.g., guess the columns again, with no knowledge of the work we previously did).</li>
 </ul>
 <div class="fragment">
 <ul>
@@ -3711,7 +3807,7 @@ e.g.:
 <li><code>read_rds</code> and <code>write_rds</code>.</li>
 </ul></li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href></a>readr<span class="sc">::</span><span class="fu">write_rds</span>(<span class="at">x =</span> patients_clean, <span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;patients-clean.rds&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href></a>readr<span class="sc">::</span><span class="fu">write_rds</span>(<span class="at">x =</span> patients_clean, <span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;patients-clean.rds&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section></section>
 <section>
@@ -3804,7 +3900,7 @@ e.g.:
 <h2>Joining with metadata and labs</h2>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href></a>metadata</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href></a>metadata</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div><div class="column">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 4
@@ -3819,7 +3915,7 @@ e.g.:
 </div></div>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href></a>labdata</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href></a>labdata</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div><div class="column">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 3
@@ -3833,15 +3929,15 @@ e.g.:
 </div>
 </div></div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href></a>dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">x =</span> labdata, <span class="at">y =</span> metadata, <span class="at">by =</span> dplyr<span class="sc">::</span><span class="fu">join_by</span>(patient_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href></a>dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">x =</span> metadata, <span class="at">y =</span> labdata, <span class="at">by =</span> dplyr<span class="sc">::</span><span class="fu">join_by</span>(patient_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 6
-  patient_id test_date  hba1c   age sex   site    
-       &lt;dbl&gt; &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   
-1        101 2026-01-15   6.1    45 F     Clinic A
-2        101 2026-04-10   5.9    45 F     Clinic A
-3        103 2026-02-02   7.4    29 F     Clinic A
-4        104 2026-03-20   5.5    54 M     Clinic C</code></pre>
+  patient_id   age sex   site     test_date  hba1c
+       &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;date&gt;     &lt;dbl&gt;
+1        101    45 F     Clinic A 2026-01-15   6.1
+2        101    45 F     Clinic A 2026-04-10   5.9
+3        103    29 F     Clinic A 2026-02-02   7.4
+4        104    54 M     Clinic C 2026-03-20   5.5</code></pre>
 </div>
 </div>
 </section>
@@ -3850,12 +3946,12 @@ e.g.:
 <div class="code-blanks-instructions-box">
 <p>Use the <code>metadata</code> and <code>labdata</code> from the prior slide, write two different joins that keep all the patients in <code>labdata</code> but combine all the variables in the two datasets. Next, write a join that keeps all patients from both datasets.</p>
 </div>
-<pre class="code-blanks"><code>dplyr::<input class="code-blank-input" data-answer="left_join" data-default value size="11">(x = <input class="code-blank-input" data-answer="labdata" data-default value size="9">, y = <input class="code-blank-input" data-answer="metadata" data-default value size="10">, by = <input class="code-blank-input" data-answer="join_by(patient_id)" data-default value size="21">)</code></pre>
-<pre class="code-blanks"><code>dplyr::<input class="code-blank-input" data-answer="right_join" data-default value size="12">(x = <input class="code-blank-input" data-answer="metadata" data-default value size="10">, y = <input class="code-blank-input" data-answer="labdata" data-default value size="9">, by = dplyr::<input class="code-blank-input" data-answer="join_by(patient_id)" data-default value size="21">)</code></pre>
+<pre class="code-blanks"><code>dplyr::left_join(x = <input class="code-blank-input" data-answer="labdata" data-default value size="9">, y = <input class="code-blank-input" data-answer="metadata" data-default value size="10">, by = <input class="code-blank-input" data-answer="join_by(patient_id)" data-default value size="21">)</code></pre>
+<pre class="code-blanks"><code>dplyr::right_join(x = <input class="code-blank-input" data-answer="metadata" data-default value size="10">, y = <input class="code-blank-input" data-answer="labdata" data-default value size="9">, by = dplyr::<input class="code-blank-input" data-answer="join_by(patient_id)" data-default value size="21">)</code></pre>
 <pre class="code-blanks"><code>dplyr::<input class="code-blank-input" data-answer="full_join" data-default value size="11">(x = <input class="code-blank-input" data-answer="metadata" data-default value size="10">, y = <input class="code-blank-input" data-answer="labdata" data-default value size="9">, by = dplyr::<input class="code-blank-input" data-answer="join_by(patient_id)" data-default value size="21">)</code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_375a5b17" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_b6a6541b" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section></section>
@@ -3872,7 +3968,7 @@ e.g.:
 </ul>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href></a>who2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href></a>who2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 7,240 × 58
    country      year sp_m_014 sp_m_1524 sp_m_2534 sp_m_3544 sp_m_4554 sp_m_5564
@@ -3908,13 +4004,13 @@ e.g.:
 <section id="column-names-many-variables-1" class="slide level2 smaller" data-visibility="uncounted">
 <h2>Column names: Many variables</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href></a>who2 <span class="sc">|&gt;</span></span>
-<span id="cb69-2"><a href></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
-<span id="cb69-3"><a href></a>    <span class="at">cols =</span> <span class="sc">!</span>(country<span class="sc">:</span>year),</span>
-<span id="cb69-4"><a href></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;diagnosis&quot;</span>, <span class="st">&quot;gender&quot;</span>, <span class="st">&quot;age&quot;</span>), </span>
-<span id="cb69-5"><a href></a>    <span class="at">names_sep =</span> <span class="st">&quot;_&quot;</span>, </span>
-<span id="cb69-6"><a href></a>    <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span> <span class="co"># column name for values</span></span>
-<span id="cb69-7"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href></a>who2 <span class="sc">|&gt;</span></span>
+<span id="cb71-2"><a href></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
+<span id="cb71-3"><a href></a>    <span class="at">cols =</span> <span class="sc">!</span>(country<span class="sc">:</span>year),</span>
+<span id="cb71-4"><a href></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;diagnosis&quot;</span>, <span class="st">&quot;gender&quot;</span>, <span class="st">&quot;age&quot;</span>), </span>
+<span id="cb71-5"><a href></a>    <span class="at">names_sep =</span> <span class="st">&quot;_&quot;</span>, </span>
+<span id="cb71-6"><a href></a>    <span class="at">values_to =</span> <span class="st">&quot;count&quot;</span> <span class="co"># column name for values</span></span>
+<span id="cb71-7"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 405,440 × 6
    country      year diagnosis gender age   count
@@ -3943,17 +4039,17 @@ e.g.:
 <li>Another challenging type of data tidying occurs when column names include a mix of variable values and variable names</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href></a>clinic_visits <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb71-2"><a href></a>  <span class="sc">~</span>patient_id, <span class="sc">~</span>date_visit1,  <span class="sc">~</span>sbp_visit1, <span class="sc">~</span>date_visit2,  <span class="sc">~</span>sbp_visit2,</span>
-<span id="cb71-3"><a href></a>  <span class="dv">1</span>,           <span class="st">&quot;2023-01-05&quot;</span>,  <span class="dv">128</span>,         <span class="st">&quot;2023-04-02&quot;</span>,  <span class="dv">122</span>,</span>
-<span id="cb71-4"><a href></a>  <span class="dv">2</span>,           <span class="st">&quot;2023-01-06&quot;</span>,  <span class="dv">145</span>,         <span class="cn">NA</span>,            <span class="cn">NA</span>,</span>
-<span id="cb71-5"><a href></a>  <span class="dv">3</span>,           <span class="st">&quot;2023-01-10&quot;</span>,  <span class="dv">118</span>,         <span class="st">&quot;2023-04-15&quot;</span>,  <span class="dv">115</span>,</span>
-<span id="cb71-6"><a href></a>  <span class="dv">4</span>,           <span class="st">&quot;2023-01-12&quot;</span>,  <span class="dv">160</span>,         <span class="st">&quot;2023-04-20&quot;</span>,  <span class="dv">150</span>,</span>
-<span id="cb71-7"><a href></a>  <span class="dv">5</span>,           <span class="st">&quot;2023-01-15&quot;</span>,  <span class="dv">135</span>,         <span class="cn">NA</span>,            <span class="cn">NA</span></span>
-<span id="cb71-8"><a href></a>) <span class="sc">|&gt;</span></span>
-<span id="cb71-9"><a href></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(tidyselect<span class="sc">::</span><span class="fu">starts_with</span>(<span class="st">&quot;date&quot;</span>), as.Date))</span>
-<span id="cb71-10"><a href></a></span>
-<span id="cb71-11"><a href></a>clinic_visits</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href></a>clinic_visits <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb73-2"><a href></a>  <span class="sc">~</span>patient_id, <span class="sc">~</span>date_visit1,  <span class="sc">~</span>sbp_visit1, <span class="sc">~</span>date_visit2,  <span class="sc">~</span>sbp_visit2,</span>
+<span id="cb73-3"><a href></a>  <span class="dv">1</span>,           <span class="st">&quot;2023-01-05&quot;</span>,  <span class="dv">128</span>,         <span class="st">&quot;2023-04-02&quot;</span>,  <span class="dv">122</span>,</span>
+<span id="cb73-4"><a href></a>  <span class="dv">2</span>,           <span class="st">&quot;2023-01-06&quot;</span>,  <span class="dv">145</span>,         <span class="cn">NA</span>,            <span class="cn">NA</span>,</span>
+<span id="cb73-5"><a href></a>  <span class="dv">3</span>,           <span class="st">&quot;2023-01-10&quot;</span>,  <span class="dv">118</span>,         <span class="st">&quot;2023-04-15&quot;</span>,  <span class="dv">115</span>,</span>
+<span id="cb73-6"><a href></a>  <span class="dv">4</span>,           <span class="st">&quot;2023-01-12&quot;</span>,  <span class="dv">160</span>,         <span class="st">&quot;2023-04-20&quot;</span>,  <span class="dv">150</span>,</span>
+<span id="cb73-7"><a href></a>  <span class="dv">5</span>,           <span class="st">&quot;2023-01-15&quot;</span>,  <span class="dv">135</span>,         <span class="cn">NA</span>,            <span class="cn">NA</span></span>
+<span id="cb73-8"><a href></a>) <span class="sc">|&gt;</span></span>
+<span id="cb73-9"><a href></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(tidyselect<span class="sc">::</span><span class="fu">starts_with</span>(<span class="st">&quot;date&quot;</span>), as.Date))</span>
+<span id="cb73-10"><a href></a></span>
+<span id="cb73-11"><a href></a>clinic_visits</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 5
   patient_id date_visit1 sbp_visit1 date_visit2 sbp_visit2
@@ -3979,12 +4075,12 @@ e.g.:
 </ul>
 <div class="cell columns column-output-location">
 <div class="column">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href></a>clinic_visits <span class="sc">|&gt;</span></span>
-<span id="cb73-2"><a href></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
-<span id="cb73-3"><a href></a>    <span class="at">cols =</span> <span class="sc">!</span>patient_id,</span>
-<span id="cb73-4"><a href></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;.value&quot;</span>, <span class="st">&quot;visit&quot;</span>),</span>
-<span id="cb73-5"><a href></a>    <span class="at">names_sep =</span> <span class="st">&quot;_visit&quot;</span></span>
-<span id="cb73-6"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href></a>clinic_visits <span class="sc">|&gt;</span></span>
+<span id="cb75-2"><a href></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
+<span id="cb75-3"><a href></a>    <span class="at">cols =</span> <span class="sc">!</span>patient_id,</span>
+<span id="cb75-4"><a href></a>    <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;.value&quot;</span>, <span class="st">&quot;visit&quot;</span>),</span>
+<span id="cb75-5"><a href></a>    <span class="at">names_sep =</span> <span class="st">&quot;_visit&quot;</span></span>
+<span id="cb75-6"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div><div class="column">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 4
@@ -4011,15 +4107,15 @@ e.g.:
 <h2>How <code>pivot_wider()</code> works</h2>
 <p>Let’s use a simple dataset of blood pressure measurements to illustrate how <code>pivot_wider()</code> works.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href></a>bp.df <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb75-2"><a href></a>  <span class="sc">~</span>id, <span class="sc">~</span>measurement, <span class="sc">~</span>value,</span>
-<span id="cb75-3"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp1&quot;</span>,    <span class="dv">100</span>,</span>
-<span id="cb75-4"><a href></a>  <span class="st">&quot;B&quot;</span>,        <span class="st">&quot;bp1&quot;</span>,    <span class="dv">140</span>,</span>
-<span id="cb75-5"><a href></a>  <span class="st">&quot;B&quot;</span>,        <span class="st">&quot;bp2&quot;</span>,    <span class="dv">115</span>,</span>
-<span id="cb75-6"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp2&quot;</span>,    <span class="dv">120</span>,</span>
-<span id="cb75-7"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp3&quot;</span>,    <span class="dv">105</span></span>
-<span id="cb75-8"><a href></a>)</span>
-<span id="cb75-9"><a href></a>bp.df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href></a>bp.df <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb77-2"><a href></a>  <span class="sc">~</span>id, <span class="sc">~</span>measurement, <span class="sc">~</span>value,</span>
+<span id="cb77-3"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp1&quot;</span>,    <span class="dv">100</span>,</span>
+<span id="cb77-4"><a href></a>  <span class="st">&quot;B&quot;</span>,        <span class="st">&quot;bp1&quot;</span>,    <span class="dv">140</span>,</span>
+<span id="cb77-5"><a href></a>  <span class="st">&quot;B&quot;</span>,        <span class="st">&quot;bp2&quot;</span>,    <span class="dv">115</span>,</span>
+<span id="cb77-6"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp2&quot;</span>,    <span class="dv">120</span>,</span>
+<span id="cb77-7"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp3&quot;</span>,    <span class="dv">105</span></span>
+<span id="cb77-8"><a href></a>)</span>
+<span id="cb77-9"><a href></a>bp.df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 3
   id    measurement value
@@ -4033,11 +4129,11 @@ e.g.:
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href></a>bp.df <span class="sc">|&gt;</span></span>
-<span id="cb77-2"><a href></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
-<span id="cb77-3"><a href></a>    <span class="at">names_from =</span> measurement,</span>
-<span id="cb77-4"><a href></a>    <span class="at">values_from =</span> value</span>
-<span id="cb77-5"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href></a>bp.df <span class="sc">|&gt;</span></span>
+<span id="cb79-2"><a href></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
+<span id="cb79-3"><a href></a>    <span class="at">names_from =</span> measurement,</span>
+<span id="cb79-4"><a href></a>    <span class="at">values_from =</span> value</span>
+<span id="cb79-5"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
   id      bp1   bp2   bp3
@@ -4054,9 +4150,9 @@ e.g.:
 <li>New <strong>column names</strong> are unique values of the <code>names_from = measurement</code> column.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href></a>bp.df <span class="sc">|&gt;</span> </span>
-<span id="cb79-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>(measurement) <span class="sc">|&gt;</span> </span>
-<span id="cb79-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href></a>bp.df <span class="sc">|&gt;</span> </span>
+<span id="cb81-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>(measurement) <span class="sc">|&gt;</span> </span>
+<span id="cb81-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] &quot;bp1&quot; &quot;bp2&quot; &quot;bp3&quot;</code></pre>
 </div>
@@ -4066,9 +4162,9 @@ e.g.:
 <li>New <strong>rows</strong> are unique combinations of everything else (the <code>id_cols</code>). Defaults to <code>id</code> data since there are only 3 columns.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href></a>bp.df <span class="sc">|&gt;</span> </span>
-<span id="cb81-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span>measurement <span class="sc">&amp;</span> <span class="sc">!</span>value) <span class="sc">|&gt;</span> <span class="co"># drop names_from and values_from columns</span></span>
-<span id="cb81-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href></a>bp.df <span class="sc">|&gt;</span> </span>
+<span id="cb83-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span>measurement <span class="sc">&amp;</span> <span class="sc">!</span>value) <span class="sc">|&gt;</span> <span class="co"># drop names_from and values_from columns</span></span>
+<span id="cb83-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 1
   id   
@@ -4083,10 +4179,10 @@ e.g.:
 <li>Build an empty grid of <code>NA</code>s (then fills in values from the <code>values_from</code> input).</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href></a>bp.df <span class="sc">|&gt;</span> </span>
-<span id="cb83-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span>measurement <span class="sc">&amp;</span> <span class="sc">!</span>value) <span class="sc">|&gt;</span> </span>
-<span id="cb83-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb83-4"><a href></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">bp1 =</span> <span class="cn">NA</span>, <span class="at">bp2 =</span> <span class="cn">NA</span>, <span class="at">bp3 =</span> <span class="cn">NA</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href></a>bp.df <span class="sc">|&gt;</span> </span>
+<span id="cb85-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span>measurement <span class="sc">&amp;</span> <span class="sc">!</span>value) <span class="sc">|&gt;</span> </span>
+<span id="cb85-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">distinct</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb85-4"><a href></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">bp1 =</span> <span class="cn">NA</span>, <span class="at">bp2 =</span> <span class="cn">NA</span>, <span class="at">bp3 =</span> <span class="cn">NA</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
   id    bp1   bp2   bp3  
@@ -4107,14 +4203,14 @@ e.g.:
 <li>It is also plausible that human error may create two observations with the same <code>id</code> and <code>measurement</code> values.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href></a>bp.df.dup <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb85-2"><a href></a>  <span class="sc">~</span>id, <span class="sc">~</span>measurement, <span class="sc">~</span>value,</span>
-<span id="cb85-3"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp1&quot;</span>,    <span class="dv">100</span>,</span>
-<span id="cb85-4"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp1&quot;</span>,    <span class="dv">102</span>,</span>
-<span id="cb85-5"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp2&quot;</span>,    <span class="dv">120</span>,</span>
-<span id="cb85-6"><a href></a>  <span class="st">&quot;B&quot;</span>,        <span class="st">&quot;bp1&quot;</span>,    <span class="dv">140</span>,</span>
-<span id="cb85-7"><a href></a>  <span class="st">&quot;B&quot;</span>,        <span class="st">&quot;bp2&quot;</span>,    <span class="dv">115</span></span>
-<span id="cb85-8"><a href></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href></a>bp.df.dup <span class="ot">=</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb87-2"><a href></a>  <span class="sc">~</span>id, <span class="sc">~</span>measurement, <span class="sc">~</span>value,</span>
+<span id="cb87-3"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp1&quot;</span>,    <span class="dv">100</span>,</span>
+<span id="cb87-4"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp1&quot;</span>,    <span class="dv">102</span>,</span>
+<span id="cb87-5"><a href></a>  <span class="st">&quot;A&quot;</span>,        <span class="st">&quot;bp2&quot;</span>,    <span class="dv">120</span>,</span>
+<span id="cb87-6"><a href></a>  <span class="st">&quot;B&quot;</span>,        <span class="st">&quot;bp1&quot;</span>,    <span class="dv">140</span>,</span>
+<span id="cb87-7"><a href></a>  <span class="st">&quot;B&quot;</span>,        <span class="st">&quot;bp2&quot;</span>,    <span class="dv">115</span></span>
+<span id="cb87-8"><a href></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>What would happen if we try to <code>pivot_wider</code> such data?</p>
 </section>
@@ -4138,11 +4234,11 @@ display:block!important;
 }</style></aside>
 <p><code>tidyr</code> warns that values aren’t uniquely identified and return list-columns instead of plain numbers.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href></a>bp.df.dup <span class="sc">|&gt;</span></span>
-<span id="cb86-2"><a href></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
-<span id="cb86-3"><a href></a>    <span class="at">names_from =</span> measurement,</span>
-<span id="cb86-4"><a href></a>    <span class="at">values_from =</span> value</span>
-<span id="cb86-5"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href></a>bp.df.dup <span class="sc">|&gt;</span></span>
+<span id="cb88-2"><a href></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
+<span id="cb88-3"><a href></a>    <span class="at">names_from =</span> measurement,</span>
+<span id="cb88-4"><a href></a>    <span class="at">values_from =</span> value</span>
+<span id="cb88-5"><a href></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Values from `value` are not uniquely identified; output will contain list-cols.
 • Use `values_fn = list` to suppress this warning.
@@ -4163,9 +4259,9 @@ display:block!important;
 <div class="fragment">
 <p>Trying the helper code:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href></a>bp.df.dup <span class="sc">|&gt;</span></span>
-<span id="cb89-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(), <span class="at">.by =</span> <span class="fu">c</span>(id, measurement)) <span class="sc">|&gt;</span></span>
-<span id="cb89-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>L)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href></a>bp.df.dup <span class="sc">|&gt;</span></span>
+<span id="cb91-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(), <span class="at">.by =</span> <span class="fu">c</span>(id, measurement)) <span class="sc">|&gt;</span></span>
+<span id="cb91-3"><a href></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>L)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   id    measurement     n
@@ -4192,7 +4288,7 @@ patient_id,temp_c,heart_rate
 3,36.8,65</code></pre>
 <div class="fragment">
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/clinic_report.csv&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/clinic_report.csv&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 3
   `Community Health Screening Report`   ...2   ...3      
@@ -4210,7 +4306,7 @@ patient_id,temp_c,heart_rate
 <li>The <code>skip</code> argument can help automatically remove these rows.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/clinic_report.csv&quot;</span>), <span class="at">skip =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/clinic_report.csv&quot;</span>), <span class="at">skip =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   patient_id temp_c heart_rate
@@ -4239,7 +4335,7 @@ patient_id,temp_c,heart_rate
 <li>These lines can be skipped with the <code>comment</code> argument (or <code>skip</code>).</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb97"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/vitals_comment.csv&quot;</span>), <span class="at">comment =</span> <span class="st">&quot;#&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb99"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/vitals_comment.csv&quot;</span>), <span class="at">comment =</span> <span class="st">&quot;#&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   patient_id temp_c heart_rate
@@ -4265,7 +4361,7 @@ patient_id,temp_c,heart_rate
 <li>Since <code>readr</code> assumes the first row are the column names we’ll have to prevent this with the <code>col_names</code> argument.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/vitals_nonames.csv&quot;</span>), <span class="at">col_names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/vitals_nonames.csv&quot;</span>), <span class="at">col_names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
      X1    X2    X3
@@ -4280,8 +4376,8 @@ patient_id,temp_c,heart_rate
 <li>Or pass in our own names.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/vitals_nonames.csv&quot;</span>),</span>
-<span id="cb102-2"><a href></a>                <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">&quot;patient_id&quot;</span>, <span class="st">&quot;temp_c&quot;</span>, <span class="st">&quot;heart_rate&quot;</span>) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href></a>readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/module05/vitals_nonames.csv&quot;</span>),</span>
+<span id="cb104-2"><a href></a>                <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">&quot;patient_id&quot;</span>, <span class="st">&quot;temp_c&quot;</span>, <span class="st">&quot;heart_rate&quot;</span>) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
   patient_id temp_c heart_rate
