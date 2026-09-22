@@ -19,10 +19,12 @@ code-blanks:
     - nlme
     - tidyr
     - dplyr
+    - readr
   setup:
     - library(nlme)
     - library(tidyr)
     - library(dplyr)
+    - library(readr)
   plot-width: 100
   plot-height: 100
 execute:
@@ -775,6 +777,26 @@ dplyr::inner_join(x = metadata, y = labdata, by = dplyr::join_by(patient_id))
 Use the `metadata` and `labdata` from the prior slide, write two different joins that keep all the patients in `labdata` but combine all the variables in the two datasets. Next, write a join that keeps all patients from both datasets. 
 ```
 
+```{code-blanks-functions}
+metadata <- tibble::tribble(
+  ~patient_id, ~age, ~sex, ~site,
+  101,          45,   "F",  "Clinic A",
+  102,          62,   "M",  "Clinic B",
+  103,          29,   "F",  "Clinic A",
+  104,          54,   "M",  "Clinic C",
+  105,          38,   "F",  "Clinic B"
+)
+
+labdata <- tibble::tribble(
+  ~patient_id, ~test_date,            ~hba1c,
+  101,          as.Date("2026-01-15"), 6.1,
+  101,          as.Date("2026-04-10"), 5.9,
+  103,          as.Date("2026-02-02"), 7.4,
+  104,          as.Date("2026-03-20"), 5.5,
+  106,          as.Date("2026-01-30"), 8.2
+)
+```
+
 ```{code-blanks}
 #| blank:
 #|   target: labdata
@@ -812,7 +834,7 @@ dplyr::left_join(x = labdata, y = metadata, by = join_by(patient_id))
 #|   occurrence: 1
 #|   match: token
 
-dplyr::right_join(x = metadata, y = labdata, by = dplyr::join_by(patient_id))
+dplyr::right_join(x = metadata, y = labdata, by = join_by(patient_id))
 ```
 
 ```{code-blanks}
@@ -837,7 +859,7 @@ dplyr::right_join(x = metadata, y = labdata, by = dplyr::join_by(patient_id))
 #|   occurrence: 1
 #|   match: token
 
-dplyr::full_join(x = metadata, y = labdata, by = dplyr::join_by(patient_id))
+dplyr::full_join(x = metadata, y = labdata, by = join_by(patient_id))
 ```
 
 ```{r}

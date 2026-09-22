@@ -2707,9 +2707,27 @@ if (!window.customElements.get('countdown-timer')) {
   })
 })()
 </script>
-  <script>window.codeBlanksPackages = ["nlme","tidyr","dplyr"];window.codeBlanksSetup = `library(nlme)
+  <script>window.codeBlanksFunctions = (window.codeBlanksFunctions || "") + "\n" + `metadata <- tibble::tribble(
+    ~patient_id, ~age, ~sex, ~site,
+    101,          45,   "F",  "Clinic A",
+    102,          62,   "M",  "Clinic B",
+    103,          29,   "F",  "Clinic A",
+    104,          54,   "M",  "Clinic C",
+    105,          38,   "F",  "Clinic B"
+  )
+
+  labdata <- tibble::tribble(
+    ~patient_id, ~test_date,            ~hba1c,
+    101,          as.Date("2026-01-15"), 6.1,
+    101,          as.Date("2026-04-10"), 5.9,
+    103,          as.Date("2026-02-02"), 7.4,
+    104,          as.Date("2026-03-20"), 5.5,
+    106,          as.Date("2026-01-30"), 8.2
+  )`;</script>
+  <script>window.codeBlanksPackages = ["nlme","tidyr","dplyr","readr"];window.codeBlanksSetup = `library(nlme)
   library(tidyr)
-  library(dplyr)`;window.codeBlanksPlotWidth = 100;window.codeBlanksPlotHeight = 100;window.codeBlanksProgressiveReveal = false;</script>
+  library(dplyr)
+  library(readr)`;window.codeBlanksPlotWidth = 100;window.codeBlanksPlotHeight = 100;window.codeBlanksProgressiveReveal = false;</script>
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -3414,7 +3432,7 @@ $ Occasion &lt;ord&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_82c1f60e" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_cc94cc26" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section></section>
@@ -3947,11 +3965,11 @@ e.g.:
 <p>Use the <code>metadata</code> and <code>labdata</code> from the prior slide, write two different joins that keep all the patients in <code>labdata</code> but combine all the variables in the two datasets. Next, write a join that keeps all patients from both datasets.</p>
 </div>
 <pre class="code-blanks"><code>dplyr::left_join(x = <input class="code-blank-input" data-answer="labdata" data-default value size="9">, y = <input class="code-blank-input" data-answer="metadata" data-default value size="10">, by = <input class="code-blank-input" data-answer="join_by(patient_id)" data-default value size="21">)</code></pre>
-<pre class="code-blanks"><code>dplyr::right_join(x = <input class="code-blank-input" data-answer="metadata" data-default value size="10">, y = <input class="code-blank-input" data-answer="labdata" data-default value size="9">, by = dplyr::<input class="code-blank-input" data-answer="join_by(patient_id)" data-default value size="21">)</code></pre>
-<pre class="code-blanks"><code>dplyr::<input class="code-blank-input" data-answer="full_join" data-default value size="11">(x = <input class="code-blank-input" data-answer="metadata" data-default value size="10">, y = <input class="code-blank-input" data-answer="labdata" data-default value size="9">, by = dplyr::<input class="code-blank-input" data-answer="join_by(patient_id)" data-default value size="21">)</code></pre>
+<pre class="code-blanks"><code>dplyr::right_join(x = <input class="code-blank-input" data-answer="metadata" data-default value size="10">, y = <input class="code-blank-input" data-answer="labdata" data-default value size="9">, by = <input class="code-blank-input" data-answer="join_by(patient_id)" data-default value size="21">)</code></pre>
+<pre class="code-blanks"><code>dplyr::<input class="code-blank-input" data-answer="full_join" data-default value size="11">(x = <input class="code-blank-input" data-answer="metadata" data-default value size="10">, y = <input class="code-blank-input" data-answer="labdata" data-default value size="9">, by = <input class="code-blank-input" data-answer="join_by(patient_id)" data-default value size="21">)</code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_b6a6541b" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_30600cf4" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section></section>
