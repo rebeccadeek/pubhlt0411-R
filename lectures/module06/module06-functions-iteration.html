@@ -2862,6 +2862,21 @@ display:block!important;
 </section>
 <section id="the-parts-of-a-function" class="slide level2 smaller">
 <h2>The parts of a function</h2>
+<aside class="notes">
+<ul>
+<li>data and FALSE are default values for df and na, respectively.</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <p>Every function consists of three parts:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href></a>name <span class="ot">=</span> <span class="cf">function</span>(<span class="at">df =</span> data, <span class="at">na =</span> <span class="cn">FALSE</span>) {</span>
 <span id="cb6-2"><a href></a>  <span class="fu">body_do_something</span>(df, na)</span>
@@ -2888,8 +2903,8 @@ display:block!important;
 </ol>
 </div>
 </section>
-<section id="return" class="slide level2 smaller">
-<h2>Return</h2>
+<section id="returns" class="slide level2 smaller">
+<h2>Returns</h2>
 <ul>
 <li>What is output by your function.</li>
 <li>Returns can be implicit using the last value produced (but not stored to an object).</li>
@@ -2899,7 +2914,7 @@ display:block!important;
 <span id="cb7-3"><a href></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="fragment">
 <ul>
-<li>Or explicit with the <code>return</code> function.</li>
+<li>Or explicit with the <code>return()</code> function.</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href></a>name <span class="ot">=</span> <span class="cf">function</span>(<span class="at">df =</span> data, <span class="at">na =</span> <span class="cn">FALSE</span>) {</span>
 <span id="cb8-2"><a href></a>  out <span class="ot">=</span> <span class="fu">body_do_something</span>(df, na)</span>
@@ -2912,6 +2927,24 @@ display:block!important;
 </section>
 <section id="building-z_score" class="slide level2 smaller">
 <h2>Building <code>z_score()</code></h2>
+<aside class="notes">
+<ul>
+<li>name = z_score</li>
+<li>argument = x (no default)</li>
+<li>body = z = (x - mean(x)) / sd(x)</li>
+<li>explicit return</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <p>Remember out template…</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href></a>(█ <span class="sc">-</span> <span class="fu">mean</span>(█)) <span class="sc">/</span> <span class="fu">sd</span>(█)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Now let’s convert it into a proper function.</p>
@@ -2999,24 +3032,24 @@ display:block!important;
 </ul>
 </div>
 </section>
-<section id="exercise-cv-by-group" class="slide level2">
+<section id="exercise-cv-by-group" class="slide level2 smaller">
 <h2>Exercise: <code>cv()</code> by group</h2>
 <div class="code-blanks-instructions-box">
-<p>Build a function that calculates the coefficient of variation: the ratio of the sample standard deviation to the sample mean. Is birth weight (<code>bwt</code>) more variable among smokers or non-smokers (<code>smoke</code>)?</p>
+<p>Build a function called <code>cv</code> that calculates the coefficient of variation: the ratio of the sample standard deviation to the sample mean. Include an argument that can remove <code>NA</code> values. Is birth weight (<code>bwt</code>) more variable among smokers or non-smokers (<code>smoke</code>)?</p>
 </div>
 <pre class="code-blanks"><code># create function
-cv = <input class="code-blank-input" data-answer="function" data-default value size="10">(x, na.rm = FALSE) {
-  sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm)
+<input class="code-blank-input" data-answer="cv" data-default value size="4"> = <input class="code-blank-input" data-answer="function" data-default value size="10">(x, <input class="code-blank-input" data-answer="na" data-default value size="4"> = FALSE) {
+  sd(x, na.rm = na) / mean(x, na.rm = na)
 }
 
-# run function
+# run function + dplyr
 birthwt |&gt;
-  <input class="code-blank-input" data-answer="group_by" data-default value size="10">(<input class="code-blank-input" data-answer="smoke" data-default value size="7">) |&gt;
-  summarise(<input class="code-blank-input" data-answer="cv_bwt" data-default value size="8"> = cv(x = bwt), .groups = &quot;drop&quot;)
+  group_by(<input class="code-blank-input" data-answer="smoke" data-default value size="7">) |&gt;
+  summarise(cv_bwt = <input class="code-blank-input" data-answer="cv(x = bwt)" data-default value size="13">, .groups = &quot;drop&quot;)
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_fc71de09" minutes="3" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_194ebaf2" minutes="3" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
@@ -3040,9 +3073,10 @@ birthwt |&gt;
 <h2>A first attempt</h2>
 <aside class="notes">
 <ul>
+<li>This data frame function is similar to the Exercise 1 (group by smoke, mean of bwt).</li>
 <li>First attempt throws error that “Column <code>group_var</code> is not found.”</li>
 <li>Looking for variable named <code>group_var</code> i.e., not recognizing it as an argument input</li>
-<li>In toy example want to use <code>group</code> and <code>x</code> but function uses <code>group_var</code> and <code>mean_var</code> variables</li>
+<li>In toy example want to use <code>group</code> (10) and <code>x</code> (1) but function uses <code>group_var</code> (g) and <code>mean_var</code> (1) variables</li>
 </ul>
 <style type="text/css">
 span.MJX_Assistive_MathML {
@@ -3097,6 +3131,22 @@ display:block!important;
 </section>
 <section id="embracing" class="slide level2 smaller">
 <h2>Embracing <code>{{</code> <code>}}</code></h2>
+<aside class="notes">
+<ul>
+<li>The problem on the prior slide is due to tidy evaluation</li>
+<li>Solution: embracing</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <p><code>dplyr</code> uses <strong>tidy evaluation</strong>, which allows you to refer to the names of variables without any special treatment (<code>&quot;&quot;</code> or <code>$</code>).</p>
 <ul>
 <li>Tidy evaluation includes a solution to this problem called <strong>embracing</strong> <code>{{</code> <code>}}</code></li>
@@ -3201,10 +3251,11 @@ display:block!important;
 <p><code>summary6</code> includes <code>summarise()</code>, so it automatically works on grouped data.</p>
 </div>
 </section>
-<section id="exercise-counting-and-proportions" class="slide level2">
+<section id="exercise-counting-and-proportions" class="slide level2 smaller">
 <h2>Exercise: Counting and proportions</h2>
 <div class="code-blanks-instructions-box">
-<p>Create a function that tallies the number of observations per race and converts these counts into proportions. Ensure that the function defaults to removing missing data.</p>
+<p>Create a function called <code>count_prop</code> that tallies the number of observations per variable and converts these counts into proportions. Include an argument to sort the counts but set the default to <code>FALSE</code>.</p>
+<p>Next, use the function to count the number of participants in <code>birthwt</code> per <code>race</code> group.</p>
 </div>
 <pre class="code-blanks"><code>count_prop = <input class="code-blank-input" data-answer="function" data-default value size="10">(df, var, sort = <input class="code-blank-input" data-answer="FALSE" data-default value size="7">) {
   df |&gt;
@@ -3219,7 +3270,7 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_2a231de4" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_349a72a0" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
@@ -3256,10 +3307,26 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 </section>
 <section id="pick-multiple-variables" class="slide level2 smaller">
 <h2><code>pick()</code> multiple variables</h2>
+<aside class="notes">
+<ul>
+<li>Data masking functions with multiple variable require <code>pick()</code> + <code>{{</code> <code>}}</code></li>
+<li>med_var only uses 1 variable –&gt; no pick(), just embracing.</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <ul>
 <li>Remember there are two forms of <strong>tidy evaluation</strong>: (1) tidy-selection and (2) data-masking.
 <ul>
-<li>Both require embracing <code>{{</code> <code>}}</code>, but data-masking requires an additional step when working with more than one variable.</li>
+<li>Both require embracing <code>{{</code> <code>}}</code>, but data-masking requires an additional step using <code>pick()</code> when working with more than one variable.</li>
 </ul></li>
 </ul>
 <div class="fragment">
@@ -3362,6 +3429,23 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 </section>
 <section id="for-loops" class="slide level2 smaller">
 <h2>For loops</h2>
+<aside class="notes">
+<ul>
+<li>Three components to for loops.</li>
+<li>Output: specify length in advance to reduce time. In example mode = double since calculating median</li>
+<li>Sequence: looping over columns for example (not always necessary to be columns.)</li>
+</ul>
+<style type="text/css">
+span.MJX_Assistive_MathML {
+position:absolute!important;
+clip: rect(1px, 1px, 1px, 1px);
+padding: 1px 0 0 0!important;
+border: 0!important;
+height: 1px!important;
+width: 1px!important;
+overflow: hidden!important;
+display:block!important;
+}</style></aside>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href></a>output <span class="ot">=</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">&quot;double&quot;</span>, <span class="at">length =</span> <span class="fu">ncol</span>(df_rnorm))  <span class="co"># 1. output</span></span>
 <span id="cb49-2"><a href></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(df_rnorm)) {                           <span class="co"># 2. sequence</span></span>
@@ -3448,11 +3532,12 @@ $ bwt &lt;int&gt; 2523, 2551, 2557, 2594, 2600, 2622, 2637, 2637, 2663, 2665, 27
 <section id="birthwt-z-scores-for-loop" class="slide level2 smaller">
 <h2><code>birthwt</code> z-scores + for-loop</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(birthwt_subset)) {               <span class="co"># 2. sequence</span></span>
-<span id="cb57-2"><a href></a>  birthwt_subset[[i]] <span class="ot">=</span> <span class="fu">z_score</span>(birthwt_subset[[i]]) <span class="co"># 3. body</span></span>
-<span id="cb57-3"><a href></a>}</span>
-<span id="cb57-4"><a href></a></span>
-<span id="cb57-5"><a href></a>birthwt_subset</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href></a>birthwt_subset_z <span class="ot">=</span> <span class="fu">vector</span>(<span class="at">mode =</span> <span class="st">&quot;list&quot;</span>, <span class="at">length =</span> <span class="fu">ncol</span>(birthwt_subset)) <span class="co"># 1. output</span></span>
+<span id="cb57-2"><a href></a><span class="fu">names</span>(birthwt_subset_z) <span class="ot">=</span> <span class="fu">names</span>(birthwt_subset)</span>
+<span id="cb57-3"><a href></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(birthwt_subset)) {                 <span class="co"># 2. sequence</span></span>
+<span id="cb57-4"><a href></a>  birthwt_subset_z[[i]] <span class="ot">=</span> <span class="fu">z_score</span>(birthwt_subset[[i]]) <span class="co"># 3. body</span></span>
+<span id="cb57-5"><a href></a>}</span>
+<span id="cb57-6"><a href></a>birthwt_subset_z <span class="sc">|&gt;</span> <span class="fu">bind_cols</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 189 × 4
       age    lwt    ptl    bwt
@@ -3470,39 +3555,36 @@ $ bwt &lt;int&gt; 2523, 2551, 2557, 2594, 2600, 2622, 2637, 2637, 2663, 2665, 27
 # ℹ 179 more rows</code></pre>
 </div>
 </div>
-<ol start="2" type="1">
-<li>Sequence? <code>seq_along(birthwt_subset)</code></li>
-<li>Body? <code>birthwt_subset[[i]] = z_score(birthwt_subset[[i]])</code></li>
-</ol>
-<div class="fragment">
 <ol type="1">
-<li>Output? <code>birthwt_subset</code>
+<li>Output? <code>birthwt_subset_z</code>
 <ul>
-<li>Notice the output is the same object we are looping over. This is different from the prior example.</li>
-<li>We’re column-wise modifying <code>birthwt_subset</code> in place.</li>
-<li>Still predefined, so speed is ok.</li>
+<li>Notice the output is a predefined list, not a data frame like our input.</li>
+<li><code>bind_cols()</code> converts lists (with elements of common length) into data frames.
+<ul>
+<li>Bind each element of the list into a column.</li>
 </ul></li>
+</ul></li>
+<li>Sequence? <code>seq_along(birthwt_subset)</code></li>
+<li>Body? <code>birthwt_subset_z[[i]] = z_score(birthwt_subset[[i]])</code></li>
 </ol>
-</div>
 </section>
 <section id="exercise-for-loops" class="slide level2 smaller scrollable">
 <h2>Exercise: For loops</h2>
 <div class="code-blanks-instructions-box">
-<p>Using a for loop, compute the mean of every column in <code>birthwt_subset</code>. Be able to define the output, sequence, and body of the loop.</p>
+<p>Using a for loop, compute the mean of every column in <code>birthwt_subset</code>. Save the means to a vector named <code>mean_birthwt_subset</code>. Be able to define the output, sequence, and body of the loop.</p>
 </div>
 <pre class="code-blanks"><code>birthwt_subset = birthwt |&gt; dplyr::select(age, lwt, ptl, bwt)
 
-mean_birthwt_subset = <input class="code-blank-input" data-answer="vector" data-default value size="8">(<input class="code-blank-input" data-answer="mode = &quot;double&quot;" data-default value size="17">, <input class="code-blank-input" data-answer="length = ncol(birthwt_subset)" data-default value size="31">)
-mean_birthwt_subset
+mean_birthwt_subset = vector(<input class="code-blank-input" data-answer="mode = &quot;double&quot;" data-default value size="17">, length = <input class="code-blank-input" data-answer="ncol(birthwt_subset)" data-default value size="22">)
 
 for(<input class="code-blank-input" data-answer="i in seq_along(birthwt_subset)" data-default value size="32">) { 
-  <input class="code-blank-input" data-answer="mean_birthwt_subset[[i]] = mean(birthwt_subset[[i]])" data-default value size="54">
+  <input class="code-blank-input" data-answer="mean_birthwt_subset[[i]]" data-default value size="26"> = <input class="code-blank-input" data-answer="mean(birthwt_subset[[i]])" data-default value size="27">
   }
 mean_birthwt_subset
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_900d2d21" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_e55537ea" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
@@ -3539,16 +3621,16 @@ mean_birthwt_subset
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href></a>purrr<span class="sc">::</span><span class="fu">map</span>(<span class="at">.x =</span> birthwt_subset, <span class="at">.f =</span> median)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$age
-[1] -0.04493484
+[1] 23
 
 $lwt
-[1] -0.2882601
+[1] 121
 
 $ptl
-[1] -0.3968185
+[1] 0
 
 $bwt
-[1] 0.0444488</code></pre>
+[1] 2977</code></pre>
 </div>
 </div>
 <div class="fragment">
@@ -3559,16 +3641,16 @@ $bwt
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href></a><span class="fu">lapply</span>(<span class="at">X =</span> birthwt_subset, <span class="at">FUN =</span> median)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$age
-[1] -0.04493484
+[1] 23
 
 $lwt
-[1] -0.2882601
+[1] 121
 
 $ptl
-[1] -0.3968185
+[1] 0
 
 $bwt
-[1] 0.0444488</code></pre>
+[1] 2977</code></pre>
 </div>
 </div>
 <p><code>lapply</code> depends only on the <code>base</code> package that is preloaded into R.</p>
@@ -3576,7 +3658,7 @@ $bwt
 </section>
 <section id="birthwt-functional-programming" class="slide level2 smaller">
 <h2><code>birthwt</code>: Functional programming</h2>
-<p><code>map</code> and <code>lapply</code> focus on performing the operation (<code>median</code>) and take care of the bookkeeping required to loop over every element and store the output under the hood.</p>
+<p><code>map</code> and <code>lapply</code> focus on performing the operation (e.g., <code>median</code>) and take care of the bookkeeping required to loop over every element and store the output under the hood.</p>
 <div class="fragment">
 <p>Can combine <code>purrr</code> and <code>lapply</code> with pipes:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb63"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href></a>birthwt_subset <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">map</span>(<span class="at">.f =</span> median)</span>
@@ -3590,21 +3672,23 @@ $bwt
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href></a>birthwt_subset <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">map_dbl</span>(median) <span class="co"># pipe and lazy eval</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        age         lwt         ptl         bwt 
--0.04493484 -0.28826009 -0.39681850  0.04444880 </code></pre>
+<pre><code> age  lwt  ptl  bwt 
+  23  121    0 2977 </code></pre>
 </div>
 </div>
-<p>Equivalent to:</p>
+<ol start="4" type="1">
+<li>Equivalent to:</li>
+</ol>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href></a>birthwt_subset <span class="sc">|&gt;</span> purrr<span class="sc">::</span><span class="fu">map</span>(median) <span class="sc">|&gt;</span> base<span class="sc">::</span><span class="fu">unlist</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        age         lwt         ptl         bwt 
--0.04493484 -0.28826009 -0.39681850  0.04444880 </code></pre>
+<pre><code> age  lwt  ptl  bwt 
+  23  121    0 2977 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href></a>birthwt_subset <span class="sc">|&gt;</span> <span class="fu">lapply</span>(median) <span class="sc">|&gt;</span> base<span class="sc">::</span><span class="fu">unlist</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>        age         lwt         ptl         bwt 
--0.04493484 -0.28826009 -0.39681850  0.04444880 </code></pre>
+<pre><code> age  lwt  ptl  bwt 
+  23  121    0 2977 </code></pre>
 </div>
 </div>
 </div>
@@ -3637,12 +3721,12 @@ $bwt
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href></a>birthwt <span class="sc">|&gt;</span> </span>
 <span id="cb72-2"><a href></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(<span class="at">.cols =</span> <span class="fu">c</span>(lwt, bwt), </span>
-<span id="cb72-3"><a href></a>                                 <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">median =</span> mean, <span class="at">cv =</span> cv) ) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb72-3"><a href></a>                                 <span class="at">.fns =</span> <span class="fu">list</span>(<span class="at">median =</span> median, <span class="at">cv =</span> cv) ) )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 4
   lwt_median lwt_cv bwt_median bwt_cv
-       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt;
-1       130.  0.236      2945.  0.248</code></pre>
+       &lt;int&gt;  &lt;dbl&gt;      &lt;int&gt;  &lt;dbl&gt;
+1        121  0.236       2977  0.248</code></pre>
 </div>
 </div>
 <p>The output columns are automatically named <code>{column}_{function}</code>, e.g. <code>lwt_median</code>.</p>
@@ -3655,13 +3739,13 @@ $bwt
 </div>
 <pre class="code-blanks"><code>birthwt_subset = birthwt |&gt; dplyr::select(age, lwt, ptl, bwt)
 
-<input class="code-blank-input" data-answer="birthwt_subset |&gt; map(mean)" data-default value size="29">
-<input class="code-blank-input" data-answer="birthwt_subset |&gt; lapply(mean)" data-default value size="32">
-<input class="code-blank-input" data-answer="birthwt_subset |&gt; map_dbl(mean)" data-default value size="33">
+birthwt_subset |&gt; <input class="code-blank-input" data-answer="map(mean)" data-default value size="11">
+birthwt_subset |&gt; <input class="code-blank-input" data-answer="lapply(mean)" data-default value size="14">
+birthwt_subset |&gt; <input class="code-blank-input" data-answer="map_dbl(mean)" data-default value size="15">
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_7d1dae54" minutes="4" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_0b60070f" minutes="2" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:30;"></countdown-timer>
 </div>
 </div>
 </section>

@@ -128,6 +128,10 @@ Let's put a placeholder where the variable changes.
 This will be our skeleton code for writing our `z_score` function.
 
 ## The parts of a function {.smaller}
+::: notes
+- data and FALSE are default values for df and na, respectively.
+:::
+
 Every function consists of three parts:
 
 ```r
@@ -150,7 +154,7 @@ name = function(df = data, na = FALSE) {
 3. The **body**: code that is repeated across calls.
     - What you want performed within your function.
 
-## Return {.smaller}
+## Returns {.smaller}
 - What is output by your function.
 - Returns can be implicit using the last value produced (but not stored to an object).
 
@@ -162,7 +166,7 @@ name = function(df = data, na = FALSE) {
 
 . . .
 
-- Or explicit with the `return` function.
+- Or explicit with the `return()` function.
 
 ```r
 name = function(df = data, na = FALSE) {
@@ -174,6 +178,13 @@ name = function(df = data, na = FALSE) {
 - Returns can be single values (p-value) or a collection of values (test statistic and p-value), as well as named or unnamed.
 
 ## Building `z_score()` {.smaller}
+::: notes
+- name = z_score
+- argument = x (no default)
+- body = z = (x - mean(x)) / sd(x)
+- explicit return
+:::
+
 Remember out template...
 ```r
 (█ - mean(█)) / sd(█)
@@ -249,20 +260,25 @@ No copying-and-pasting our long `mean` and `sd` syntax! Minimizing potential hum
 - Notice we did copy the `z_score` function multiple times.
 - Further reduction with iteration (coming up).
 
-## Exercise: `cv()` by group
+## Exercise: `cv()` by group {.smaller}
 
 ```{code-blanks-instructions}
-Build a function that calculates the coefficient of variation: the ratio of the sample standard deviation to the sample mean. Is birth weight (`bwt`) more variable among smokers or non-smokers (`smoke`)?
+Build a function called `cv` that calculates the coefficient of variation: the ratio of the sample standard deviation to the sample mean. Include an argument that can remove `NA` values. Is birth weight (`bwt`) more variable among smokers or non-smokers (`smoke`)?
 ```
 
 ```{code-blanks}
+#| blank:
+#|   target: cv
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
 #| blank:
 #|   target: function
 #|   prefill: false
 #|   occurrence: 2
 #|   match: token
 #| blank:
-#|   target: group_by
+#|   target: na
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
@@ -272,22 +288,17 @@ Build a function that calculates the coefficient of variation: the ratio of the 
 #|   occurrence: 1
 #|   match: token
 #| blank:
-#|   target: cv_bwt
-#|   prefill: false
-#|   occurrence: 1
-#|   match: token
-#| blank:
-#|   target: cv(bwt)
+#|   target: cv(x = bwt)
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
 
 # create function
-cv = function(x, na.rm = FALSE) {
-  sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm)
+cv = function(x, na = FALSE) {
+  sd(x, na.rm = na) / mean(x, na.rm = na)
 }
 
-# run function
+# run function + dplyr
 birthwt |>
   group_by(smoke) |>
   summarise(cv_bwt = cv(x = bwt), .groups = "drop")
@@ -319,9 +330,10 @@ countdown::countdown(minutes = 3, bottom = 0)
 
 ## A first attempt {.smaller}
 ::: notes
+- This data frame function is similar to the Exercise 1 (group by smoke, mean of bwt).
 - First attempt throws error that "Column `group_var` is not found."
 - Looking for variable named `group_var` i.e., not recognizing it as an argument input
-- In toy example want to use `group` and `x` but function uses `group_var` and `mean_var` variables
+- In toy example want to use `group` (10) and `x` (1) but function uses `group_var` (g) and `mean_var` (1) variables
 :::
 
 Let's write a function that groups by one variable and averages another:
@@ -359,6 +371,11 @@ df_toy |> grouped_mean(group_var = group, mean_var = x)
 - Even though we passed `group` and `x` are arguments, `group_var` and `mean_var` were used.
 
 ## Embracing `{{` `}}` {.smaller}
+::: notes
+- The problem on the prior slide is due to tidy evaluation
+- Solution: embracing
+:::
+
 `dplyr` uses **tidy evaluation**, which allows you to refer to the names of variables without any special treatment (`""` or `$`).
 
 - Tidy evaluation includes a solution to this problem called **embracing** `{{` `}}`
@@ -388,6 +405,7 @@ birthwt |> grouped_mean(race, bwt) # birthwt date mean(bwt) by race, lazy eval
 - Too many possible functions to enumerate, it is likely your first attempt at a function will have some errors.
 - Always check documentation
 :::
+
 Check a function's documentation for two terms:
 
 - **Data-masking**: functions that *compute* with variables.
@@ -427,10 +445,12 @@ birthwt |>
 
 `summary6` includes `summarise()`, so it automatically works on grouped data.
 
-## Exercise: Counting and proportions
+## Exercise: Counting and proportions {.smaller}
 
 ```{code-blanks-instructions}
-Create a function that tallies the number of observations per race and converts these counts into proportions. Ensure that the function defaults to removing missing data.
+Create a function called `count_prop` that tallies the number of observations per variable and converts these counts into proportions. Include an argument to sort the counts but set the default to `FALSE`.
+
+Next, use the function to count the number of participants in `birthwt` per `race` group.
 ```
 
 ```{code-blanks}
@@ -507,8 +527,13 @@ birthwt |> unique_where(age > 35, race)
 ```
 
 ## `pick()` multiple variables {.smaller}
+::: notes
+- Data masking functions with multiple variable require `pick()` + `{{` `}}`
+- med_var only uses 1 variable --> no pick(), just embracing.
+:::
+
 - Remember there are two forms of **tidy evaluation**: (1) tidy-selection and (2) data-masking.
-  - Both require embracing `{{` `}}`, but data-masking requires an additional step when working with more than one variable.
+  - Both require embracing `{{` `}}`, but data-masking requires an additional step using `pick()` when working with more than one variable.
 
 . . .
 
@@ -574,6 +599,11 @@ median(df_rnorm$ldl)
   - Can create a loop or FP to handle this without copying-and-pasting.
 
 ## For loops {.smaller}
+::: notes
+- Three components to for loops.
+- Output: specify length in advance to reduce time. In example mode = double since calculating median
+- Sequence: looping over columns for example (not always necessary to be columns.)
+:::
 
 ```{r for-loop1}
 
@@ -633,43 +663,36 @@ We've copied-and-pasted the same function four times...
 
 ```{r forloop-bwt-zscore}
 
-for (i in seq_along(birthwt_subset)) {               # 2. sequence
-  birthwt_subset[[i]] = z_score(birthwt_subset[[i]]) # 3. body
+birthwt_subset_z = vector(mode = "list", length = ncol(birthwt_subset)) # 1. output
+names(birthwt_subset_z) = names(birthwt_subset)
+for (i in seq_along(birthwt_subset)) {                 # 2. sequence
+  birthwt_subset_z[[i]] = z_score(birthwt_subset[[i]]) # 3. body
 }
-
-birthwt_subset
+birthwt_subset_z |> bind_cols()
 
 ```
 
+1. Output? `birthwt_subset_z`
+   - Notice the output is a predefined list, not a data frame like our input.
+   - `bind_cols()` converts lists (with elements of common length) into data frames.
+     - Bind each element of the list into a column.
 2. Sequence? `seq_along(birthwt_subset)`
-3. Body? `birthwt_subset[[i]] = z_score(birthwt_subset[[i]])`
-
-. . .
-
-1. Output? `birthwt_subset`
-   - Notice the output is the same object we are looping over. This is different from the prior example.
-   - We're column-wise modifying `birthwt_subset` in place.
-   - Still predefined, so speed is ok.
+3. Body? `birthwt_subset_z[[i]] = z_score(birthwt_subset[[i]])`
 
 ## Exercise: For loops {.smaller .scrollable}
 
 ```{code-blanks-instructions}
-Using a for loop, compute the mean of every column in `birthwt_subset`. Be able to define the output, sequence, and body of the loop. 
+Using a for loop, compute the mean of every column in `birthwt_subset`. Save the means to a vector named `mean_birthwt_subset`. Be able to define the output, sequence, and body of the loop. 
 ```
 
 ```{code-blanks}
-#| blank:
-#|   target: vector
-#|   prefill: false
-#|   occurrence: 1
-#|   match: token
 #| blank:
 #|   target: mode = "double"
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
 #| blank:
-#|   target: length = ncol(birthwt_subset)
+#|   target: ncol(birthwt_subset)
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
@@ -679,7 +702,12 @@ Using a for loop, compute the mean of every column in `birthwt_subset`. Be able 
 #|   occurrence: 1
 #|   match: token
 #| blank:
-#|   target: mean_birthwt_subset[[i]] = mean(birthwt_subset[[i]])
+#|   target: mean_birthwt_subset[[i]] 
+#|   prefill: false
+#|   occurrence: 1
+#|   match: token
+#| blank:
+#|   target: mean(birthwt_subset[[i]])
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
@@ -687,7 +715,6 @@ Using a for loop, compute the mean of every column in `birthwt_subset`. Be able 
 birthwt_subset = birthwt |> dplyr::select(age, lwt, ptl, bwt)
 
 mean_birthwt_subset = vector(mode = "double", length = ncol(birthwt_subset))
-mean_birthwt_subset
 
 for(i in seq_along(birthwt_subset)) { 
   mean_birthwt_subset[[i]] = mean(birthwt_subset[[i]])
@@ -745,7 +772,7 @@ lapply(X = birthwt_subset, FUN = median)
 `lapply` depends only on the `base` package that is preloaded into R.
 
 ## `birthwt`: Functional programming {.smaller}
-`map` and `lapply` focus on performing the operation (`median`) and take care of the bookkeeping required to loop over every element and store the output under the hood.
+`map` and `lapply` focus on performing the operation (e.g., `median`) and take care of the bookkeeping required to loop over every element and store the output under the hood.
 
 . . .
 
@@ -767,7 +794,7 @@ birthwt_subset |> purrr::map_dbl(median) # pipe and lazy eval
 
 ```
 
-Equivalent to:
+4. Equivalent to:
 
 ```{r map-lapply-unlist}
 
@@ -794,7 +821,7 @@ Takes the columns to operate on (`.cols`) and the function(s) to apply (`.fns`) 
 
 birthwt |> 
   dplyr::summarize(dplyr::across(.cols = c(lwt, bwt), 
-                                 .fns = list(median = mean, cv = cv) ) )
+                                 .fns = list(median = median, cv = cv) ) )
 
 ```
 
@@ -808,17 +835,17 @@ Write three different functional programs that will produce the mean of each var
 
 ```{code-blanks}
 #| blank:
-#|   target: birthwt_subset |> map(mean)
+#|   target: map(mean)
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
 #| blank:
-#|   target: birthwt_subset |> lapply(mean)
+#|   target: lapply(mean)
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
 #| blank:
-#|   target: birthwt_subset |> map_dbl(mean)
+#|   target: map_dbl(mean)
 #|   prefill: false
 #|   occurrence: 1
 #|   match: token
@@ -834,7 +861,7 @@ birthwt_subset |> map_dbl(mean)
 ```{r countdown4}
 #| echo: FALSE
 
-countdown::countdown(minutes = 4, bottom = 0)
+countdown::countdown(minutes = 2, bottom = 30)
 
 ```
 
