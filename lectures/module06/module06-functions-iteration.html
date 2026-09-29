@@ -3049,7 +3049,7 @@ birthwt |&gt;
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_194ebaf2" minutes="3" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_05803285" minutes="3" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
@@ -3270,7 +3270,7 @@ birthwt |&gt; <input class="code-blank-input" data-answer="count_prop(race)" dat
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_349a72a0" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_254d58e6" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
@@ -3334,7 +3334,7 @@ display:block!important;
 <li>Suppose we would like to group by both <code>race</code> and <code>smoke</code> before calculating the median.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href></a>count_missing <span class="ot">=</span> <span class="cf">function</span>(df, group_vars, med_var) {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href></a>multigroup_median <span class="ot">=</span> <span class="cf">function</span>(df, group_vars, med_var) {</span>
 <span id="cb38-2"><a href></a>  df <span class="sc">|&gt;</span></span>
 <span id="cb38-3"><a href></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="fu">pick</span>({{ group_vars }})) <span class="sc">|&gt;</span> <span class="co"># group_by = data-masking function</span></span>
 <span id="cb38-4"><a href></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">median =</span> <span class="fu">median</span>({{ med_var }}),</span>
@@ -3342,7 +3342,7 @@ display:block!important;
 <span id="cb38-6"><a href></a>    )</span>
 <span id="cb38-7"><a href></a>}</span>
 <span id="cb38-8"><a href></a></span>
-<span id="cb38-9"><a href></a>birthwt <span class="sc">|&gt;</span> <span class="fu">count_missing</span>(<span class="at">group_vars =</span> <span class="fu">c</span>(race, smoke), <span class="at">med_var =</span> ftv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb38-9"><a href></a>birthwt <span class="sc">|&gt;</span> <span class="fu">multigroup_median</span>(<span class="at">group_vars =</span> <span class="fu">c</span>(race, smoke), <span class="at">med_var =</span> ftv)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   race  smoke median
@@ -3584,7 +3584,7 @@ mean_birthwt_subset
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_e55537ea" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_ee4da317" minutes="4" seconds="30" update-every="1" tabindex="0" style="right:0;bottom:0;"></countdown-timer>
 </div>
 </div>
 </section>
@@ -3745,7 +3745,7 @@ birthwt_subset |&gt; <input class="code-blank-input" data-answer="map_dbl(mean)"
 </code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<countdown-timer class="countdown" id="timer_0b60070f" minutes="2" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:30;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_ab77ef5b" minutes="2" seconds="0" update-every="1" tabindex="0" style="right:0;bottom:30;"></countdown-timer>
 </div>
 </div>
 </section>

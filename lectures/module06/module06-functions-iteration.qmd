@@ -541,7 +541,7 @@ birthwt |> unique_where(age > 35, race)
 
 ```{r data-masking}
 
-count_missing = function(df, group_vars, med_var) {
+multigroup_median = function(df, group_vars, med_var) {
   df |>
     dplyr::group_by(pick({{ group_vars }})) |> # group_by = data-masking function
     dplyr::summarise(median = median({{ med_var }}),
@@ -549,7 +549,7 @@ count_missing = function(df, group_vars, med_var) {
     )
 }
 
-birthwt |> count_missing(group_vars = c(race, smoke), med_var = ftv)
+birthwt |> multigroup_median(group_vars = c(race, smoke), med_var = ftv)
 ```
 
 - `pick()` allows you to select/reference multiple columns.
